@@ -22,7 +22,16 @@ public:
 	/// <param name="y">y spawn position</param>
 	Player(float x, float y);
 
+	void update(float deltaTime);
+
+	void movingLeft(bool moving);
+	void movingRight(bool moving);
+
 private:
 
 	sf::Texture m_texture;
+	sf::Vector2f m_velocity = sf::Vector2f(0.0F, 0.0F);
+	float m_speed = 300.0F;
+	bool m_movingLeft = false;
+	bool m_movingRight = false;
 };

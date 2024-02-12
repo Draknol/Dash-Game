@@ -25,26 +25,55 @@ int main()
 		// Update deltaTime
 		float deltaTime = clock.restart().asSeconds();
 
+		// Handle Events
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			switch (event.type) {
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::Resized:
+				camera.resize(window.getSize());
+				break;
+			case sf::Event::KeyReleased:
+					switch (event.key.code)
+					{
+					case sf::Keyboard::A:
+						player.movingLeft(false);
+						break;
+					case sf::Keyboard::D:
+						player.movingRight(false);
+						break;
+					default:
+						break;
+					}
+					break;
+				default:
+					break;
+			case sf::Event::KeyPressed:
+				switch (event.key.code)
+				{
+				case sf::Keyboard::A:
+					player.movingLeft(true);
+					break;
+				case sf::Keyboard::D:
+					player.movingRight(true);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
+		// Update Player
+		player.update(deltaTime);
+
 		// Update Camera
 		camera.moveTowards(player.getPosition(), deltaTime);
 
 		// Update View
 		window.setView(camera);
-
-		// Handle Events
-		sf::Event event;
-		while (window.pollEvent(event))
-		{
-			// Close Event
-			if (event.type == sf::Event::Closed)
-			{
-				window.close();
-			}
-			else if (event.type == sf::Event::Resized)
-			{
-				camera.resize(window.getSize());
-			}
-		}
 
 		// Clear Window
 		window.clear();
