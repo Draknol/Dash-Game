@@ -10,6 +10,9 @@ int main()
 	// Create Window
 	sf::RenderWindow window(sf::VideoMode(1920U, 1080U), "Dash Game");
 
+	// Disable KeyRepeat
+	window.setKeyRepeatEnabled(false);
+
 	// Create Player
 	Player player(960, 960);
 
@@ -59,6 +62,9 @@ int main()
 					break;
 				case sf::Keyboard::D:
 					player.movingRight(true);
+					break;
+				case sf::Keyboard::LShift:
+					player.dashing(true);
 					break;
 				default:
 					break;
