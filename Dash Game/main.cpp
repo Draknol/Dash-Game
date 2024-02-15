@@ -3,6 +3,7 @@
 
 #include "Player.hpp"
 #include "Camera.hpp"
+#include "Level.hpp"
 
 int main()
 {
@@ -14,10 +15,13 @@ int main()
 	window.setKeyRepeatEnabled(false);
 
 	// Create Player
-	Player player(960, 960);
+	Player player(0, 0);
 
 	// Create Camera
 	Camera camera(player.getPosition(), sf::Vector2f(1920.0F, 1080.0F), 10.0F);
+
+	// Create Levels
+	Level level1("level1");
 
 	// Create Clock
 	sf::Clock clock;
@@ -85,6 +89,7 @@ int main()
 		window.clear();
 
 		// Draw Everything
+		level1.draw(window);
 		window.draw(player);
 
 		// Display Window

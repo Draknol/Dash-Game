@@ -9,6 +9,7 @@ Player::Player(sf::Vector2f position)
 	m_texture.loadFromFile("Textures/Player.png");
 
 	setTexture(m_texture);
+	setOrigin(m_texture.getSize().x / 2, m_texture.getSize().y);
 	setPosition(position);
 }
 
