@@ -14,14 +14,14 @@ int main()
 	// Disable KeyRepeat
 	window.setKeyRepeatEnabled(false);
 
+	// Create Level
+	Level level("level1");
+
 	// Create Player
-	Player player(0, 0);
+	Player player(level, 250, -400);
 
 	// Create Camera
 	Camera camera(player.getPosition(), sf::Vector2f(1920.0F, 1080.0F), 10.0F);
-
-	// Create Levels
-	Level level1("level1");
 
 	// Create Clock
 	sf::Clock clock;
@@ -29,6 +29,7 @@ int main()
 	/* Game Loop */
 	while (window.isOpen())
 	{
+
 		// Update deltaTime
 		float deltaTime = clock.restart().asSeconds();
 
@@ -89,7 +90,7 @@ int main()
 		window.clear();
 
 		// Draw Everything
-		level1.draw(window);
+		level.draw(window);
 		window.draw(player);
 
 		// Display Window

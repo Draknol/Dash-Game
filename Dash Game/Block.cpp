@@ -3,9 +3,8 @@
 
 Block::Block() {}
 
-Block::Block(sf::Vector2f position, sf::Vector2f size, float rotation)
+Block::Block(sf::Vector2f position, sf::Vector2f size)
 {
 	setPosition(position);
 	setSize(size);
-	setRotation(rotation);
 }

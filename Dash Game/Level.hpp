@@ -12,6 +12,8 @@ class Level
 public:
 	Level(std::string fileName);
 	void draw(sf::RenderWindow& window);
+	Block* getBlocks();
+	int getBlockCount();
 private:
 	Block* m_blocks = nullptr;
 	int m_blockCount = 0;

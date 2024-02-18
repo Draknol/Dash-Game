@@ -5,6 +5,8 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include "Level.hpp"
+
 class Player : public sf::Sprite
 {
 public:
@@ -13,14 +15,14 @@ public:
 	/// Constructor for Player
 	/// </summary>
 	/// <param name="position">Players spawn position</param>
-	Player(sf::Vector2f position);
+	Player(Level& level, sf::Vector2f position);
 
 	/// <summary>
 	/// Constructor for Player
 	/// </summary>
 	/// <param name="x">x spawn position</param>
 	/// <param name="y">y spawn position</param>
-	Player(float x, float y);
+	Player(Level& level, int x, int y);
 
 	/// <summary>
 	/// Updates the player
@@ -48,9 +50,30 @@ public:
 
 private:
 
-	void dash(float deltaTime);
+	/// <summary>
+	/// Move on x axis
+	/// </summary>
+	void walk();
+
+	/// <summary>
+	/// Dash on x axis
+	/// </summary>
+	void dash();
+
+	/// <summary>
+	/// Fall on y axis
+	/// </summary>
+	void gravity();
+
+	/// <summary>
+	/// Moves player to a valid location
+	/// </summary>
+	void tryMove();
 
 	// Attributes
+	float m_deltaTime = 0;
+	Level& m_level;
+	sf::Vector2f m_size;
 	sf::Texture m_texture;
 	sf::Vector2f m_velocity = sf::Vector2f(0.0F, 0.0F);
 
@@ -58,6 +81,10 @@ private:
 	float m_speed = 900.0F;
 	bool m_movingLeft = false;
 	bool m_movingRight = false;
+
+	// Gravity
+	float m_gravityAcceleration = 5000.0F;
+	float m_drag = 0.01F;
 
 	// Dashing
 	float m_dashSpeed = 6000.0F;

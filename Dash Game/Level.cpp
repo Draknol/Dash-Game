@@ -8,8 +8,6 @@ Level::Level(std::string fileName)
 
 	sf::Vector2f position;
 	sf::Vector2f size;
-	float rotation;
-	int rotateAbout;
 
 	file >> m_blockCount;
 	m_blocks = new Block[m_blockCount];
@@ -20,9 +18,8 @@ Level::Level(std::string fileName)
 		file >> position.y;
 		file >> size.x;
 		file >> size.y;
-		file >> rotation;
 
-		Block block(position, size, rotation);
+		Block block(position, size);
 		m_blocks[i] = block;
 	}
 }
@@ -33,4 +30,14 @@ void Level::draw(sf::RenderWindow& window)
 	{
 		window.draw(m_blocks[i]);
 	}
+}
+
+Block* Level::getBlocks()
+{
+	return m_blocks;
+}
+
+int Level::getBlockCount()
+{
+	return m_blockCount;
 }
