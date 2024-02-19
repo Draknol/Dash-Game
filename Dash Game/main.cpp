@@ -53,6 +53,9 @@ int main()
 					case sf::Keyboard::D:
 						player.movingRight(false);
 						break;
+					case sf::Keyboard::Space:
+						player.jumping(false);
+						break;
 					default:
 						break;
 					}
@@ -70,6 +73,9 @@ int main()
 					break;
 				case sf::Keyboard::LShift:
 					player.dashing(true);
+					break;
+				case sf::Keyboard::Space:
+					player.jumping(true);
 					break;
 				default:
 					break;

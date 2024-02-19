@@ -48,6 +48,12 @@ public:
 	/// <param name="dashing"></param>
 	void dashing(bool dashing);
 
+	/// <summary>
+	/// Set if the player is jumping
+	/// </summary>
+	/// <param name="jumping"></param>
+	void jumping(bool jumping);
+
 private:
 
 	/// <summary>
@@ -66,6 +72,11 @@ private:
 	void gravity();
 
 	/// <summary>
+	/// Jump on y axis
+	/// </summary>
+	void jump();
+
+	/// <summary>
 	/// Moves player to a valid location
 	/// </summary>
 	void tryMove();
@@ -77,19 +88,25 @@ private:
 	sf::Texture m_texture;
 	sf::Vector2f m_velocity = sf::Vector2f(0.0F, 0.0F);
 
-	// Running
+	// Walking
 	float m_speed = 900.0F;
 	bool m_movingLeft = false;
 	bool m_movingRight = false;
-
-	// Gravity
-	float m_gravityAcceleration = 5000.0F;
-	float m_drag = 0.01F;
 
 	// Dashing
 	float m_dashSpeed = 6000.0F;
 	float m_dashDuration = 0.1F;
 	float m_dashCooldown = 0.0F;
 	bool m_dashing = false;
+
+	// Gravity
+	float m_gravityAcceleration = 7000.0F;
+	float m_drag = 0.0005F;
+
+	// Jumping
+	float m_jumpStrength = 1500.0F;
+	int m_jumpCount = 2;
+	bool m_jumping = false;
+	bool m_jumpHolding = false;
 
 };

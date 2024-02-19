@@ -7,9 +7,13 @@ Player::Player(Level& level, int x, int y)
 Player::Player(Level& level, sf::Vector2f position)
 	: m_level(level)
 {
+	// Load Player Texture
 	m_texture.loadFromFile("Textures/Player.png");
+
+	// Store Player Size
 	m_size = (sf::Vector2f)m_texture.getSize();
 
+	// Update Sprite
 	setTexture(m_texture);
 	setOrigin((float)m_texture.getSize().x / 2.0F, (float)m_texture.getSize().y);
 	setPosition(position);
@@ -24,6 +28,8 @@ void Player::update(float deltaTime)
 	gravity();
 
 	dash();
+
+	jump();
 
 	tryMove();
 }
@@ -43,27 +49,42 @@ void Player::dashing(bool dashing)
 	m_dashing = dashing;
 }
 
+void Player::jumping(bool jumping)
+{
+	m_jumping = jumping;
+	m_jumpHolding = jumping;
+}
+
 void Player::dash()
 {
-	if (m_movingRight == m_movingLeft)
-	{
-		m_dashing = false;
-	}
+	// Check if Dash is on Cooldown
 	if (m_dashCooldown > 0.0F)
 	{
 		m_dashCooldown -= m_deltaTime;
 		m_dashing = false;
 	}
+	// If not, Dash
 	else if (m_dashing && m_dashDuration > 0.0F)
 	{
 		m_velocity.x = m_dashSpeed * (m_movingRight - m_movingLeft);
-		//move(m_velocity * std::min(m_deltaTime, 0.1F));
 		m_dashDuration -= m_deltaTime;
+
+		// Reset Timers after Dash
 		if (m_dashDuration <= 0.0F)
 		{
 			m_dashDuration = 0.1F;
 			m_dashCooldown = 1.0F;
 		}
+	}
+}
+
+void Player::jump()
+{
+	if (m_jumping && m_jumpCount > 0 || m_jumpHolding && m_jumpCount == 2)
+	{
+		m_velocity.y = -m_jumpStrength;
+		m_jumpCount--;
+		m_jumping = false;
 	}
 }
 
@@ -79,9 +100,10 @@ void Player::walk()
 
 void Player::tryMove()
 {
-	// Collision Checks to do
+	// Loop Counters
 	int loopCount = std::max(abs((int)m_velocity.x), abs((int)m_velocity.y)) + 1;
 	float loopDelta = m_deltaTime / (float)loopCount;
+	int blockCount = m_level.getBlockCount();
 
 	for (int i = 0; i < loopCount; i++)
 	{
@@ -96,36 +118,45 @@ void Player::tryMove()
 		float pRight = playerBounds.left + m_size.x;
 
 		// Check Blocks
-		for (int i = 0; i < m_level.getBlockCount(); i++)
+		for (int i = 0; i < blockCount; i++)
 		{
+			// Temporary culling, needs improving
+			if (abs(m_level.getBlocks()[i].getPosition().x - getPosition().x) > 1000)
+			{
+				continue;
+			}
+
 			// Get Block Bounds
 			sf::FloatRect blockBounds = m_level.getBlocks()[i].getGlobalBounds();
 			sf::Vector2f blockSize = m_level.getBlocks()[i].getSize();
-			float bTop = blockBounds.top;
-			float bBottom = blockBounds.top + blockSize.y;
-			float bLeft = blockBounds.left;
-			float bRight = blockBounds.left + blockSize.x;
 
 			// Check Collision
 			if (blockBounds.intersects(playerBounds))
 			{
+				// Get Block Edges
+				float bTop = blockBounds.top;
+				float bBottom = blockBounds.top + blockSize.y;
+				float bLeft = blockBounds.left;
+				float bRight = blockBounds.left + blockSize.x;
+
 				// Down
-				if (m_velocity.y > 0 && pBottom - 5 < bTop)
+				if (m_velocity.y > 0.0F && pBottom - 1.0F < bTop)
 				{
 					updatedPosition.y = bTop;
+					m_jumpCount = 2;
 				}
 				// Up
-				else if (m_velocity.y < 0 && pTop + 5 > bBottom)
+				else if (m_velocity.y < 0.0F && pTop + 1.0F > bBottom)
 				{
 					updatedPosition.y = bBottom + m_size.y;
 				}
 				// Right
-				if (m_velocity.x > 0 && pRight - 5 < bLeft)
+				if (m_velocity.x > 0.0F && pRight - 1.0F < bLeft)
 				{
 					updatedPosition.x = bLeft - m_size.x / 2.0F;
 				}
 				// Left
-				else if (m_velocity.x < 0 && pLeft + 5 > bRight)
+				else if (m_velocity.x < 0.0F && pLeft + 1.0F > bRight)
 				{
 					updatedPosition.x = bRight + m_size.x / 2.0F;
 				}
