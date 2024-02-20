@@ -77,6 +77,9 @@ int main()
 				case sf::Keyboard::Space:
 					player.jumping(true);
 					break;
+				case sf::Keyboard::F5:
+					level.load("level1");
+					break;
 				default:
 					break;
 				}

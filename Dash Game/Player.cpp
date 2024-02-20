@@ -101,12 +101,13 @@ void Player::walk()
 void Player::tryMove()
 {
 	// Loop Counters
-	int loopCount = std::max(abs((int)m_velocity.x), abs((int)m_velocity.y)) + 1;
+	int loopCount = (int)(std::max(abs(m_velocity.x), abs(m_velocity.y)) * m_deltaTime) + 1;
 	float loopDelta = m_deltaTime / (float)loopCount;
 	int blockCount = m_level.getBlockCount();
 
 	for (int i = 0; i < loopCount; i++)
 	{
+
 		// Get Position to test
 		sf::Vector2f updatedPosition = getPosition() + m_velocity * loopDelta;
 
@@ -117,23 +118,21 @@ void Player::tryMove()
 		float pLeft = playerBounds.left;
 		float pRight = playerBounds.left + m_size.x;
 
+		Block* blocks = m_level.getBlocks();
+
 		// Check Blocks
 		for (int i = 0; i < blockCount; i++)
 		{
-			// Temporary culling, needs improving
-			if (abs(m_level.getBlocks()[i].getPosition().x - getPosition().x) > 1000)
-			{
-				continue;
-			}
-
 			// Get Block Bounds
-			sf::FloatRect blockBounds = m_level.getBlocks()[i].getGlobalBounds();
-			sf::Vector2f blockSize = m_level.getBlocks()[i].getSize();
+			Block& block = blocks[i];
+			sf::FloatRect blockBounds = block.getGlobalBounds();
 
 			// Check Collision
 			if (blockBounds.intersects(playerBounds))
 			{
+
 				// Get Block Edges
+				sf::Vector2f blockSize = block.getSize();
 				float bTop = blockBounds.top;
 				float bBottom = blockBounds.top + blockSize.y;
 				float bLeft = blockBounds.left;
@@ -144,11 +143,13 @@ void Player::tryMove()
 				{
 					updatedPosition.y = bTop;
 					m_jumpCount = 2;
+					m_velocity.y = 0;
 				}
 				// Up
 				else if (m_velocity.y < 0.0F && pTop + 1.0F > bBottom)
 				{
 					updatedPosition.y = bBottom + m_size.y;
+					m_velocity.y = 0;
 				}
 				// Right
 				if (m_velocity.x > 0.0F && pRight - 1.0F < bLeft)

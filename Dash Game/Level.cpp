@@ -3,6 +3,11 @@
 
 Level::Level(std::string fileName)
 {
+	load(fileName);
+}
+
+void Level::load(std::string fileName)
+{
 	std::fstream file;
 	file.open("Levels/" + fileName + ".wld");
 
