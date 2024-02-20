@@ -101,7 +101,7 @@ void Player::walk()
 void Player::tryMove()
 {
 	// Loop Counters
-	int loopCount = (int)(std::max(abs(m_velocity.x), abs(m_velocity.y)) * m_deltaTime) + 1;
+	int loopCount = (int)(std::max(abs(m_velocity.x), abs(m_velocity.y)) * m_deltaTime * 2.0F) + 1;
 	float loopDelta = m_deltaTime / (float)loopCount;
 	int blockCount = m_level.getBlockCount();
 
@@ -138,26 +138,31 @@ void Player::tryMove()
 				float bLeft = blockBounds.left;
 				float bRight = blockBounds.left + blockSize.x;
 
+				bool bottomCollided = pBottom - 1.0F < bTop;
+				bool TopCollided = pTop + 1.0F > bBottom;
+				bool rightCollided = pRight - 1.0F < bLeft;
+				bool leftCollided = pLeft + 1.0F > bRight;
+
 				// Down
-				if (m_velocity.y > 0.0F && pBottom - 1.0F < bTop)
+				if (m_velocity.y > 0.0F && bottomCollided && !rightCollided && !leftCollided)
 				{
 					updatedPosition.y = bTop;
 					m_jumpCount = 2;
 					m_velocity.y = 0;
 				}
 				// Up
-				else if (m_velocity.y < 0.0F && pTop + 1.0F > bBottom)
+				else if (m_velocity.y < 0.0F && TopCollided && !rightCollided && !leftCollided)
 				{
 					updatedPosition.y = bBottom + m_size.y;
 					m_velocity.y = 0;
 				}
 				// Right
-				if (m_velocity.x > 0.0F && pRight - 1.0F < bLeft)
+				if (m_velocity.x > 0.0F && rightCollided && !bottomCollided && !TopCollided)
 				{
 					updatedPosition.x = bLeft - m_size.x / 2.0F;
 				}
 				// Left
-				else if (m_velocity.x < 0.0F && pLeft + 1.0F > bRight)
+				else if (m_velocity.x < 0.0F && leftCollided && !bottomCollided && !TopCollided)
 				{
 					updatedPosition.x = bRight + m_size.x / 2.0F;
 				}
