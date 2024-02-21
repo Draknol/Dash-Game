@@ -143,7 +143,7 @@ void Player::tryMove()
 		{
 			// Get Block Bounds
 			Block& block = blocks[i];
-			sf::FloatRect blockBounds = block.getGlobalBounds();
+			sf::FloatRect blockBounds = block.getBounds();
 
 			// Check Collision
 			if (blockBounds.intersects(playerBounds))
