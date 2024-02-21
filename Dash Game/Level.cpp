@@ -9,7 +9,10 @@ Level::Level(std::string fileName)
 void Level::load(std::string fileName)
 {
 	std::fstream file;
-	file.open("Levels/" + fileName + ".wld");
+	file.open("Levels/" + fileName + ".map");
+
+	file >> m_spawn.x >> m_spawn.y
+		 >> m_killHeight;
 
 	sf::Vector2f position;
 	sf::Vector2f size;
@@ -19,10 +22,8 @@ void Level::load(std::string fileName)
 
 	for (int i = 0; i < m_blockCount; i++)
 	{
-		file >> position.x;
-		file >> position.y;
-		file >> size.x;
-		file >> size.y;
+		file >> position.x >> position.y
+		     >> size.x >> size.y;
 
 		Block block(position, size);
 		m_blocks[i] = block;
@@ -45,4 +46,14 @@ Block* Level::getBlocks()
 int Level::getBlockCount()
 {
 	return m_blockCount;
+}
+
+sf::Vector2f Level::getSpawn()
+{
+	return m_spawn;
+}
+
+float Level::getKillHeight()
+{
+	return m_killHeight;
 }

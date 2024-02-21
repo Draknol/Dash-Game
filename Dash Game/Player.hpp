@@ -14,42 +14,35 @@ public:
 	/// <summary>
 	/// Constructor for Player
 	/// </summary>
-	/// <param name="position">Players spawn position</param>
-	Player(Level& level, sf::Vector2f position);
+	/// <param name="level"></param>
+	Player(Level& level);
 
 	/// <summary>
-	/// Constructor for Player
-	/// </summary>
-	/// <param name="x">x spawn position</param>
-	/// <param name="y">y spawn position</param>
-	Player(Level& level, int x, int y);
-
-	/// <summary>
-	/// Updates the player
+	/// Updates the Player
 	/// </summary>
 	/// <param name="deltaTime">deltaTime</param>
 	void update(float deltaTime);
 
 	/// <summary>
-	/// Set if the player is moving left
+	/// Set if the Player is Moving Left
 	/// </summary>
 	/// <param name="moving">is the player moving left</param>
 	void movingLeft(bool moving);
 
 	/// <summary>
-	/// Set if the player is moving right
+	/// Set if the Player is Moving Right
 	/// </summary>
 	/// <param name="moving">is the player moving right</param>
 	void movingRight(bool moving);
 
 	/// <summary>
-	/// Set if the player is dashing
+	/// Set if the Player is Dashing
 	/// </summary>
 	/// <param name="dashing"></param>
 	void dashing(bool dashing);
 
 	/// <summary>
-	/// Set if the player is jumping
+	/// Set if the Player is Jumping
 	/// </summary>
 	/// <param name="jumping"></param>
 	void jumping(bool jumping);
@@ -77,9 +70,14 @@ private:
 	void jump();
 
 	/// <summary>
-	/// Moves player to a valid location
+	/// Moves Player to a Valid Location
 	/// </summary>
 	void tryMove();
+
+	/// <summary>
+	/// Moves Player Back to Spawn if Fallen
+	/// </summary>
+	void respawn();
 
 	// Attributes
 	float m_deltaTime = 0.0F;

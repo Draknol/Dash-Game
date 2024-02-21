@@ -1,10 +1,7 @@
 
 #include "Player.hpp"
 
-Player::Player(Level& level, int x, int y)
-	: Player(level, sf::Vector2f((float)x, (float)y)) {}
-
-Player::Player(Level& level, sf::Vector2f position)
+Player::Player(Level& level)
 	: m_level(level)
 {
 	// Load Texture
@@ -16,7 +13,7 @@ Player::Player(Level& level, sf::Vector2f position)
 	// Update Sprite
 	setTexture(m_texture);
 	setOrigin((float)m_texture.getSize().x / 2.0F, (float)m_texture.getSize().y);
-	setPosition(position);
+	setPosition(level.getSpawn());
 }
 
 void Player::update(float deltaTime)
@@ -34,6 +31,8 @@ void Player::update(float deltaTime)
 	halfGravity();
 
 	tryMove();
+
+	respawn();
 }
 
 void Player::movingLeft(bool moving)
@@ -191,4 +190,9 @@ void Player::tryMove()
 
 		setPosition(updatedPosition);
 	}
+}
+
+void Player::respawn()
+{
+	if (getPosition().y > m_level.getKillHeight()) setPosition(m_level.getSpawn());
 }

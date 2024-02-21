@@ -21,10 +21,10 @@ int main()
 	Level level("level1");
 
 	// Create Player
-	Player player(level, 250, -400);
+	Player player(level);
 
 	// Create Camera
-	Camera camera(player.getPosition(), sf::Vector2f(1920.0F, 1080.0F), 10.0F);
+	Camera camera(player.getPosition(), sf::Vector2f(1920.0F, 1080.0F));
 
 	// Create Clock
 	sf::Clock clock;

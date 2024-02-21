@@ -15,7 +15,11 @@ public:
 	void draw(sf::RenderWindow& window);
 	Block* getBlocks();
 	int getBlockCount();
+	sf::Vector2f getSpawn();
+	float getKillHeight();
 private:
 	Block* m_blocks = nullptr;
+	sf::Vector2f m_spawn;
+	float m_killHeight;
 	int m_blockCount = 0;
 };
