@@ -31,5 +31,5 @@ public:
 
 private:
 
-	float m_speed;
+	const float m_speed;
 };

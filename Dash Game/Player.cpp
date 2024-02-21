@@ -60,23 +60,23 @@ void Player::jumping(bool jumping)
 void Player::dash()
 {
 	// Check if Dash is on Cooldown
-	if (m_dashCooldown > 0.0F)
+	if (m_dashCooldownTimer > 0.0F)
 	{
-		m_dashCooldown -= m_deltaTime;
+		m_dashCooldownTimer -= m_deltaTime;
 		m_dashing = false;
 	}
 	// If not, Dash
-	else if (m_dashing && m_dashDuration > 0.0F)
+	else if (m_dashing && m_dashDurationTimer > 0.0F)
 	{
 		// Dash in Correct Direction
 		m_velocity.x = m_dashSpeed * (m_movingRight - m_movingLeft);
-		m_dashDuration -= m_deltaTime;
+		m_dashDurationTimer -= m_deltaTime;
 
 		// Reset Timers
-		if (m_dashDuration <= 0.0F)
+		if (m_dashDurationTimer <= 0.0F)
 		{
-			m_dashDuration = 0.1F;
-			m_dashCooldown = 1.0F;
+			m_dashDurationTimer = m_dashDuration;
+			m_dashCooldownTimer = m_dashCooldown;
 		}
 	}
 }
@@ -84,33 +84,30 @@ void Player::dash()
 void Player::jump()
 {
 	// Check if Can Jump
-	if (m_jumping && m_jumpCount > 0 || m_jumpHolding && m_jumpCount == 2)
+	if (m_jumping && m_jumpCounter > 0 || m_jumpHolding && m_jumpCounter == m_maxJumps)
 	{
 		// Jump
 		m_velocity.y = -m_jumpStrength;
 
 		// Update Counter
-		m_jumpCount--;
+		m_jumpCounter--;
 		m_jumping = false;
 	}
 }
 
 void Player::halfGravity()
 {
-	// How Often to Update Gravity
-	const float timeStep = 0.001f;
-
 	// Update Timer with Half deltaTime
 	m_gravityTimer += m_deltaTime / 2.0F;
 
 	// Loop for Accuracy
-	while (m_gravityTimer >= timeStep)
+	while (m_gravityTimer >= m_gravityTimeStep)
 	{
 		// Apply Gravity with Drag
-		m_velocity.y += (m_gravityAcceleration - m_drag * m_velocity.y * m_velocity.y) * timeStep;
+		m_velocity.y += (m_gravityAcceleration - m_drag * m_velocity.y * m_velocity.y) * m_gravityTimeStep;
 
 		// Update Timer with timeStep
-		m_gravityTimer -= timeStep;
+		m_gravityTimer -= m_gravityTimeStep;
 	}
 }
 
@@ -122,7 +119,7 @@ void Player::walk()
 
 void Player::tryMove()
 {
-	// Loop Counters
+	// Loop Counters (x2 is precautionary)
 	int loopCount = (int)(std::max(abs(m_velocity.x), abs(m_velocity.y)) * m_deltaTime) * 2 + 1;
 	float timeStep = m_deltaTime / (float)loopCount;
 	int blockCount = m_level.getBlockCount();
@@ -130,7 +127,6 @@ void Player::tryMove()
 	// Loop for Accuracy
 	for (int i = 0; i < loopCount; i++)
 	{
-
 		// Get Position to test
 		sf::Vector2f updatedPosition = getPosition() + m_velocity * timeStep;
 
@@ -162,23 +158,23 @@ void Player::tryMove()
 				float blockRight = blockBounds.left + blockSize.x;
 
 				// Pre-Computed Checks
-				bool bottomCollided = playerBottom - 1.0F < blockTop;
-				bool TopCollided = playerTop + 1.0F > blockBottom;
-				bool rightCollided = playerRight - 1.0F < blockLeft;
-				bool leftCollided = playerLeft + 1.0F > blockRight;
+				bool bottomCollided = playerBottom - m_collisionBuffer < blockTop;
+				bool TopCollided = playerTop + m_collisionBuffer > blockBottom;
+				bool rightCollided = playerRight - m_collisionBuffer < blockLeft;
+				bool leftCollided = playerLeft + m_collisionBuffer > blockRight;
 
 				// Check Bottom
 				if (m_velocity.y > 0.0F && bottomCollided && !rightCollided && !leftCollided)
 				{
 					updatedPosition.y = blockTop;
-					m_jumpCount = 2;
-					m_velocity.y = 0;
+					m_jumpCounter = m_maxJumps;
+					m_velocity.y = 0.0F;
 				}
 				// Check Top
 				else if (m_velocity.y < 0.0F && TopCollided && !rightCollided && !leftCollided)
 				{
 					updatedPosition.y = blockBottom + m_size.y;
-					m_velocity.y = 0;
+					m_velocity.y = 0.0F;
 				}
 				// Check Right
 				if (m_velocity.x > 0.0F && rightCollided && !bottomCollided && !TopCollided)

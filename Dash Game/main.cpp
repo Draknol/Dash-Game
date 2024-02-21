@@ -10,6 +10,9 @@ int main()
 
 	// Create Window
 	sf::RenderWindow window(sf::VideoMode(1920U, 1080U), "Dash Game");
+	sf::Vector2u windowSize;
+	sf::Vector2i windowPosition;
+	bool isFullscreen = false;
 
 	// Disable KeyRepeat
 	window.setKeyRepeatEnabled(false);
@@ -79,6 +82,21 @@ int main()
 					break;
 				case sf::Keyboard::F5:
 					level.load("level1");
+					break;
+				case sf::Keyboard::F11:
+					if (isFullscreen)
+					{
+						window.create(sf::VideoMode(windowSize.x, windowSize.y), "Dash Game");
+						window.setPosition(windowPosition);
+					}
+					else
+					{
+						windowSize = window.getSize();
+						windowPosition = window.getPosition();
+						window.create(sf::VideoMode::getFullscreenModes()[0], "Dash Game", sf::Style::Fullscreen);
+					}
+					isFullscreen = !isFullscreen;
+					camera.resize(window.getSize());
 					break;
 				default:
 					break;
