@@ -69,7 +69,7 @@ private:
 	/// <summary>
 	/// Fall on y axis
 	/// </summary>
-	void gravity();
+	void halfGravity();
 
 	/// <summary>
 	/// Jump on y axis
@@ -82,7 +82,7 @@ private:
 	void tryMove();
 
 	// Attributes
-	float m_deltaTime = 0;
+	float m_deltaTime = 0.0F;
 	Level& m_level;
 	sf::Vector2f m_size;
 	sf::Texture m_texture;
@@ -90,8 +90,8 @@ private:
 
 	// Walking
 	float m_speed = 900.0F;
-	bool m_movingLeft = false;
 	bool m_movingRight = false;
+	bool m_movingLeft = false;
 
 	// Dashing
 	float m_dashSpeed = 6000.0F;
@@ -101,12 +101,13 @@ private:
 
 	// Gravity
 	float m_gravityAcceleration = 7000.0F;
+	float m_gravityTimer = 0.0f;
 	float m_drag = 0.0005F;
 
 	// Jumping
 	float m_jumpStrength = 1500.0F;
 	int m_jumpCount = 2;
-	bool m_jumping = false;
 	bool m_jumpHolding = false;
+	bool m_jumping = false;
 
 };

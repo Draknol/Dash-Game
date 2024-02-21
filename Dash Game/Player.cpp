@@ -7,10 +7,10 @@ Player::Player(Level& level, int x, int y)
 Player::Player(Level& level, sf::Vector2f position)
 	: m_level(level)
 {
-	// Load Player Texture
+	// Load Texture
 	m_texture.loadFromFile("Textures/Player.png");
 
-	// Store Player Size
+	// Store Size
 	m_size = (sf::Vector2f)m_texture.getSize();
 
 	// Update Sprite
@@ -25,11 +25,13 @@ void Player::update(float deltaTime)
 
 	walk();
 
-	gravity();
+	halfGravity();
+
+	jump();
 
 	dash();
 
-	jump();
+	halfGravity();
 
 	tryMove();
 }
@@ -66,10 +68,11 @@ void Player::dash()
 	// If not, Dash
 	else if (m_dashing && m_dashDuration > 0.0F)
 	{
+		// Dash in Correct Direction
 		m_velocity.x = m_dashSpeed * (m_movingRight - m_movingLeft);
 		m_dashDuration -= m_deltaTime;
 
-		// Reset Timers after Dash
+		// Reset Timers
 		if (m_dashDuration <= 0.0F)
 		{
 			m_dashDuration = 0.1F;
@@ -80,43 +83,63 @@ void Player::dash()
 
 void Player::jump()
 {
+	// Check if Can Jump
 	if (m_jumping && m_jumpCount > 0 || m_jumpHolding && m_jumpCount == 2)
 	{
+		// Jump
 		m_velocity.y = -m_jumpStrength;
+
+		// Update Counter
 		m_jumpCount--;
 		m_jumping = false;
 	}
 }
 
-void Player::gravity()
+void Player::halfGravity()
 {
-	m_velocity.y += (m_gravityAcceleration - m_drag * m_velocity.y * m_velocity.y) * m_deltaTime;
+	// How Often to Update Gravity
+	const float timeStep = 0.001f;
+
+	// Update Timer with Half deltaTime
+	m_gravityTimer += m_deltaTime / 2.0F;
+
+	// Loop for Accuracy
+	while (m_gravityTimer >= timeStep)
+	{
+		// Apply Gravity with Drag
+		m_velocity.y += (m_gravityAcceleration - m_drag * m_velocity.y * m_velocity.y) * timeStep;
+
+		// Update Timer with timeStep
+		m_gravityTimer -= timeStep;
+	}
 }
 
 void Player::walk()
 {
+	// Sets m_velocity in Correct Direction
 	m_velocity.x = m_speed * (m_movingRight - m_movingLeft);
 }
 
 void Player::tryMove()
 {
 	// Loop Counters
-	int loopCount = (int)(std::max(abs(m_velocity.x), abs(m_velocity.y)) * m_deltaTime * 2.0F) + 1;
-	float loopDelta = m_deltaTime / (float)loopCount;
+	int loopCount = (int)(std::max(abs(m_velocity.x), abs(m_velocity.y)) * m_deltaTime) * 2 + 1;
+	float timeStep = m_deltaTime / (float)loopCount;
 	int blockCount = m_level.getBlockCount();
 
+	// Loop for Accuracy
 	for (int i = 0; i < loopCount; i++)
 	{
 
 		// Get Position to test
-		sf::Vector2f updatedPosition = getPosition() + m_velocity * loopDelta;
+		sf::Vector2f updatedPosition = getPosition() + m_velocity * timeStep;
 
 		// Get Player Bounds
 		sf::FloatRect playerBounds = getGlobalBounds();
-		float pTop = playerBounds.top;
-		float pBottom = playerBounds.top + m_size.y;
-		float pLeft = playerBounds.left;
-		float pRight = playerBounds.left + m_size.x;
+		float playerTop = playerBounds.top;
+		float playerBottom = playerBounds.top + m_size.y;
+		float playerLeft = playerBounds.left;
+		float playerRight = playerBounds.left + m_size.x;
 
 		Block* blocks = m_level.getBlocks();
 
@@ -133,38 +156,39 @@ void Player::tryMove()
 
 				// Get Block Edges
 				sf::Vector2f blockSize = block.getSize();
-				float bTop = blockBounds.top;
-				float bBottom = blockBounds.top + blockSize.y;
-				float bLeft = blockBounds.left;
-				float bRight = blockBounds.left + blockSize.x;
+				float blockTop = blockBounds.top;
+				float blockBottom = blockBounds.top + blockSize.y;
+				float blockLeft = blockBounds.left;
+				float blockRight = blockBounds.left + blockSize.x;
 
-				bool bottomCollided = pBottom - 1.0F < bTop;
-				bool TopCollided = pTop + 1.0F > bBottom;
-				bool rightCollided = pRight - 1.0F < bLeft;
-				bool leftCollided = pLeft + 1.0F > bRight;
+				// Pre-Computed Checks
+				bool bottomCollided = playerBottom - 1.0F < blockTop;
+				bool TopCollided = playerTop + 1.0F > blockBottom;
+				bool rightCollided = playerRight - 1.0F < blockLeft;
+				bool leftCollided = playerLeft + 1.0F > blockRight;
 
-				// Down
+				// Check Bottom
 				if (m_velocity.y > 0.0F && bottomCollided && !rightCollided && !leftCollided)
 				{
-					updatedPosition.y = bTop;
+					updatedPosition.y = blockTop;
 					m_jumpCount = 2;
 					m_velocity.y = 0;
 				}
-				// Up
+				// Check Top
 				else if (m_velocity.y < 0.0F && TopCollided && !rightCollided && !leftCollided)
 				{
-					updatedPosition.y = bBottom + m_size.y;
+					updatedPosition.y = blockBottom + m_size.y;
 					m_velocity.y = 0;
 				}
-				// Right
+				// Check Right
 				if (m_velocity.x > 0.0F && rightCollided && !bottomCollided && !TopCollided)
 				{
-					updatedPosition.x = bLeft - m_size.x / 2.0F;
+					updatedPosition.x = blockLeft - m_size.x / 2.0F;
 				}
-				// Left
+				// Check Left
 				else if (m_velocity.x < 0.0F && leftCollided && !bottomCollided && !TopCollided)
 				{
-					updatedPosition.x = bRight + m_size.x / 2.0F;
+					updatedPosition.x = blockRight + m_size.x / 2.0F;
 				}
 			}
 		}
