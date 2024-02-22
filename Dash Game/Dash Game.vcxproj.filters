@@ -75,7 +75,7 @@
     <None Include="Levels\Level1.map">
       <Filter>Resource Files\Levels</Filter>
     </None>
-    <None Include="Levels\StressTest.map">
+    <None Include="Levels\Level2.map">
       <Filter>Resource Files\Levels</Filter>
     </None>
   </ItemGroup>

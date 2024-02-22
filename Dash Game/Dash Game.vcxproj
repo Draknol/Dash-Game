@@ -145,7 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Levels\Level1.map" />
-    <None Include="Levels\StressTest.map" />
+    <None Include="Levels\Level2.map" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

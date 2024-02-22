@@ -13,7 +13,7 @@ Player::Player(Level& level)
 	// Update Sprite
 	setTexture(m_texture);
 	setOrigin((float)m_texture.getSize().x / 2.0F, (float)m_texture.getSize().y);
-	setPosition(level.getSpawn());
+	respawn(true);
 }
 
 void Player::update(float deltaTime)
@@ -126,8 +126,15 @@ void Player::tryMove()
 	Block* blocks = m_level.getPlatforms();
 	int blockCount = m_level.getPlatformCount();
 
+	// Get Flags
+	Block* flags = m_level.getFlags();
+	int flagCount = m_level.getFlagCount();
+
+	// Force Break on Map Change
+	bool looping = true;
+
 	// Loop for Accuracy
-	for (int i = 0; i < loopCount; i++)
+	for (int i = 0; looping && i < loopCount; i++)
 	{
 		// Get Position to Test
 		sf::Vector2f updatedPosition = getPosition() + m_velocity * timeStep;
@@ -137,7 +144,7 @@ void Player::tryMove()
 		sf::Vector2f playerBottomRight = updatedPosition + sf::Vector2f(m_size.x / 2.0F, 0.0F);
 
 		// Loop over Blocks
-		for (int i = 0; i < blockCount; i++)
+		for (int i = 0; looping && i < blockCount; i++)
 		{
 			// Get Current Block
 			Block& block = blocks[i];
@@ -187,10 +194,37 @@ void Player::tryMove()
 
 		// Update Possition
 		setPosition(updatedPosition);
+
+		// Loop over Flags
+		for (int i = 0; looping && i < flagCount; i++)
+		{
+			// Get Current Block
+			Block& block = flags[i];
+
+			// Get Block Bounds
+			sf::Vector2f blockTopLeft = sf::Vector2f(block[3].position.x, block[1].position.y);
+			sf::Vector2f blockBottomRight = sf::Vector2f(block[1].position.x, block[3].position.y);
+
+			// Check for Collision
+			if (blockTopLeft.x < playerBottomRight.x &&
+				blockBottomRight.x > playerTopLeft.x &&
+				blockTopLeft.y < playerBottomRight.y &&
+				blockBottomRight.y > playerTopLeft.y)
+			{
+				// Change Level
+				m_level.load(m_level.getFlagDestinations()[i]);
+
+				// Move to Spawn
+				respawn(true);
+
+				// Break Collision Loop
+				looping = false;
+			}
+		}
 	}
 }
 
-void Player::respawn()
+void Player::respawn(bool force)
 {
-	if (getPosition().y > m_level.getKillHeight()) setPosition(m_level.getSpawn());
+	if (force || getPosition().y > m_level.getKillHeight()) setPosition(m_level.getSpawn());
 }

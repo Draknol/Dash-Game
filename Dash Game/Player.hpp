@@ -77,7 +77,8 @@ private:
 	/// <summary>
 	/// Moves Player Back to Spawn if Fallen
 	/// </summary>
-	void respawn();
+	/// <param name="force">Forces respawn</param>
+	void respawn(bool force = false);
 
 	// Attributes
 	float m_deltaTime = 0.0F;
