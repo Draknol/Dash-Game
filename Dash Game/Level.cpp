@@ -32,9 +32,22 @@ void Level::load(std::string fileName)
 
 void Level::draw(sf::RenderWindow& window)
 {
+	// Get Window Bounds
+	sf::Vector2f wTopLeft = window.mapPixelToCoords(sf::Vector2i(0, 0));
+	sf::Vector2f wBottomRight = window.mapPixelToCoords((sf::Vector2i)window.getSize());
+
+	// Loop over Blocks
 	for (int i = 0; i < m_blockCount; i++)
 	{
-		window.draw(m_blocks[i]);
+		// Check if Block is on Screen
+		if (m_blocks[i][3].position.x < wBottomRight.x && 
+			m_blocks[i][1].position.x > wTopLeft.x && 
+			m_blocks[i][1].position.y < wBottomRight.y && 
+			m_blocks[i][3].position.y > wTopLeft.y)
+		{
+			// Draw Block if on Screen
+			window.draw(m_blocks[i]);
+		}
 	}
 }
 

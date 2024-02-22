@@ -121,73 +121,71 @@ void Player::tryMove()
 	// Loop Counters (x2 is precautionary)
 	int loopCount = (int)(std::max(abs(m_velocity.x), abs(m_velocity.y)) * m_deltaTime) * 2 + 1;
 	float timeStep = m_deltaTime / (float)loopCount;
+
+	// Get Blocks
+	Block* blocks = m_level.getBlocks();
 	int blockCount = m_level.getBlockCount();
 
 	// Loop for Accuracy
 	for (int i = 0; i < loopCount; i++)
 	{
-		// Get Position to test
+		// Get Position to Test
 		sf::Vector2f updatedPosition = getPosition() + m_velocity * timeStep;
 
 		// Get Player Bounds
-		sf::FloatRect playerBounds = getGlobalBounds();
-		float playerTop = playerBounds.top;
-		float playerBottom = playerBounds.top + m_size.y;
-		float playerLeft = playerBounds.left;
-		float playerRight = playerBounds.left + m_size.x;
+		sf::Vector2f playerTopLeft = updatedPosition - sf::Vector2f(m_size.x / 2.0F, m_size.y);
+		sf::Vector2f playerBottomRight = updatedPosition + sf::Vector2f(m_size.x / 2.0F, 0.0F);
 
-		Block* blocks = m_level.getBlocks();
-
-		// Check Blocks
+		// Loop over Blocks
 		for (int i = 0; i < blockCount; i++)
 		{
-			// Get Block Bounds
+			// Get Current Block
 			Block& block = blocks[i];
-			sf::FloatRect blockBounds = block.getBounds();
 
-			// Check Collision
-			if (blockBounds.intersects(playerBounds))
+			// Get Block Bounds
+			sf::Vector2f blockTopLeft = sf::Vector2f(block[3].position.x, block[1].position.y);
+			sf::Vector2f blockBottomRight = sf::Vector2f(block[1].position.x, block[3].position.y);
+
+			// Check for Collision
+			if (blockTopLeft.x < playerBottomRight.x &&
+				blockBottomRight.x > playerTopLeft.x &&
+				blockTopLeft.y < playerBottomRight.y &&
+				blockBottomRight.y > playerTopLeft.y)
 			{
 
-				// Get Block Edges
-				sf::Vector2f blockSize = block.getSize();
-				float blockTop = blockBounds.top;
-				float blockBottom = blockBounds.top + blockSize.y;
-				float blockLeft = blockBounds.left;
-				float blockRight = blockBounds.left + blockSize.x;
-
-				// Pre-Computed Checks
-				bool bottomCollided = playerBottom - m_collisionBuffer < blockTop;
-				bool TopCollided = playerTop + m_collisionBuffer > blockBottom;
-				bool rightCollided = playerRight - m_collisionBuffer < blockLeft;
-				bool leftCollided = playerLeft + m_collisionBuffer > blockRight;
+				// Find Collision Direction(s)
+				bool bottomCollided = playerBottomRight.y - m_collisionBuffer < blockTopLeft.y;
+				bool TopCollided = playerTopLeft.y + m_collisionBuffer > blockBottomRight.y;
+				bool rightCollided = playerBottomRight.x - m_collisionBuffer < blockTopLeft.x;
+				bool leftCollided = playerTopLeft.x + m_collisionBuffer > blockBottomRight.x;
 
 				// Check Bottom
 				if (m_velocity.y > 0.0F && bottomCollided && !rightCollided && !leftCollided)
 				{
-					updatedPosition.y = blockTop;
-					m_jumpCounter = m_maxJumps;
+					updatedPosition.y = blockTopLeft.y;
 					m_velocity.y = 0.0F;
+					m_jumpCounter = m_maxJumps;
 				}
 				// Check Top
 				else if (m_velocity.y < 0.0F && TopCollided && !rightCollided && !leftCollided)
 				{
-					updatedPosition.y = blockBottom + m_size.y;
+					updatedPosition.y = blockBottomRight.y + m_size.y;
 					m_velocity.y = 0.0F;
 				}
 				// Check Right
 				if (m_velocity.x > 0.0F && rightCollided && !bottomCollided && !TopCollided)
 				{
-					updatedPosition.x = blockLeft - m_size.x / 2.0F;
+					updatedPosition.x = blockTopLeft.x - m_size.x / 2.0F;
 				}
 				// Check Left
 				else if (m_velocity.x < 0.0F && leftCollided && !bottomCollided && !TopCollided)
 				{
-					updatedPosition.x = blockRight + m_size.x / 2.0F;
+					updatedPosition.x = blockBottomRight.x + m_size.x / 2.0F;
 				}
 			}
 		}
 
+		// Update Possition
 		setPosition(updatedPosition);
 	}
 }
