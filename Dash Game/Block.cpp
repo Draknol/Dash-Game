@@ -17,4 +17,9 @@ Block::Block(sf::Vector2f position, sf::Vector2f size, sf::Color color)
 	append(vertex);
 	vertex.position = position + sf::Vector2f(0.0F, size.y);
 	append(vertex);
+
+	(*this)[0].texCoords = sf::Vector2f(0, 0);
+	(*this)[1].texCoords = sf::Vector2f(size.x, 0);
+	(*this)[2].texCoords = size;
+	(*this)[3].texCoords = sf::Vector2f(0, size.y);
 }

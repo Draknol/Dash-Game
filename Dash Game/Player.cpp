@@ -123,8 +123,8 @@ void Player::tryMove()
 	float timeStep = m_deltaTime / (float)loopCount;
 
 	// Get Blocks
-	Block* blocks = m_level.getBlocks();
-	int blockCount = m_level.getBlockCount();
+	Block* blocks = m_level.getPlatforms();
+	int blockCount = m_level.getPlatformCount();
 
 	// Loop for Accuracy
 	for (int i = 0; i < loopCount; i++)

@@ -13,13 +13,17 @@ public:
 	Level(std::string fileName);
 	void load(std::string fileName);
 	void draw(sf::RenderWindow& window);
-	Block* getBlocks();
-	int getBlockCount();
+	Block* getPlatforms();
+	int getPlatformCount();
 	sf::Vector2f getSpawn();
 	float getKillHeight();
 private:
-	Block* m_blocks = nullptr;
+	sf::RenderStates m_markerState;
+	sf::Texture m_markerTexture;
+	Block* m_platforms = nullptr;
+	Block* m_markers = nullptr;
 	sf::Vector2f m_spawn;
 	float m_killHeight;
-	int m_blockCount = 0;
+	int m_platformCount = 0;
+	int m_markerCount = 0;
 };

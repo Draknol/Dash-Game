@@ -140,6 +140,7 @@
     <ClInclude Include="Level.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Textures\Marker.png" />
     <Image Include="Textures\Player.png" />
   </ItemGroup>
   <ItemGroup>
