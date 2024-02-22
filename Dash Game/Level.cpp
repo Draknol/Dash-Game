@@ -16,6 +16,7 @@ void Level::load(std::string fileName)
 
 	sf::Vector2f position;
 	sf::Vector2f size;
+	sf::Color color;
 
 	file >> m_blockCount;
 	m_blocks = new Block[m_blockCount];
@@ -23,9 +24,10 @@ void Level::load(std::string fileName)
 	for (int i = 0; i < m_blockCount; i++)
 	{
 		file >> position.x >> position.y
-		     >> size.x >> size.y;
+		     >> size.x >> size.y
+			 >> color.r >> color.g >> color.b;
 
-		Block block(position, size);
+		Block block(position, size, color);
 		m_blocks[i] = block;
 	}
 }

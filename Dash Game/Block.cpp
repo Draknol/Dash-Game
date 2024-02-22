@@ -3,11 +3,12 @@
 
 Block::Block() {}
 
-Block::Block(sf::Vector2f position, sf::Vector2f size)
+Block::Block(sf::Vector2f position, sf::Vector2f size, sf::Color color)
 {
 	setPrimitiveType(sf::Quads);
 
 	sf::Vertex vertex;
+	vertex.color = color;
 	vertex.position = position;
 	append(vertex);
 	vertex.position = position + sf::Vector2f(size.x, 0.0F);
