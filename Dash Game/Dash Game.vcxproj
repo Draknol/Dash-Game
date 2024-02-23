@@ -133,11 +133,13 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="Level.hpp" />
+    <ClInclude Include="Settings.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\Marker.png" />
@@ -146,6 +148,7 @@
   <ItemGroup>
     <None Include="Levels\Level1.map" />
     <None Include="Levels\Level2.map" />
+    <None Include="Saves\Settings.sav" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

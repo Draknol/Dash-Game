@@ -3,69 +3,97 @@
 
 Level::Level(std::string fileName)
 {
+	// Load Marker Texture
 	m_markerTexture.loadFromFile("Textures/Marker.png");
 	m_markerState.texture = &m_markerTexture;
+
+	// Load Flag Texture
 	m_flagTexture.loadFromFile("Textures/Flag.png");
 	m_flagState.texture = &m_flagTexture;
+
+	// Load Map
 	load(fileName);
 }
 
 void Level::load(std::string fileName)
 {
+
+	// Open File
 	std::fstream file;
 	file.open("Levels/" + fileName + ".map");
 
+	// Save Spawn & Kill Height
 	file >> m_spawn.x >> m_spawn.y
 		 >> m_killHeight;
 
+	// Create Variables
 	sf::Vector2f position;
 	sf::Vector2f size;
 	sf::Color color;
 	std::string destination;
 
+	/* Platforms */
+
+	// Initialise Array
 	file >> m_platformCount;
 	delete[] m_platforms;
 	m_platforms = new Block[m_platformCount];
 
+	// Fill Array
 	for (int i = 0; i < m_platformCount; i++)
 	{
+		// Get Info
 		file >> position.x >> position.y
 		     >> size.x >> size.y
 			 >> color.r >> color.g >> color.b;
 
+		// Store In Array
 		Block block(position, size, color);
 		m_platforms[i] = block;
 	}
 
+	/* Markers */
+
+	// Initialise Array
 	file >> m_markerCount;
 	delete[] m_markers;
 	m_markers = new Block[m_markerCount];
 
+	// Fill Array
 	for (int i = 0; i < m_markerCount; i++)
 	{
+		// Get Info
 		file >> position.x >> position.y
 			>> color.r >> color.g >> color.b;
 
+		// Store In Array
 		Block block(position, sf::Vector2f(50, 50), color);
 		m_markers[i] = block;
 	}
 
+	/* Flags */
+
+	// Initialise Array
 	file >> m_flagCount;
 	delete[] m_flags;
 	delete[] m_flagDestinations;
 	m_flags = new Block[m_flagCount];
 	m_flagDestinations = new std::string[m_flagCount];
 
+	// Fill Array
 	for (int i = 0; i < m_flagCount; i++)
 	{
+		// Get Info
 		file >> position.x >> position.y
 			 >> destination;
 
+		// Store In Array
 		Block block(position, sf::Vector2f(50, 100), sf::Color::White);
 		m_flags[i] = block;
 		m_flagDestinations[i] = destination;
 	}
 
+	// Close File
 	file.close();
 }
 

@@ -82,7 +82,6 @@ private:
 
 	// Attributes
 	float m_deltaTime = 0.0F;
-	Level& m_level;
 	sf::Vector2f m_size;
 	sf::Texture m_texture;
 	sf::Vector2f m_velocity = sf::Vector2f(0.0F, 0.0F);
@@ -115,5 +114,6 @@ private:
 
 	// Collision
 	const float m_collisionBuffer = 1.0F;
+	Level& m_level;
 
 };

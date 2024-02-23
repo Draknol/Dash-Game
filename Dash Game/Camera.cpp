@@ -1,8 +1,11 @@
 
 #include "Camera.hpp"
 
-Camera::Camera(sf::Vector2f position, sf::Vector2f size, float speed)
-	: sf::View(position, size), m_speed(speed) {}
+Camera::Camera(sf::Vector2f position, sf::Vector2u size, float speed)
+	: sf::View(position, sf::Vector2f(1920.0F, 1080.0F)), m_speed(speed)
+{
+	resize(size);
+}
 
 void Camera::moveTowards(sf::Vector2f position, float deltaTime)
 {

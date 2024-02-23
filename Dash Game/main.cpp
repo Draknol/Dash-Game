@@ -1,6 +1,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Settings.hpp"
 #include "Player.hpp"
 #include "Camera.hpp"
 #include "Level.hpp"
@@ -8,23 +9,24 @@
 int main()
 {
 
-	// Create Window
-	sf::RenderWindow window(sf::VideoMode(1920U, 1080U), "Dash Game");
-	sf::Vector2u windowSize;
-	sf::Vector2i windowPosition;
-	bool isFullscreen = false;
+	// Load Settings
+	Settings settings("Settings");
 
+	// Create Window
+	sf::VideoMode videomode(settings.getFullscreen() ? sf::VideoMode::getFullscreenModes()[0] : sf::VideoMode(settings.getWindowSize().x, settings.getWindowSize().y));
+	sf::RenderWindow window(videomode, "Dash Game", settings.getFullscreen() ? sf::Style::Fullscreen : sf::Style::Default);
+	
 	// Disable KeyRepeat
 	window.setKeyRepeatEnabled(false);
 
 	// Create Level
-	Level level("level1");
+	Level level("Level1");
 
 	// Create Player
 	Player player(level);
 
 	// Create Camera
-	Camera camera(player.getPosition(), sf::Vector2f(1920.0F, 1080.0F));
+	Camera camera(player.getPosition(), window.getSize());
 
 	// Create Clock
 	sf::Clock clock;
@@ -84,18 +86,18 @@ int main()
 					level.load("level1");
 					break;
 				case sf::Keyboard::F11:
-					if (isFullscreen)
+					if (settings.getFullscreen())
 					{
-						window.create(sf::VideoMode(windowSize.x, windowSize.y), "Dash Game");
-						window.setPosition(windowPosition);
+						window.create(sf::VideoMode(settings.getWindowSize().x, settings.getWindowSize().y), "Dash Game");
+						window.setPosition(settings.getWindowPosition());
 					}
 					else
 					{
-						windowSize = window.getSize();
-						windowPosition = window.getPosition();
+						settings.setWindowSize(window.getSize());
+						settings.setWindowPosition(window.getPosition());
 						window.create(sf::VideoMode::getFullscreenModes()[0], "Dash Game", sf::Style::Fullscreen);
 					}
-					isFullscreen = !isFullscreen;
+					settings.setFullscreen(!settings.getFullscreen());
 					camera.resize(window.getSize());
 					break;
 				default:

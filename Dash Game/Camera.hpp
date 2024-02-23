@@ -14,7 +14,7 @@ public:
 	/// <param name="position">Position of camera</param>
 	/// <param name="size">Size of view</param>
 	/// <param name="speed">Speed of camera</param>
-	Camera(sf::Vector2f position, sf::Vector2f size, float speed = 10);
+	Camera(sf::Vector2f position, sf::Vector2u size, float speed = 10);
 
 	/// <summary>
 	/// Moves the Camera towards a position
