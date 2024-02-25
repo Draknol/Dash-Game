@@ -47,6 +47,17 @@ public:
 	/// <param name="jumping"></param>
 	void jumping(bool jumping);
 
+	/// <summary>
+	/// Moves Player Back to Spawn if Fallen
+	/// </summary>
+	/// <param name="force">Forces respawn</param>
+	void respawn(bool force = false);
+
+	/// <summary>
+	/// Resets Player Position and Velocity
+	/// </summary>
+	void reset();
+
 private:
 
 	/// <summary>
@@ -73,12 +84,6 @@ private:
 	/// Moves Player to a Valid Location
 	/// </summary>
 	void tryMove();
-
-	/// <summary>
-	/// Moves Player Back to Spawn if Fallen
-	/// </summary>
-	/// <param name="force">Forces respawn</param>
-	void respawn(bool force = false);
 
 	// Attributes
 	float m_deltaTime = 0.0F;

@@ -20,7 +20,8 @@ int main()
 	window.setKeyRepeatEnabled(false);
 
 	// Create Level
-	Level level("Level1");
+	Level level("Menu");
+	std::string lastLevel = "Level1"; 
 
 	// Create Player
 	Player player(level);
@@ -42,7 +43,8 @@ int main()
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
-			switch (event.type) {
+			switch (event.type)
+			{
 			case sf::Event::Closed:
 				window.close();
 				break;
@@ -50,23 +52,23 @@ int main()
 				camera.resize(window.getSize());
 				break;
 			case sf::Event::KeyReleased:
-					switch (event.key.code)
-					{
-					case sf::Keyboard::A:
-						player.movingLeft(false);
-						break;
-					case sf::Keyboard::D:
-						player.movingRight(false);
-						break;
-					case sf::Keyboard::Space:
-						player.jumping(false);
-						break;
-					default:
-						break;
-					}
+				switch (event.key.code)
+				{
+				case sf::Keyboard::A:
+					player.movingLeft(false);
+					break;
+				case sf::Keyboard::D:
+					player.movingRight(false);
+					break;
+				case sf::Keyboard::Space:
+					player.jumping(false);
 					break;
 				default:
 					break;
+				}
+				break;
+			default:
+				break;
 			case sf::Event::KeyPressed:
 				switch (event.key.code)
 				{
@@ -82,10 +84,30 @@ int main()
 				case sf::Keyboard::Space:
 					player.jumping(true);
 					break;
+				case sf::Keyboard::E:
+					// Start Game
+					if (level.getName() == "Menu")
+					{
+						level.load(lastLevel);
+						player.reset();
+						camera.setCenter(level.getSpawn());
+					}
+					break;
+				case sf::Keyboard::Escape:
+					// Exit to Menu
+					if (level.getName() != "Menu")
+					{
+						lastLevel = level.getName();
+						level.load("Menu");
+						player.reset();
+						camera.setCenter(level.getSpawn());
+					}
+					break;
 				case sf::Keyboard::F5:
-					level.load("level1");
+					level.load(level.getName());
 					break;
 				case sf::Keyboard::F11:
+					// Toggle Fullscreen
 					if (settings.getFullscreen())
 					{
 						window.create(sf::VideoMode(settings.getWindowSize().x, settings.getWindowSize().y), "Dash Game");

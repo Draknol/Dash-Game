@@ -17,10 +17,12 @@ Level::Level(std::string fileName)
 
 void Level::load(std::string fileName)
 {
+	// Save Level Name
+	m_name = fileName;
 
 	// Open File
 	std::fstream file;
-	file.open("Levels/" + fileName + ".map");
+	file.open("Levels/" + m_name + ".map");
 
 	// Save Spawn & Kill Height
 	file >> m_spawn.x >> m_spawn.y
@@ -179,4 +181,9 @@ sf::Vector2f Level::getSpawn()
 float Level::getKillHeight()
 {
 	return m_killHeight;
+}
+
+const std::string& Level::getName()
+{
+	return m_name;
 }

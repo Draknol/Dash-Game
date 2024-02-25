@@ -229,3 +229,9 @@ void Player::respawn(bool force)
 	// Move to Spawn if Player has Fallen or if Forced
 	if (force || getPosition().y > m_level.getKillHeight()) setPosition(m_level.getSpawn());
 }
+
+void Player::reset()
+{
+	respawn(true);
+	m_velocity = sf::Vector2f(0, 0);
+}

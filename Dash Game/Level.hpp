@@ -71,7 +71,16 @@ public:
 	/// <returns>Kill Height for the Current Map</returns>
 	float getKillHeight();
 
+	/// <summary>
+	/// Gets Name of the Current Map
+	/// </summary>
+	/// <returns></returns>
+	const std::string& getName();
+
 private:
+
+	// Level
+	std::string m_name;
 
 	// Platforms
 	Block* m_platforms = nullptr;
