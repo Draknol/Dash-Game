@@ -5,6 +5,7 @@
 #include "Player.hpp"
 #include "Camera.hpp"
 #include "Level.hpp"
+#include "Menu.hpp"
 
 int main()
 {
@@ -21,6 +22,7 @@ int main()
 
 	// Create Level
 	Level level("Menu");
+	Menu currentMenu = MainMenu;
 	std::string lastLevel = "Level1"; 
 
 	// Create Player
@@ -86,21 +88,34 @@ int main()
 					break;
 				case sf::Keyboard::E:
 					// Start Game
-					if (level.getName() == "Menu")
+					switch (currentMenu)
 					{
+					case MainMenu:
+						currentMenu = NullMenu;
 						level.load(lastLevel);
 						player.reset();
 						camera.setCenter(level.getSpawn());
+						break;
+					default:
+						break;
 					}
 					break;
 				case sf::Keyboard::Escape:
 					// Exit to Menu
-					if (level.getName() != "Menu")
+					switch (currentMenu)
 					{
+					case NullMenu:
 						lastLevel = level.getName();
+						currentMenu = MainMenu;
 						level.load("Menu");
 						player.reset();
 						camera.setCenter(level.getSpawn());
+						break;
+					case MainMenu:
+						window.close();
+						break;
+					default:
+						break;
 					}
 					break;
 				case sf::Keyboard::F5:

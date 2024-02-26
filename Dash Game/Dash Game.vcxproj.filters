@@ -31,6 +31,9 @@
     <Filter Include="Resource Files\Levels">
       <UniqueIdentifier>{3dbf48bb-b600-4dc2-8884-27f1744e9b0a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{aed7e7ea-4388-4d52-b8cd-47fc6c050218}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,6 +77,9 @@
       <Filter>Header Files\World</Filter>
     </ClInclude>
     <ClInclude Include="Settings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
