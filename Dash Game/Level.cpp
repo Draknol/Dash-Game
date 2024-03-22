@@ -31,7 +31,7 @@ void Level::load(std::string fileName)
 	// Create Variables
 	sf::Vector2f position;
 	sf::Vector2f size;
-	sf::Color color;
+	int red, green, blue;
 	std::string destination;
 
 	/* Platforms */
@@ -47,10 +47,10 @@ void Level::load(std::string fileName)
 		// Get Info
 		file >> position.x >> position.y
 		     >> size.x >> size.y
-			 >> color.r >> color.g >> color.b;
+			 >> red >> green >> blue;
 
 		// Store In Array
-		Block block(position, size, color);
+		Block block(position, size, sf::Color(red, green, blue));
 		m_platforms[i] = block;
 	}
 
@@ -66,10 +66,10 @@ void Level::load(std::string fileName)
 	{
 		// Get Info
 		file >> position.x >> position.y
-			>> color.r >> color.g >> color.b;
+			>> red >> green >> blue;
 
 		// Store In Array
-		Block block(position, sf::Vector2f(50, 50), color);
+		Block block(position, sf::Vector2f(50, 50), sf::Color(red, green, blue));
 		m_markers[i] = block;
 	}
 
