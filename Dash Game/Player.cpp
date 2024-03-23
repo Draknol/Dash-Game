@@ -127,8 +127,8 @@ void Player::tryMove()
 	int blockCount = m_level.getPlatformCount();
 
 	// Get Flags
-	Block* flags = m_level.getFlags();
-	int flagCount = m_level.getFlagCount();
+	Block* flags = m_level.getDoors();
+	int flagCount = m_level.getDoorCount();
 
 	// Force Break on Map Change
 	bool looping = true;
@@ -212,7 +212,7 @@ void Player::tryMove()
 				blockBottomRight.y > playerTopLeft.y)
 			{
 				// Change Level
-				m_level.load(m_level.getFlagDestinations()[i]);
+				m_level.load(m_level.getDoorDestinations()[i]);
 
 				// Move to Spawn
 				respawn(true);
