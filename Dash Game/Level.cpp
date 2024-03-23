@@ -8,8 +8,8 @@ Level::Level(std::string fileName)
 	m_markerState.texture = &m_markerTexture;
 
 	// Load Flag Texture
-	m_flagTexture.loadFromFile("Textures/Flag.png");
-	m_flagState.texture = &m_flagTexture;
+	m_doorTexture.loadFromFile("Textures/Door.png");
+	m_doorState.texture = &m_doorTexture;
 
 	// Load Map
 	load(fileName);
@@ -76,23 +76,24 @@ void Level::load(std::string fileName)
 	/* Flags */
 
 	// Initialise Array
-	file >> m_flagCount;
-	delete[] m_flags;
-	delete[] m_flagDestinations;
-	m_flags = new Block[m_flagCount];
-	m_flagDestinations = new std::string[m_flagCount];
+	file >> m_doorCount;
+	delete[] m_doors;
+	delete[] m_doorDestinations;
+	m_doors = new Block[m_doorCount];
+	m_doorDestinations = new std::string[m_doorCount];
 
 	// Fill Array
-	for (int i = 0; i < m_flagCount; i++)
+	for (int i = 0; i < m_doorCount; i++)
 	{
 		// Get Info
 		file >> position.x >> position.y
-			 >> destination;
+			>> red >> green >> blue
+			>> destination;
 
 		// Store In Array
-		Block block(position, sf::Vector2f(50, 100), sf::Color::White);
-		m_flags[i] = block;
-		m_flagDestinations[i] = destination;
+		Block block(position, sf::Vector2f(50, 100), sf::Color(red, green, blue));
+		m_doors[i] = block;
+		m_doorDestinations[i] = destination;
 	}
 
 	// Close File
@@ -134,16 +135,16 @@ void Level::draw(sf::RenderWindow& window)
 	}
 
 	// Loop over Flags
-	for (int i = 0; i < m_flagCount; i++)
+	for (int i = 0; i < m_doorCount; i++)
 	{
 		// Check if Block is on Screen
-		if (m_flags[i][3].position.x < wBottomRight.x &&
-			m_flags[i][1].position.x > wTopLeft.x &&
-			m_flags[i][1].position.y < wBottomRight.y &&
-			m_flags[i][3].position.y > wTopLeft.y)
+		if (m_doors[i][3].position.x < wBottomRight.x &&
+			m_doors[i][1].position.x > wTopLeft.x &&
+			m_doors[i][1].position.y < wBottomRight.y &&
+			m_doors[i][3].position.y > wTopLeft.y)
 		{
 			// Draw Block if on Screen
-			window.draw(m_flags[i], m_flagState);
+			window.draw(m_doors[i], m_doorState);
 		}
 	}
 }
@@ -158,19 +159,19 @@ int Level::getPlatformCount()
 	return m_platformCount;
 }
 
-Block* Level::getFlags()
+Block* Level::getDoors()
 {
-	return m_flags;
+	return m_doors;
 }
 
-int Level::getFlagCount()
+int Level::getDoorCount()
 {
-	return m_flagCount;
+	return m_doorCount;
 }
 
-std::string* Level::getFlagDestinations()
+std::string* Level::getDoorDestinations()
 {
-	return m_flagDestinations;
+	return m_doorDestinations;
 }
 
 sf::Vector2f Level::getSpawn()

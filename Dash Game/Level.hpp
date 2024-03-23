@@ -45,19 +45,19 @@ public:
 	/// Gets array of Flags
 	/// </summary>
 	/// <returns>Pointer to Beginning of Array</returns>
-	Block* getFlags();
+	Block* getDoors();
 
 	/// <summary>
 	/// Gets number of Flags
 	/// </summary>
 	/// <returns>Number of Flags</returns>
-	int getFlagCount();
+	int getDoorCount();
 
 	/// <summary>
 	/// Gets Array of Flag Destinations (destination[i] is for flag[i])
 	/// </summary>
 	/// <returns>Pointer to Beginning of Array</returns>
-	std::string* getFlagDestinations();
+	std::string* getDoorDestinations();
 
 	/// <summary>
 	/// Gets Spawn Point for the Current Map
@@ -93,11 +93,11 @@ private:
 	int m_markerCount = 0;
 
 	// Flags
-	Block* m_flags = nullptr;
-	std::string* m_flagDestinations = nullptr;
-	sf::RenderStates m_flagState;
-	sf::Texture m_flagTexture;
-	int m_flagCount = 0;
+	Block* m_doors = nullptr;
+	std::string* m_doorDestinations = nullptr;
+	sf::RenderStates m_doorState;
+	sf::Texture m_doorTexture;
+	int m_doorCount = 0;
 
 	// Player
 	sf::Vector2f m_spawn;
