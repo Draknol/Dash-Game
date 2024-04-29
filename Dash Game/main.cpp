@@ -152,8 +152,8 @@ int main()
 		// Update View
 		window.setView(camera);
 
-		// Clear Window
-		window.clear();
+		// Clear Window with Sky
+		window.clear(sf::Color(60, 60, 255));
 
 		// Draw Everything
 		level.draw(window);
