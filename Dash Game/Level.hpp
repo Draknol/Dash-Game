@@ -4,6 +4,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include <fstream>
+#include <vector>
 
 #include "Block.hpp"
 
@@ -33,31 +34,19 @@ public:
 	/// Gets array of Platforms
 	/// </summary>
 	/// <returns>Pointer to Beginning of Array</returns>
-	Block* getPlatforms();
+	std::vector<Block>& getPlatforms();
 
 	/// <summary>
-	/// Gets number of Platforms
-	/// </summary>
-	/// <returns>Number of Platforms</returns>
-	int getPlatformCount();
-
-	/// <summary>
-	/// Gets array of Flags
+	/// Gets array of Doors
 	/// </summary>
 	/// <returns>Pointer to Beginning of Array</returns>
-	Block* getDoors();
+	std::vector<Block>& getDoors();
 
 	/// <summary>
-	/// Gets number of Flags
-	/// </summary>
-	/// <returns>Number of Flags</returns>
-	int getDoorCount();
-
-	/// <summary>
-	/// Gets Array of Flag Destinations (destination[i] is for flag[i])
+	/// Gets Array of Door Destinations (destinations[i] is for doors[i])
 	/// </summary>
 	/// <returns>Pointer to Beginning of Array</returns>
-	std::string* getDoorDestinations();
+	std::vector<std::string>& getDoorDestinations();
 
 	/// <summary>
 	/// Gets Spawn Point for the Current Map
@@ -82,22 +71,15 @@ private:
 	// Level
 	std::string m_name;
 
-	// Platforms
-	Block* m_platforms = nullptr;
-	int m_platformCount = 0;
+	// Blocks
+	std::vector<Block> m_platforms;
+	std::vector<Block> m_decorations;
+	std::vector<Block> m_doors;
+	std::vector<std::string> m_doorDestinations;
 
-	// Markers
-	Block* m_markers = nullptr;
-	sf::RenderStates m_markerState;
-	sf::Texture m_markerTexture;
-	int m_markerCount = 0;
-
-	// Flags
-	Block* m_doors = nullptr;
-	std::string* m_doorDestinations = nullptr;
+	// Textures
 	sf::RenderStates m_doorState;
 	sf::Texture m_doorTexture;
-	int m_doorCount = 0;
 
 	// Player
 	sf::Vector2f m_spawn;

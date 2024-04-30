@@ -123,12 +123,10 @@ void Player::tryMove()
 	float timeStep = m_deltaTime / (float)loopCount;
 
 	// Get Blocks
-	Block* blocks = m_level.getPlatforms();
-	int blockCount = m_level.getPlatformCount();
+	std::vector<Block>& platforms = m_level.getPlatforms();
 
 	// Get Flags
-	Block* flags = m_level.getDoors();
-	int flagCount = m_level.getDoorCount();
+	std::vector<Block>& doors = m_level.getDoors();
 
 	// Force Break on Map Change
 	bool looping = true;
@@ -144,14 +142,11 @@ void Player::tryMove()
 		sf::Vector2f playerBottomRight = updatedPosition + sf::Vector2f(m_size.x / 2.0F, 0.0F);
 
 		// Loop over Blocks
-		for (int i = 0; looping && i < blockCount; i++)
+		for (Block platform : platforms)
 		{
-			// Get Current Block
-			Block& block = blocks[i];
-
 			// Get Block Bounds
-			sf::Vector2f blockTopLeft = sf::Vector2f(block[3].position.x, block[1].position.y);
-			sf::Vector2f blockBottomRight = sf::Vector2f(block[1].position.x, block[3].position.y);
+			sf::Vector2f blockTopLeft = sf::Vector2f(platform[3].position.x, platform[1].position.y);
+			sf::Vector2f blockBottomRight = sf::Vector2f(platform[1].position.x, platform[3].position.y);
 
 			// Check for Collision
 			if (blockTopLeft.x < playerBottomRight.x &&
@@ -196,14 +191,11 @@ void Player::tryMove()
 		setPosition(updatedPosition);
 
 		// Loop over Flags
-		for (int i = 0; looping && i < flagCount; i++)
+		for (Block door : doors)
 		{
-			// Get Current Block
-			Block& block = flags[i];
-
 			// Get Block Bounds
-			sf::Vector2f blockTopLeft = sf::Vector2f(block[3].position.x, block[1].position.y);
-			sf::Vector2f blockBottomRight = sf::Vector2f(block[1].position.x, block[3].position.y);
+			sf::Vector2f blockTopLeft = sf::Vector2f(door[3].position.x, door[1].position.y);
+			sf::Vector2f blockBottomRight = sf::Vector2f(door[1].position.x, door[3].position.y);
 
 			// Check for Collision
 			if (blockTopLeft.x < playerBottomRight.x &&

@@ -3,10 +3,6 @@
 
 Level::Level(std::string fileName)
 {
-	// Load Marker Texture
-	m_markerTexture.loadFromFile("Textures/Marker.png");
-	m_markerState.texture = &m_markerTexture;
-
 	// Load Flag Texture
 	m_doorTexture.loadFromFile("Textures/Door.png");
 	m_doorState.texture = &m_doorTexture;
@@ -34,66 +30,47 @@ void Level::load(std::string fileName)
 	int red, green, blue;
 	std::string destination;
 
-	/* Platforms */
+	// Delete old map
+	m_platforms.clear();
+	m_decorations.clear();
+	m_doors.clear();
 
-	// Initialise Array
-	file >> m_platformCount;
-	delete[] m_platforms;
-	m_platforms = new Block[m_platformCount];
+	/* Platforms & Decorations */
 
-	// Fill Array
-	for (int i = 0; i < m_platformCount; i++)
+	std::string type;
+	while (file >> type)
 	{
+		// Ignore Comments
+		if (type[0] == '#')
+		{
+			std::getline(file, type);
+			continue;
+		}
+
 		// Get Info
 		file >> position.x >> position.y
-		     >> size.x >> size.y
-			 >> red >> green >> blue;
-
-		// Store In Array
-		Block block(position, size, sf::Color(red, green, blue));
-		m_platforms[i] = block;
-	}
-
-	/* Markers */
-
-	// Initialise Array
-	file >> m_markerCount;
-	delete[] m_markers;
-	m_markers = new Block[m_markerCount];
-
-	// Fill Array
-	for (int i = 0; i < m_markerCount; i++)
-	{
-		// Get Info
-		file >> position.x >> position.y
+			>> size.x >> size.y
 			>> red >> green >> blue;
 
-		// Store In Array
-		Block block(position, sf::Vector2f(50, 50), sf::Color(red, green, blue));
-		m_markers[i] = block;
-	}
+		Block block(position, size, sf::Color(red, green, blue));
 
-	/* Flags */
-
-	// Initialise Array
-	file >> m_doorCount;
-	delete[] m_doors;
-	delete[] m_doorDestinations;
-	m_doors = new Block[m_doorCount];
-	m_doorDestinations = new std::string[m_doorCount];
-
-	// Fill Array
-	for (int i = 0; i < m_doorCount; i++)
-	{
-		// Get Info
-		file >> position.x >> position.y
-			>> red >> green >> blue
-			>> destination;
-
-		// Store In Array
-		Block block(position, sf::Vector2f(50, 100), sf::Color(red, green, blue));
-		m_doors[i] = block;
-		m_doorDestinations[i] = destination;
+		// Store in Vector
+		switch (type[0])
+		{
+		case 'p':
+			m_platforms.push_back(block);
+			break;
+		case 'd':
+			m_decorations.push_back(block);
+			break;
+		case 'D':
+			m_doors.push_back(block);
+			file >> destination;
+			m_doorDestinations.push_back(destination);
+			break;
+		default:
+			break;
+		}
 	}
 
 	// Close File
@@ -107,69 +84,59 @@ void Level::draw(sf::RenderWindow& window)
 	sf::Vector2f wBottomRight = window.mapPixelToCoords((sf::Vector2i)window.getSize());
 
 	// Loop over Platforms
-	for (int i = 0; i < m_platformCount; i++)
+	for (Block platform : m_platforms)
 	{
 		// Check if Block is on Screen
-		if (m_platforms[i][3].position.x < wBottomRight.x && 
-			m_platforms[i][1].position.x > wTopLeft.x && 
-			m_platforms[i][1].position.y < wBottomRight.y && 
-			m_platforms[i][3].position.y > wTopLeft.y)
+		if (platform[3].position.x < wBottomRight.x &&
+			platform[1].position.x > wTopLeft.x &&
+			platform[1].position.y < wBottomRight.y &&
+			platform[3].position.y > wTopLeft.y)
 		{
 			// Draw Block if on Screen
-			window.draw(m_platforms[i]);
+			window.draw(platform);
 		}
 	}
 
 	// Loop over Markers
-	for (int i = 0; i < m_markerCount; i++)
+	for (Block decoration : m_decorations)
 	{
 		// Check if Block is on Screen
-		if (m_markers[i][3].position.x < wBottomRight.x &&
-			m_markers[i][1].position.x > wTopLeft.x &&
-			m_markers[i][1].position.y < wBottomRight.y &&
-			m_markers[i][3].position.y > wTopLeft.y)
+		if (decoration[3].position.x < wBottomRight.x &&
+			decoration[1].position.x > wTopLeft.x &&
+			decoration[1].position.y < wBottomRight.y &&
+			decoration[3].position.y > wTopLeft.y)
 		{
 			// Draw Block if on Screen
-			window.draw(m_markers[i], m_markerState);
+			window.draw(decoration);
 		}
 	}
 
-	// Loop over Flags
-	for (int i = 0; i < m_doorCount; i++)
+	// Loop over Doors
+	for (Block door : m_doors)
 	{
 		// Check if Block is on Screen
-		if (m_doors[i][3].position.x < wBottomRight.x &&
-			m_doors[i][1].position.x > wTopLeft.x &&
-			m_doors[i][1].position.y < wBottomRight.y &&
-			m_doors[i][3].position.y > wTopLeft.y)
+		if (door[3].position.x < wBottomRight.x &&
+			door[1].position.x > wTopLeft.x &&
+			door[1].position.y < wBottomRight.y &&
+			door[3].position.y > wTopLeft.y)
 		{
 			// Draw Block if on Screen
-			window.draw(m_doors[i], m_doorState);
+			window.draw(door, m_doorState);
 		}
 	}
 }
 
-Block* Level::getPlatforms()
+std::vector<Block>& Level::getPlatforms()
 {
 	return m_platforms;
 }
 
-int Level::getPlatformCount()
-{
-	return m_platformCount;
-}
-
-Block* Level::getDoors()
+std::vector<Block>& Level::getDoors()
 {
 	return m_doors;
 }
 
-int Level::getDoorCount()
-{
-	return m_doorCount;
-}
-
-std::string* Level::getDoorDestinations()
+std::vector<std::string>& Level::getDoorDestinations()
 {
 	return m_doorDestinations;
 }
