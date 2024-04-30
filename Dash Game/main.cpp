@@ -30,6 +30,7 @@ int main()
 
 	// Create Camera
 	Camera camera(player.getPosition(), window.getSize());
+	sf::Vector2f cameraOffset;
 
 	// Create Clock
 	sf::Clock clock;
@@ -108,8 +109,9 @@ int main()
 						lastLevel = level.getName();
 						currentMenu = MainMenu;
 						level.load("Menu");
+						cameraOffset = camera.getCenter() - player.getPosition();
 						player.reset();
-						camera.setCenter(level.getSpawn());
+						camera.setCenter(level.getSpawn() + cameraOffset);
 						break;
 					case MainMenu:
 						window.close();

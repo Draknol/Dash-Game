@@ -125,7 +125,7 @@ void Player::tryMove()
 	// Get Blocks
 	std::vector<Block>& platforms = m_level.getPlatforms();
 
-	// Get Flags
+	// Get Doors
 	std::vector<Block>& doors = m_level.getDoors();
 
 	// Force Break on Map Change
