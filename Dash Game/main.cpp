@@ -68,6 +68,9 @@ int main()
 				case sf::Keyboard::Space:
 					player.jumping(false);
 					break;
+				case sf::Keyboard::E:
+					player.interacting(false);
+					break;
 				default:
 					break;
 				}
@@ -93,6 +96,9 @@ int main()
 					// Start Game
 					switch (currentMenu)
 					{
+					case GameMenu:
+						player.interacting(true);
+						break;
 					case MainMenu:
 						currentMenu = GameMenu;
 						level.load(settings.getCurrentLevel());

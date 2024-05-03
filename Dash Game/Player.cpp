@@ -56,6 +56,11 @@ void Player::jumping(bool jumping)
 	m_jumpHolding = jumping;
 }
 
+void Player::interacting(bool interacting)
+{
+	m_interacting = interacting;
+}
+
 void Player::dash()
 {
 	// Check if Dash is on Cooldown
@@ -190,27 +195,35 @@ void Player::tryMove()
 		// Update Possition
 		setPosition(updatedPosition);
 
-		// Loop over Doors
-		for (Block door : doors)
+		// Check for Interactions
+		if (m_interacting)
 		{
-			// Get Block Bounds
-			sf::Vector2f blockTopLeft = sf::Vector2f(door[3].position.x, door[1].position.y);
-			sf::Vector2f blockBottomRight = sf::Vector2f(door[1].position.x, door[3].position.y);
-
-			// Check for Collision
-			if (blockTopLeft.x < playerBottomRight.x &&
-				blockBottomRight.x > playerTopLeft.x &&
-				blockTopLeft.y < playerBottomRight.y &&
-				blockBottomRight.y > playerTopLeft.y)
+			// Loop over Doors
+			for (Block door : doors)
 			{
-				// Change Level
-				m_level.load(door.getDestination());
+				// Get Block Bounds
+				sf::Vector2f blockTopLeft = sf::Vector2f(door[3].position.x, door[1].position.y);
+				sf::Vector2f blockBottomRight = sf::Vector2f(door[1].position.x, door[3].position.y);
 
-				// Move to Spawn
-				respawn(true);
+				// Check for Collision
+				if (blockTopLeft.x < playerBottomRight.x &&
+					blockBottomRight.x > playerTopLeft.x &&
+					blockTopLeft.y < playerBottomRight.y &&
+					blockBottomRight.y > playerTopLeft.y)
+				{
+					// Change Level
+					m_level.load(door.getDestination());
 
-				// Break Collision Loop
-				looping = false;
+					// Move to Spawn
+					respawn(true);
+
+					// Break Collision Loop
+					looping = false;
+
+					// Stop Interacting
+					m_interacting = false;
+					break;
+				}
 			}
 		}
 	}

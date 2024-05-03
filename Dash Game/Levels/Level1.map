@@ -19,8 +19,10 @@ d -600 0 1000 200 255 255 255 Dirt
 d 300 -50 1000 200 255 255 255 Dirt
 
 # First Tree
-d 500 -450 250 200 30 170 30 null # Leaves
-d 600 -300 50 200 150 80 30 null # Trunk
+d 400 -450 250 200 30 170 30 null # Leaves
+d 500 -300 50 200 150 80 30 null # Trunk
 
-# Test Door
+# House
+d 750 -350 350 100 255 255 255 Roof
+d 750 -250 350 150 150 150 150 null # Main Wall
 D 900 -200 50 100 150 80 30 Door Level2

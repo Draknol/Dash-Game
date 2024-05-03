@@ -37,14 +37,20 @@ public:
 	/// <summary>
 	/// Set if the Player is Dashing
 	/// </summary>
-	/// <param name="dashing"></param>
+	/// <param name="dashing">is the player dashing</param>
 	void dashing(bool dashing);
 
 	/// <summary>
 	/// Set if the Player is Jumping
 	/// </summary>
-	/// <param name="jumping"></param>
+	/// <param name="jumping">is the player jumping</param>
 	void jumping(bool jumping);
+
+	/// <summary>
+	/// Set if the Player is Interacting
+	/// </summary>
+	/// <param name="interacting">is the player interacting</param>
+	void interacting(bool interacting);
 
 	/// <summary>
 	/// Moves Player Back to Spawn if Fallen or Force
@@ -102,6 +108,9 @@ private:
 	float m_dashDurationTimer = m_dashDuration;
 	float m_dashCooldownTimer = 0.0F;
 	bool m_dashing = false;
+
+	// Interact
+	bool m_interacting = false;
 
 	// Gravity
 	const float m_gravityAcceleration = 7000.0F;
