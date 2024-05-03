@@ -190,7 +190,7 @@ void Player::tryMove()
 		// Update Possition
 		setPosition(updatedPosition);
 
-		// Loop over Flags
+		// Loop over Doors
 		for (Block door : doors)
 		{
 			// Get Block Bounds
@@ -204,7 +204,7 @@ void Player::tryMove()
 				blockBottomRight.y > playerTopLeft.y)
 			{
 				// Change Level
-				m_level.load(m_level.getDoorDestinations()[i]);
+				m_level.load(door.getDestination());
 
 				// Move to Spawn
 				respawn(true);

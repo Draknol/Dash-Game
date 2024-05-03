@@ -1,9 +1,9 @@
 -100 -1000
 
-3000
+3000 
 
 # Small testing map
-p -200 0 400 50 255 255 255
+p -200 0 400 50 255 0 0 Stone
 
 # Door to first level
-D 150 -100 255 255 255 Level1
+D 150 -100 50 100 255 255 255 Door Level1

@@ -57,11 +57,24 @@ public:
 	/// /// <returns>is Window Fullscreen</returns>
 	bool getFullscreen();
 
+	/// <summary>
+	/// Set the Current Level Save
+	/// </summary>
+	/// <param name="currentLevel">Current Level Name</param>
+	void setCurrentLevel(std::string currentLevel);
+
+	/// <summary>
+	/// Get Current Level Name
+	/// </summary>
+	/// /// <returns>Name of Current Level</returns>
+	std::string getCurrentLevel();
+
 private:
 
 	// Settings
 	sf::Vector2u m_windowSize = sf::Vector2u(800U, 800U);
 	sf::Vector2i m_windowPosition = sf::Vector2i(0U, 0U);
 	bool m_isFullscreen = false;
+	std::string m_currentLevel = "Level1";
 
 };

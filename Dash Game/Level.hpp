@@ -3,6 +3,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Vector2.hpp>
 
+#include <unordered_map>
 #include <fstream>
 #include <vector>
 
@@ -19,6 +20,16 @@ public:
 	Level(std::string fileName);
 
 	/// <summary>
+	/// Constructor for Level
+	/// </summary>
+	Level();
+
+	/// <summary>
+	/// Unload Map/Load Blank Map (not textures)
+	/// </summary>
+	void erase();
+
+	/// <summary>
 	/// Load new Map
 	/// </summary>
 	/// <param name="fileName">Name of .map file</param>
@@ -31,22 +42,16 @@ public:
 	void draw(sf::RenderWindow& window);
 
 	/// <summary>
-	/// Gets array of Platforms
+	/// Gets Platforms Vector
 	/// </summary>
-	/// <returns>Pointer to Beginning of Array</returns>
+	/// <returns>Vector of Platforms</returns>
 	std::vector<Block>& getPlatforms();
 
 	/// <summary>
-	/// Gets array of Doors
+	/// Gets Doors Vector
 	/// </summary>
-	/// <returns>Pointer to Beginning of Array</returns>
+	/// <returns>Gets Vector of Doors</returns>
 	std::vector<Block>& getDoors();
-
-	/// <summary>
-	/// Gets Array of Door Destinations (destinations[i] is for doors[i])
-	/// </summary>
-	/// <returns>Pointer to Beginning of Array</returns>
-	std::vector<std::string>& getDoorDestinations();
 
 	/// <summary>
 	/// Gets Spawn Point for the Current Map
@@ -75,14 +80,12 @@ private:
 	std::vector<Block> m_platforms;
 	std::vector<Block> m_decorations;
 	std::vector<Block> m_doors;
-	std::vector<std::string> m_doorDestinations;
-
-	// Textures
-	sf::RenderStates m_doorState;
-	sf::Texture m_doorTexture;
 
 	// Player
 	sf::Vector2f m_spawn;
 	float m_killHeight;
 
+	// Textures
+	std::unordered_map<std::string, sf::RenderStates> m_renderStates;
+	std::vector<sf::Texture*> textures;
 };

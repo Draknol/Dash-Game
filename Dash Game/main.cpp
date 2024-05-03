@@ -1,5 +1,6 @@
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Event.hpp>
 
 #include "Settings.hpp"
 #include "Player.hpp"
@@ -16,14 +17,14 @@ int main()
 	// Create Window
 	sf::VideoMode videomode(settings.getFullscreen() ? sf::VideoMode::getFullscreenModes()[0] : sf::VideoMode(settings.getWindowSize().x, settings.getWindowSize().y));
 	sf::RenderWindow window(videomode, "Dash Game", settings.getFullscreen() ? sf::Style::Fullscreen : sf::Style::Default);
-	
+
 	// Disable KeyRepeat
 	window.setKeyRepeatEnabled(false);
 
 	// Create Level
-	Level level("Menu");
+	Level level;
+	Level overlay("Menu");
 	Menu currentMenu = MainMenu;
-	std::string lastLevel = "Level1"; 
 
 	// Create Player
 	Player player(level);
@@ -34,6 +35,7 @@ int main()
 
 	// Create Clock
 	sf::Clock clock;
+	bool paused = false;
 
 	/* Game Loop */
 	while (window.isOpen())
@@ -92,8 +94,9 @@ int main()
 					switch (currentMenu)
 					{
 					case MainMenu:
-						currentMenu = NullMenu;
-						level.load(lastLevel);
+						currentMenu = GameMenu;
+						level.load(settings.getCurrentLevel());
+						overlay.load("Blank");
 						player.reset();
 						camera.setCenter(level.getSpawn());
 						break;
@@ -105,16 +108,13 @@ int main()
 					// Exit to Menu
 					switch (currentMenu)
 					{
-					case NullMenu:
-						lastLevel = level.getName();
-						currentMenu = MainMenu;
-						level.load("Menu");
-						cameraOffset = camera.getCenter() - player.getPosition();
-						player.reset();
-						camera.setCenter(level.getSpawn() + cameraOffset);
+					case GameMenu:
+						currentMenu = PauseMenu;
+						paused = true;
 						break;
-					case MainMenu:
-						window.close();
+					case PauseMenu:
+						currentMenu = GameMenu;
+						paused = false;
 						break;
 					default:
 						break;
@@ -145,8 +145,11 @@ int main()
 			}
 		}
 
-		// Update Player
-		player.update(deltaTime);
+		if (!paused) 
+		{
+			// Update Player
+			player.update(deltaTime);
+		}
 
 		// Update Camera
 		camera.moveTowards(player.getPosition(), deltaTime);
@@ -159,6 +162,7 @@ int main()
 
 		// Draw Everything
 		level.draw(window);
+		overlay.draw(window);
 		window.draw(player);
 
 		// Display Window

@@ -3,16 +3,38 @@
 
 Level::Level(std::string fileName)
 {
-	// Load Flag Texture
-	m_doorTexture.loadFromFile("Textures/Door.png");
-	m_doorState.texture = &m_doorTexture;
-
 	// Load Map
+	sf::RenderStates r;
+	m_renderStates["null"] = r;
 	load(fileName);
+}
+
+Level::Level() 
+{
+	// Set Values to Default
+	sf::RenderStates r;
+	m_renderStates["null"] = r;
+	m_spawn = sf::Vector2f(0, 0);
+	m_killHeight = INT_MIN;
+}
+
+void Level::erase() 
+{
+	// Delete all Blocks
+	m_platforms.clear();
+	m_decorations.clear();
+	m_doors.clear();
+
+	// Set Values to Default
+	m_spawn = sf::Vector2f(0, 0);
+	m_killHeight = INT_MIN;
 }
 
 void Level::load(std::string fileName)
 {
+	// Delete old Map
+	erase();
+
 	// Save Level Name
 	m_name = fileName;
 
@@ -28,12 +50,10 @@ void Level::load(std::string fileName)
 	sf::Vector2f position;
 	sf::Vector2f size;
 	int red, green, blue;
+	std::string textureKey;
 	std::string destination;
-
-	// Delete old map
-	m_platforms.clear();
-	m_decorations.clear();
-	m_doors.clear();
+	sf::RenderStates renderState;
+	sf::Texture* texture;
 
 	/* Platforms & Decorations */
 
@@ -50,9 +70,22 @@ void Level::load(std::string fileName)
 		// Get Info
 		file >> position.x >> position.y
 			>> size.x >> size.y
-			>> red >> green >> blue;
+			>> red >> green >> blue
+			>> textureKey;
 
-		Block block(position, size, sf::Color(red, green, blue));
+		// Create Block
+		Block block(position, size, sf::Color(red, green, blue), textureKey);
+
+		// Load & Store Texture
+		if (m_renderStates.find(textureKey) == m_renderStates.end())
+		{
+			texture = new sf::Texture;
+			texture->loadFromFile("Textures/" + textureKey + ".png");
+			texture->setRepeated(true);
+			textures.push_back(texture);
+			renderState.texture = &*textures.back();
+			m_renderStates[textureKey] = renderState;
+		}
 
 		// Store in Vector
 		switch (type[0])
@@ -64,9 +97,9 @@ void Level::load(std::string fileName)
 			m_decorations.push_back(block);
 			break;
 		case 'D':
-			m_doors.push_back(block);
 			file >> destination;
-			m_doorDestinations.push_back(destination);
+			block.setDestination(destination);
+			m_doors.push_back(block);
 			break;
 		default:
 			break;
@@ -93,7 +126,7 @@ void Level::draw(sf::RenderWindow& window)
 			platform[3].position.y > wTopLeft.y)
 		{
 			// Draw Block if on Screen
-			window.draw(platform);
+			window.draw(platform, m_renderStates.at(platform.getTexture()));
 		}
 	}
 
@@ -107,12 +140,12 @@ void Level::draw(sf::RenderWindow& window)
 			decoration[3].position.y > wTopLeft.y)
 		{
 			// Draw Block if on Screen
-			window.draw(decoration);
+			window.draw(decoration, m_renderStates.at(decoration.getTexture()));
 		}
 	}
 
 	// Loop over Doors
-	for (Block door : m_doors)
+	for (auto door : m_doors)
 	{
 		// Check if Block is on Screen
 		if (door[3].position.x < wBottomRight.x &&
@@ -121,7 +154,7 @@ void Level::draw(sf::RenderWindow& window)
 			door[3].position.y > wTopLeft.y)
 		{
 			// Draw Block if on Screen
-			window.draw(door, m_doorState);
+			window.draw(door, m_renderStates.at(door.getTexture()));
 		}
 	}
 }
@@ -134,11 +167,6 @@ std::vector<Block>& Level::getPlatforms()
 std::vector<Block>& Level::getDoors()
 {
 	return m_doors;
-}
-
-std::vector<std::string>& Level::getDoorDestinations()
-{
-	return m_doorDestinations;
 }
 
 sf::Vector2f Level::getSpawn()

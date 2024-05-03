@@ -2,7 +2,6 @@
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-
 #include <SFML/System/Vector2.hpp>
 
 #include "Level.hpp"
@@ -48,7 +47,7 @@ public:
 	void jumping(bool jumping);
 
 	/// <summary>
-	/// Moves Player Back to Spawn if Fallen
+	/// Moves Player Back to Spawn if Fallen or Force
 	/// </summary>
 	/// <param name="force">Forces respawn</param>
 	void respawn(bool force = false);
