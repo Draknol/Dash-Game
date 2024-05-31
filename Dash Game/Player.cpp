@@ -32,7 +32,7 @@ void Player::update(float deltaTime)
 
 	tryMove();
 
-	respawn();
+	respawn(false);
 }
 
 void Player::movingLeft(bool moving)
@@ -128,10 +128,10 @@ void Player::tryMove()
 	float timeStep = m_deltaTime / (float)loopCount;
 
 	// Get Blocks
-	std::vector<Block>& platforms = m_level.getPlatforms();
+	const std::vector<Block>& platforms = m_level.getPlatforms();
 
 	// Get Doors
-	std::vector<Block>& doors = m_level.getDoors();
+	const std::vector<Door>& doors = m_level.getDoors();
 
 	// Force Break on Map Change
 	bool looping = true;
@@ -199,7 +199,7 @@ void Player::tryMove()
 		if (m_interacting)
 		{
 			// Loop over Doors
-			for (Block door : doors)
+			for (Door door : doors)
 			{
 				// Get Block Bounds
 				sf::Vector2f blockTopLeft = sf::Vector2f(door[3].position.x, door[1].position.y);
@@ -214,8 +214,9 @@ void Player::tryMove()
 					// Change Level
 					m_level.load(door.getDestination());
 
-					// Move to Spawn
-					respawn(true);
+					// Move to Other Door + Current Player Offset
+					sf::Vector2f offset = getPosition() - door[0].position;
+					setPosition(door.getLocation() + offset);
 
 					// Break Collision Loop
 					looping = false;

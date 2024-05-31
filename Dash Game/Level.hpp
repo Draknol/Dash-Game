@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Block.hpp"
+#include "Door.hpp"
 
 class Level
 {
@@ -17,7 +18,7 @@ public:
 	/// Constructor for Level
 	/// </summary>
 	/// <param name="fileName">Name of .map file</param>
-	Level(std::string fileName);
+	Level(const std::string& fileName);
 
 	/// <summary>
 	/// Constructor for Level
@@ -33,7 +34,7 @@ public:
 	/// Load new Map
 	/// </summary>
 	/// <param name="fileName">Name of .map file</param>
-	void load(std::string fileName);
+	void load(const std::string& fileName);
 
 	/// <summary>
 	/// Draw Blocks to Window
@@ -45,19 +46,19 @@ public:
 	/// Gets Platforms Vector
 	/// </summary>
 	/// <returns>Vector of Platforms</returns>
-	std::vector<Block>& getPlatforms();
+	const std::vector<Block>& getPlatforms();
 
 	/// <summary>
 	/// Gets Doors Vector
 	/// </summary>
 	/// <returns>Gets Vector of Doors</returns>
-	std::vector<Block>& getDoors();
+	const std::vector<Door>& getDoors();
 
 	/// <summary>
 	/// Gets Spawn Point for the Current Map
 	/// </summary>
 	/// <returns>Spawn Point for the Current Map</returns>
-	sf::Vector2f getSpawn();
+	const sf::Vector2f& getSpawn();
 
 	/// <summary>
 	/// Gets Kill Height for the Current Map
@@ -79,7 +80,7 @@ private:
 	// Blocks
 	std::vector<Block> m_platforms;
 	std::vector<Block> m_decorations;
-	std::vector<Block> m_doors;
+	std::vector<Door> m_doors;
 
 	// Player
 	sf::Vector2f m_spawn;

@@ -1,11 +1,11 @@
 #include "Settings.hpp"
 
-Settings::Settings(std::string fileName)
+Settings::Settings(const std::string& fileName)
 {
 	load(fileName);
 }
 
-void Settings::load(std::string fileName)
+void Settings::load(const std::string& fileName)
 {
 	// Open File
 	std::fstream file;
@@ -41,22 +41,22 @@ void Settings::load(std::string fileName)
 	file.close();
 }
 
-void Settings::setWindowSize(sf::Vector2u windowSize)
+void Settings::setWindowSize(const sf::Vector2u& windowSize)
 {
 	m_windowSize = windowSize;
 }
 
-sf::Vector2u Settings::getWindowSize()
+const sf::Vector2u& Settings::getWindowSize()
 {
 	return m_windowSize;
 }
 
-void Settings::setWindowPosition(sf::Vector2i windowPosition)
+void Settings::setWindowPosition(const sf::Vector2i& windowPosition)
 {
 	m_windowPosition = windowPosition;
 }
 
-sf::Vector2i Settings::getWindowPosition()
+const sf::Vector2i& Settings::getWindowPosition()
 {
 	return m_windowPosition;
 }
@@ -71,10 +71,10 @@ bool Settings::getFullscreen()
 	return m_isFullscreen;
 }
 
-void Settings::setCurrentLevel(std::string currentLevel) {
+void Settings::setCurrentLevel(const std::string& currentLevel) {
 	m_currentLevel = currentLevel;
 }
 
-std::string Settings::getCurrentLevel() {
+const std::string& Settings::getCurrentLevel() {
 	return m_currentLevel;
 }

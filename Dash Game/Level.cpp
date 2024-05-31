@@ -1,7 +1,7 @@
 
 #include "Level.hpp"
 
-Level::Level(std::string fileName)
+Level::Level(const std::string& fileName)
 {
 	// Load Map
 	sf::RenderStates r;
@@ -30,7 +30,7 @@ void Level::erase()
 	m_killHeight = INT_MIN;
 }
 
-void Level::load(std::string fileName)
+void Level::load(const std::string& fileName)
 {
 	// Delete old Map
 	erase();
@@ -52,6 +52,7 @@ void Level::load(std::string fileName)
 	int red, green, blue;
 	std::string textureKey;
 	std::string destination;
+	sf::Vector2f location;
 	sf::RenderStates renderState;
 	sf::Texture* texture;
 
@@ -97,9 +98,9 @@ void Level::load(std::string fileName)
 			m_decorations.push_back(block);
 			break;
 		case 'D':
-			file >> destination;
-			block.setDestination(destination);
-			m_doors.push_back(block);
+			file >> destination
+				 >> location.x >> location.y;
+			m_doors.emplace_back(block, destination, location);
 			break;
 		default:
 			break;
@@ -159,17 +160,17 @@ void Level::draw(sf::RenderWindow& window)
 	}
 }
 
-std::vector<Block>& Level::getPlatforms()
+const std::vector<Block>& Level::getPlatforms()
 {
 	return m_platforms;
 }
 
-std::vector<Block>& Level::getDoors()
+const std::vector<Door>& Level::getDoors()
 {
 	return m_doors;
 }
 
-sf::Vector2f Level::getSpawn()
+const sf::Vector2f& Level::getSpawn()
 {
 	return m_spawn;
 }

@@ -130,6 +130,7 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Camera.hpp" />
+    <ClCompile Include="Door.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Level.cpp" />
@@ -137,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.hpp" />
+    <ClInclude Include="Door.hpp" />
     <ClInclude Include="Menu.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="Level.hpp" />

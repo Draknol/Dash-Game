@@ -3,7 +3,7 @@
 
 Block::Block() {}
 
-Block::Block(sf::Vector2f position, sf::Vector2f size, sf::Color color, std::string texture)
+Block::Block(const sf::Vector2f& position, const sf::Vector2f& size, const sf::Color& color, const std::string& texture)
 {
 	// Make into Quad
 	setPrimitiveType(sf::Quads);
@@ -31,17 +31,7 @@ Block::Block(sf::Vector2f position, sf::Vector2f size, sf::Color color, std::str
 	
 }
 
-std::string Block::getTexture()
+const std::string& Block::getTexture()
 {
 	return m_texture;
-}
-
-void Block::setDestination(const std::string& destination)
-{
-	m_destination = destination;
-}
-
-const std::string& Block::getDestination()
-{
-	return m_destination;
 }

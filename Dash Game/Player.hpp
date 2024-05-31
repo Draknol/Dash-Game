@@ -104,7 +104,7 @@ private:
 	// Dashing
 	const float m_dashDuration = 0.1F;
 	const float m_dashCooldown = 0.7F;
-	float m_dashSpeed = 6000.0F;
+	const float m_dashSpeed = 6000.0F;
 	float m_dashDurationTimer = m_dashDuration;
 	float m_dashCooldownTimer = 0.0F;
 	bool m_dashing = false;
@@ -115,12 +115,12 @@ private:
 	// Gravity
 	const float m_gravityAcceleration = 7000.0F;
 	const float m_gravityTimeStep = 0.001F;
+	const float m_drag = 0.0005F;
 	float m_gravityTimer = 0.0f;
-	float m_drag = 0.0005F;
 
 	// Jumping
 	const int m_maxJumps = 2;
-	float m_jumpStrength = 1500.0F;
+	const float m_jumpStrength = 1500.0F;
 	int m_jumpCounter = m_maxJumps;
 	bool m_jumpHolding = false;
 	bool m_jumping = false;

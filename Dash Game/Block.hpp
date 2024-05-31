@@ -19,15 +19,10 @@ public:
 	/// <param name="size">Width and Height of Block</param>
 	/// <param name="color">Color of Block</param>
 	/// /// <param name="texture">Name of Texture File ("null" for no texture)</param>
-	Block(sf::Vector2f position, sf::Vector2f size, sf::Color color, std::string texture);
+	Block(const sf::Vector2f& position, const sf::Vector2f& size, const sf::Color& color, const std::string& texture);
 
-	std::string getTexture();
-
-	void setDestination(const std::string& destination);
-
-	const std::string& getDestination();
+	const std::string& getTexture();
 private:
 
-	std::string m_destination;
 	std::string m_texture;
 };

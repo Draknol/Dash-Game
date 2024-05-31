@@ -34,11 +34,14 @@
     <Filter Include="Header Files\UI">
       <UniqueIdentifier>{aed7e7ea-4388-4d52-b8cd-47fc6c050218}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Game">
+      <UniqueIdentifier>{a1b9c203-2c1c-4c20-ae00-8dd950ff0189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{12c55e95-3e75-4da5-8dd3-dafc05ec63c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Source Files\Player</Filter>
     </ClCompile>
@@ -54,8 +57,14 @@
     <ClCompile Include="Level.cpp">
       <Filter>Source Files\World</Filter>
     </ClCompile>
+    <ClCompile Include="Door.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
     <ClCompile Include="Settings.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,11 +88,14 @@
     <ClInclude Include="Block.hpp">
       <Filter>Header Files\World</Filter>
     </ClInclude>
-    <ClInclude Include="Settings.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Door.hpp">
+      <Filter>Header Files\World</Filter>
     </ClInclude>
     <ClInclude Include="Menu.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.hpp">
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,37 +13,37 @@ public:
 	/// Constructor for Settings
 	/// </summary>
 	/// <param name="fileName">Name of .sav file</param>
-	Settings(std::string fileName);
+	Settings(const std::string& fileName);
 
 	/// <summary>
 	/// Load new Settings
 	/// </summary>
 	/// <param name="fileName">Name of .sav file</param>
-	void load(std::string fileName);
+	void load(const std::string& fileName);
 
 	/// <summary>
 	/// Set Window Size (doesn't change file)
 	/// </summary>
 	/// <param name="windowSize">Size of RenderWindow</param>
-	void setWindowSize(sf::Vector2u windowSize);
+	void setWindowSize(const sf::Vector2u& windowSize);
 
 	/// <summary>
 	/// Get Window Size
 	/// </summary>
 	/// <returns>Size of RenderWindow</returns>
-	sf::Vector2u getWindowSize();
+	const sf::Vector2u& getWindowSize();
 
 	/// <summary>
 	/// Set Window Position (doesn't change file)
 	/// </summary>
 	/// <param name="windowPosition">Position of RenderWindow</param>
-	void setWindowPosition(sf::Vector2i windowPosition);
+	void setWindowPosition(const sf::Vector2i& windowPosition);
 
 	/// <summary>
 	/// Get Window Position
 	/// </summary>
 	/// <returns>Position of Window</returns>
-	sf::Vector2i getWindowPosition();
+	const sf::Vector2i& getWindowPosition();
 
 	/// <summary>
 	/// Set is Fullscreen (doesn't change file)
@@ -61,13 +61,13 @@ public:
 	/// Set the Current Level Save
 	/// </summary>
 	/// <param name="currentLevel">Current Level Name</param>
-	void setCurrentLevel(std::string currentLevel);
+	void setCurrentLevel(const std::string& currentLevel);
 
 	/// <summary>
 	/// Get Current Level Name
 	/// </summary>
 	/// /// <returns>Name of Current Level</returns>
-	std::string getCurrentLevel();
+	const std::string& getCurrentLevel();
 
 private:
 
