@@ -26,12 +26,11 @@ int main()
 	Level overlay("Menu");
 	Menu currentMenu = MainMenu;
 
-	// Create Player
-	Player player(level);
-
 	// Create Camera
-	Camera camera(player.getPosition(), window.getSize());
-	sf::Vector2f cameraOffset;
+	Camera camera(level.getSpawn(), window.getSize());
+
+	// Create Player
+	Player player(level, camera);
 
 	// Create Clock
 	sf::Clock clock;

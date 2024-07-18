@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/System/Vector2.hpp>
 
+#include "Camera.hpp"
 #include "Level.hpp"
 
 class Player : public sf::Sprite
@@ -14,7 +15,7 @@ public:
 	/// Constructor for Player
 	/// </summary>
 	/// <param name="level"></param>
-	Player(Level& level);
+	Player(Level& level, Camera& camera);
 
 	/// <summary>
 	/// Updates the Player
@@ -90,6 +91,9 @@ private:
 	/// </summary>
 	void tryMove();
 
+	// Components
+	Camera& m_camera;
+
 	// Attributes
 	float m_deltaTime = 0.0F;
 	sf::Vector2f m_size;
@@ -104,7 +108,7 @@ private:
 	// Dashing
 	const float m_dashDuration = 0.1F;
 	const float m_dashCooldown = 0.7F;
-	const float m_dashSpeed = 6000.0F;
+	const float m_dashSpeed = 5000.0F;
 	float m_dashDurationTimer = m_dashDuration;
 	float m_dashCooldownTimer = 0.0F;
 	bool m_dashing = false;

@@ -1,8 +1,8 @@
 
 #include "Player.hpp"
 
-Player::Player(Level& level)
-	: m_level(level)
+Player::Player(Level& level, Camera& camera)
+	: m_level(level), m_camera(camera)
 {
 	// Load Texture
 	m_texture.loadFromFile("Textures/Player.png");
@@ -198,6 +198,7 @@ void Player::tryMove()
 		// Check for Interactions
 		if (m_interacting)
 		{
+
 			// Loop over Doors
 			for (Door door : doors)
 			{
@@ -211,12 +212,18 @@ void Player::tryMove()
 					blockTopLeft.y < playerBottomRight.y &&
 					blockBottomRight.y > playerTopLeft.y)
 				{
+					// Remember Offsets
+					sf::Vector2f offset = getPosition() - door[0].position;
+					sf::Vector2f camera_offset = m_camera.getCenter() - getPosition();
+					
 					// Change Level
 					m_level.load(door.getDestination());
 
 					// Move to Other Door + Current Player Offset
-					sf::Vector2f offset = getPosition() - door[0].position;
 					setPosition(door.getLocation() + offset);
+
+					// Adjust
+					m_camera.setCenter(getPosition() + camera_offset);
 
 					// Break Collision Loop
 					looping = false;
