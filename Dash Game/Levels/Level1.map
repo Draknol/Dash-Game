@@ -1,28 +1,16 @@
--125 -1000
+0 -40
 
 3000
 
-# First actual level with basic terrain and a tree
-
-# Stone
-p -2000 -1000 1000 2000 255 255 255 Stone
-d -1000 150 3000 1000 255 255 255 Stone
-
-# Grass
-p -1000 -100 550 50 255 255 255 Grass
-p -500 -50 800 50 255 255 255 Grass
-p 250 -100 1050 50 255 255 255 Grass
-
-# Dirt
-d -1000 -50 500 200 255 255 255 Dirt
-d -600 0 1000 200 255 255 255 Dirt
-d 300 -50 1000 200 255 255 255 Dirt
-
-# First Tree
-d 400 -450 250 200 30 170 30 null # Leaves
-d 500 -300 50 200 150 80 30 null # Trunk
-
-# House
-d 750 -350 350 100 255 255 255 Roof
-d 750 -250 350 150 150 150 150 null # Main Wall
-D 900 -200 50 100 150 80 30 Door Level2 150 -100
+pb -4 0 16 1 Grass
+db -4 1 16 8 Dirt
+pb 12 -1 17 1 Grass
+db 12 0 17 9 Dirt
+# pb 12 -1 1 2 Grass_Left
+db 17 -3 1 1 Planks
+db 17 -3 1 1 color 0 0 0 100
+Db 17 -3 1 2 Door Level2 0 -2
+db 21 -2 1 1 Rock1
+db 23 -2 1 1 Rock2
+db 6 -1 1 1 Rock2
+db 8 -1 1 1 Rock3

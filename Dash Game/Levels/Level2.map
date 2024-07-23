@@ -1,9 +1,15 @@
-150 -100
+0 -40
 
 3000 
 
 # Small testing map
-p -200 0 400 50 255 0 0 Stone
+pb -10 0 21 1 Planks
+pb -10 -5 1 5 Planks
+pb 10 -5 1 5 Planks
+pb -10 -6 21 1 Planks
+db -9 -5 19 5 Planks
+db -9 -5 19 5 color 0 0 0 100
 
 # Door to first level
-D 150 -100 50 100 255 255 255 Door Level1 900 -200
+db 0 -2 1 1 color 60 60 255 255
+Db 0 -2 1 2 Door Level1 17 -3

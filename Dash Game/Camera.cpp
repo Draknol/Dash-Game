@@ -2,7 +2,7 @@
 #include "Camera.hpp"
 
 Camera::Camera(const sf::Vector2f& position, const sf::Vector2u& size, float speed)
-	: sf::View(position, sf::Vector2f(1920.0F, 1080.0F)), m_speed(speed)
+	: sf::View(position, sf::Vector2f(640.0F, 360.0F)), m_speed(speed)
 {
 	resize(size);
 }

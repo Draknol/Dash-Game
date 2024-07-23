@@ -101,14 +101,14 @@ private:
 	sf::Vector2f m_velocity = sf::Vector2f(0.0F, 0.0F);
 
 	// Walking
-	const float m_speed = 900.0F;
+	const float m_speed = 340.0F;
 	bool m_movingRight = false;
 	bool m_movingLeft = false;
 
 	// Dashing
 	const float m_dashDuration = 0.1F;
 	const float m_dashCooldown = 0.7F;
-	const float m_dashSpeed = 5000.0F;
+	const float m_dashSpeed = 4000.0F;
 	float m_dashDurationTimer = m_dashDuration;
 	float m_dashCooldownTimer = 0.0F;
 	bool m_dashing = false;
@@ -117,14 +117,14 @@ private:
 	bool m_interacting = false;
 
 	// Gravity
-	const float m_gravityAcceleration = 7000.0F;
+	const float m_gravityAcceleration = 2000.0F;
 	const float m_gravityTimeStep = 0.001F;
 	const float m_drag = 0.0005F;
 	float m_gravityTimer = 0.0f;
 
 	// Jumping
 	const int m_maxJumps = 2;
-	const float m_jumpStrength = 1500.0F;
+	const float m_jumpStrength = 500.0F;
 	int m_jumpCounter = m_maxJumps;
 	bool m_jumpHolding = false;
 	bool m_jumping = false;

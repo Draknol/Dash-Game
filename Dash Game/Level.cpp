@@ -5,7 +5,7 @@ Level::Level(const std::string& fileName)
 {
 	// Load Map
 	sf::RenderStates r;
-	m_renderStates["null"] = r;
+	m_renderStates["color"] = r;
 	load(fileName);
 }
 
@@ -13,7 +13,7 @@ Level::Level()
 {
 	// Set Values to Default
 	sf::RenderStates r;
-	m_renderStates["null"] = r;
+	m_renderStates["color"] = r;
 	m_spawn = sf::Vector2f(0, 0);
 	m_killHeight = INT_MIN;
 }
@@ -49,7 +49,7 @@ void Level::load(const std::string& fileName)
 	// Create Variables
 	sf::Vector2f position;
 	sf::Vector2f size;
-	int red, green, blue;
+	int red, green, blue, alpha;
 	std::string textureKey;
 	std::string destination;
 	sf::Vector2f location;
@@ -71,11 +71,29 @@ void Level::load(const std::string& fileName)
 		// Get Info
 		file >> position.x >> position.y
 			>> size.x >> size.y
-			>> red >> green >> blue
 			>> textureKey;
 
+		if (textureKey == "color")
+		{
+			file >> red >> green >> blue >> alpha;
+		}
+		else
+		{
+			red = 255;
+			green = 255;
+			blue = 255;
+			alpha = 255;
+		}
+
+		// Check Coordinate Type
+		if (type[1] == 'b')
+		{
+			position *= 16.0F;
+			size *= 16.0F;
+		}
+
 		// Create Block
-		Block block(position, size, sf::Color(red, green, blue), textureKey);
+		Block block(position, size, sf::Color(red, green, blue, alpha), textureKey);
 
 		// Load & Store Texture
 		if (m_renderStates.find(textureKey) == m_renderStates.end())
@@ -100,6 +118,7 @@ void Level::load(const std::string& fileName)
 		case 'D':
 			file >> destination
 				 >> location.x >> location.y;
+			if (type[1] == 'b') location *= 16.0F;
 			m_doors.emplace_back(block, destination, location);
 			break;
 		default:
