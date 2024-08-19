@@ -2,15 +2,48 @@
 
 3000
 
-pb -4 0 16 1 Grass
-db -4 1 16 8 Dirt
-pb 12 -1 17 1 Grass
-db 12 0 17 9 Dirt
-# pb 12 -1 1 2 Grass_Left
-db 17 -3 1 1 Planks
-db 17 -3 1 1 color 0 0 0 100
-Db 17 -3 1 2 Door Level2 0 -2
-db 21 -2 1 1 Rock1
-db 23 -2 1 1 Rock2
+# GROUND
+
+pb -104 0 116 1 Grass
+pb 12 -1 120 1 Grass
+db -104 1 116 128 Dirt
+db 12 0 120 129 Dirt
+
+# HOUSE
+
+// Walls
+db 14 -4.5 7 3 Planks
+db 14 -1.5 7 0.5 StoneBrick
+db 14 -1.5 7 0.5 color 0 0 0 100
+
+// Door
+db 17 -3.5 1 1 color 0 0 0 100
+Db 17 -3.5 1 2 Door Level2 0 -2.5
+
+// Stairs
+db 16.5 -2 2 1 Stairs
+
+// Poles & Beams
+db 13.5 -4.75 1 3.75 Pole
+db 20.5 -4.75 1 3.75 Pole
+d 222 -73 115 16 Beam
+
+// Roof
+db 13 -5.5 2 2 RoofLeft
+db 14 -6 2 2 RoofLeft
+db 15 -5 5 0.5 Planks
+db 15 -6.5 2 2 RoofLeft
+db 16 -5.5 3 1 Planks
+db 17 -7.5 1 2 RoofMiddle
+db 17 -6 1 0.5 Planks
+db 18 -6.5 2 2 RoofRight
+db 19 -6 2 2 RoofRight
+db 20 -5.5 2 2 RoofRight
+
+# DECORATIONS
+
+// Rocks
+db 22 -2 1 1 Rock1
+db 24 -2 1 1 Rock2
 db 6 -1 1 1 Rock2
 db 8 -1 1 1 Rock3

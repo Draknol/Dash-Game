@@ -147,7 +147,7 @@ void Player::tryMove()
 		sf::Vector2f playerBottomRight = updatedPosition + sf::Vector2f(m_size.x / 2.0F, 0.0F);
 
 		// Loop over Blocks
-		for (Block platform : platforms)
+		for (const Block& platform : platforms)
 		{
 			// Get Block Bounds
 			sf::Vector2f blockTopLeft = sf::Vector2f(platform[3].position.x, platform[1].position.y);

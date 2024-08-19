@@ -62,7 +62,7 @@ void Level::load(const std::string& fileName)
 	while (file >> type)
 	{
 		// Ignore Comments
-		if (type[0] == '#')
+		if (type[0] == '#' || type[0] == '/')
 		{
 			std::getline(file, type);
 			continue;
@@ -137,7 +137,7 @@ void Level::draw(sf::RenderWindow& window)
 	sf::Vector2f wBottomRight = window.mapPixelToCoords((sf::Vector2i)window.getSize());
 
 	// Loop over Platforms
-	for (Block platform : m_platforms)
+	for (Block& platform : m_platforms)
 	{
 		// Check if Block is on Screen
 		if (platform[3].position.x < wBottomRight.x &&
@@ -151,7 +151,7 @@ void Level::draw(sf::RenderWindow& window)
 	}
 
 	// Loop over Markers
-	for (Block decoration : m_decorations)
+	for (Block& decoration : m_decorations)
 	{
 		// Check if Block is on Screen
 		if (decoration[3].position.x < wBottomRight.x &&
@@ -165,7 +165,7 @@ void Level::draw(sf::RenderWindow& window)
 	}
 
 	// Loop over Doors
-	for (auto door : m_doors)
+	for (Door& door : m_doors)
 	{
 		// Check if Block is on Screen
 		if (door[3].position.x < wBottomRight.x &&
