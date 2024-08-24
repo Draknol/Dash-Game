@@ -22,6 +22,8 @@ public:
 	Block(const sf::Vector2f& position, const sf::Vector2f& size, const sf::Color& color, const std::string& texture);
 
 	const std::string& getTexture();
+
+	void setColor(const sf::Color& color);
 private:
 
 	std::string m_texture;

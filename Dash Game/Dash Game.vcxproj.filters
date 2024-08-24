@@ -40,6 +40,12 @@
     <Filter Include="Source Files\Game">
       <UniqueIdentifier>{12c55e95-3e75-4da5-8dd3-dafc05ec63c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{3be95c34-dc53-4b43-8712-a10a2bb03f11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Fonts">
+      <UniqueIdentifier>{cb8ad970-b096-42e8-9352-94e3ac6e1931}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Player.cpp">
@@ -65,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +106,9 @@
     <ClInclude Include="Settings.hpp">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
+    <ClInclude Include="Text.hpp">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Levels\Level1.map">
@@ -109,5 +121,13 @@
     <None Include="Levels\Menu.map">
       <Filter>Resource Files\Levels</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Fonts\Pixellari.ttf">
+      <Filter>Resource Files\Fonts</Filter>
+    </Font>
+    <Font Include="Fonts\Renogare-Regular.otf">
+      <Filter>Resource Files\Fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

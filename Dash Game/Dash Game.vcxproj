@@ -135,6 +135,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.hpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="Level.hpp" />
     <ClInclude Include="Settings.hpp" />
+    <ClInclude Include="Text.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\Door.png" />
@@ -154,6 +156,10 @@
     <None Include="Levels\Level2.map" />
     <None Include="Levels\Menu.map" />
     <None Include="Saves\Settings.sav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Fonts\Pixellari.ttf" />
+    <Font Include="Fonts\Renogare-Regular.otf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/System/Vector2.hpp>
 
 #include <unordered_map>
@@ -9,6 +10,7 @@
 
 #include "Block.hpp"
 #include "Door.hpp"
+#include "Text.hpp"
 
 class Level
 {
@@ -81,6 +83,7 @@ private:
 	std::vector<Block> m_platforms;
 	std::vector<Block> m_decorations;
 	std::vector<Door> m_doors;
+	std::vector<Text> m_texts;
 
 	// Player
 	sf::Vector2f m_spawn;
@@ -88,5 +91,8 @@ private:
 
 	// Textures
 	std::unordered_map<std::string, sf::RenderStates> m_renderStates;
-	std::vector<sf::Texture*> textures;
+	std::vector<sf::Texture*> m_textures;
+
+	// Fonts
+	std::unordered_map<std::string, sf::Font*> m_fonts;
 };

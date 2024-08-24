@@ -24,6 +24,7 @@ void Level::erase()
 	m_platforms.clear();
 	m_decorations.clear();
 	m_doors.clear();
+	m_texts.clear();
 
 	// Set Values to Default
 	m_spawn = sf::Vector2f(0, 0);
@@ -50,11 +51,16 @@ void Level::load(const std::string& fileName)
 	sf::Vector2f position;
 	sf::Vector2f size;
 	int red, green, blue, alpha;
+	int red2, green2, blue2, alpha2;
+	int fontSize;
 	std::string textureKey;
+	std::string fontKey;
 	std::string destination;
+	std::string text;
 	sf::Vector2f location;
 	sf::RenderStates renderState;
 	sf::Texture* texture;
+	sf::Font* font{};
 
 	/* Platforms & Decorations */
 
@@ -68,21 +74,53 @@ void Level::load(const std::string& fileName)
 			continue;
 		}
 
-		// Get Info
-		file >> position.x >> position.y
-			>> size.x >> size.y
-			>> textureKey;
-
-		if (textureKey == "color")
+		if (type[0] == 't')
 		{
-			file >> red >> green >> blue >> alpha;
+			file >> position.x >> position.y
+				 >> fontSize
+				 >> fontKey
+				 >> red >> green >> blue >> alpha
+				 >> red2 >> green2 >> blue2 >> alpha2;
+			std::getline(file, text);
+			text = text.substr(1);
+
+			// Load & Store Font
+			if (m_fonts.find(fontKey) == m_fonts.end())
+			{
+				font = new sf::Font;
+				font->loadFromFile("Fonts/" + fontKey + ".ttf");
+				m_fonts[fontKey] = font;
+			}
 		}
 		else
 		{
-			red = 255;
-			green = 255;
-			blue = 255;
-			alpha = 255;
+			// Get Info
+			file >> position.x >> position.y
+				>> size.x >> size.y
+				>> textureKey;
+
+			if (textureKey == "color")
+			{
+				file >> red >> green >> blue >> alpha;
+			}
+			else
+			{
+				red = 255;
+				green = 255;
+				blue = 255;
+				alpha = 255;
+			}
+
+			// Load & Store Texture
+			if (m_renderStates.find(textureKey) == m_renderStates.end())
+			{
+				texture = new sf::Texture;
+				texture->loadFromFile("Textures/" + textureKey + ".png");
+				texture->setRepeated(true);
+				m_textures.push_back(texture);
+				renderState.texture = &*m_textures.back();
+				m_renderStates[textureKey] = renderState;
+			}
 		}
 
 		// Check Coordinate Type
@@ -92,37 +130,37 @@ void Level::load(const std::string& fileName)
 			size *= 16.0F;
 		}
 
-		// Create Block
-		Block block(position, size, sf::Color(red, green, blue, alpha), textureKey);
-
-		// Load & Store Texture
-		if (m_renderStates.find(textureKey) == m_renderStates.end())
+		if (type[0] == 't')
 		{
-			texture = new sf::Texture;
-			texture->loadFromFile("Textures/" + textureKey + ".png");
-			texture->setRepeated(true);
-			textures.push_back(texture);
-			renderState.texture = &*textures.back();
-			m_renderStates[textureKey] = renderState;
+			// Create Text
+			if (font != nullptr)
+			{
+				m_texts.emplace_back(text, *font, fontSize, position, sf::Color(red, green, blue, alpha), sf::Color(red2, green2, blue2, alpha2));
+			}
 		}
-
-		// Store in Vector
-		switch (type[0])
+		else
 		{
-		case 'p':
-			m_platforms.push_back(block);
-			break;
-		case 'd':
-			m_decorations.push_back(block);
-			break;
-		case 'D':
-			file >> destination
-				 >> location.x >> location.y;
-			if (type[1] == 'b') location *= 16.0F;
-			m_doors.emplace_back(block, destination, location);
-			break;
-		default:
-			break;
+			// Create Block
+			Block block(position, size, sf::Color(red, green, blue, alpha), textureKey);
+
+			// Store in Vector
+			switch (type[0])
+			{
+			case 'p':
+				m_platforms.push_back(block);
+				break;
+			case 'd':
+				m_decorations.push_back(block);
+				break;
+			case 'D':
+				file >> destination
+					>> location.x >> location.y;
+				if (type[1] == 'b') location *= 16.0F;
+				m_doors.emplace_back(block, destination, location);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -175,6 +213,20 @@ void Level::draw(sf::RenderWindow& window)
 		{
 			// Draw Block if on Screen
 			window.draw(door, m_renderStates.at(door.getTexture()));
+		}
+	}
+
+	// Loop over Text
+	for (Text& text : m_texts)
+	{
+		// Check if Text is on Screen
+		if (text.getBottomRight().x < wBottomRight.x &&
+			text.getTopLeft().x > wTopLeft.x &&
+			text.getBottomRight().y < wBottomRight.y &&
+			text.getTopLeft().y > wTopLeft.y)
+		{
+			// Draw Text if on Screen
+			window.draw(text);
 		}
 	}
 }

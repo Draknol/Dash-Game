@@ -101,14 +101,14 @@ private:
 	sf::Vector2f m_velocity = sf::Vector2f(0.0F, 0.0F);
 
 	// Walking
-	const float m_speed = 340.0F;
+	const float m_speed = 270.0F;
 	bool m_movingRight = false;
 	bool m_movingLeft = false;
 
 	// Dashing
 	const float m_dashDuration = 0.1F;
 	const float m_dashCooldown = 0.7F;
-	const float m_dashSpeed = 3000.0F;
+	const float m_dashSpeed = 2000.0F;
 	float m_dashDurationTimer = m_dashDuration;
 	float m_dashCooldownTimer = 0.0F;
 	bool m_dashing = false;
