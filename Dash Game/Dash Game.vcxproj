@@ -158,8 +158,7 @@
     <None Include="Saves\Settings.sav" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Fonts\Pixellari.ttf" />
-    <Font Include="Fonts\Renogare-Regular.otf" />
+    <Font Include="Fonts\PublicPixel.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

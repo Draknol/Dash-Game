@@ -52,7 +52,7 @@ void Level::load(const std::string& fileName)
 	sf::Vector2f size;
 	int red, green, blue, alpha;
 	int red2, green2, blue2, alpha2;
-	int fontSize;
+	float fontSize = 0;
 	std::string textureKey;
 	std::string fontKey;
 	std::string destination;
@@ -83,6 +83,7 @@ void Level::load(const std::string& fileName)
 				 >> red2 >> green2 >> blue2 >> alpha2;
 			std::getline(file, text);
 			text = text.substr(1);
+			if (type[1] == 'b') fontSize *= 16.0F;
 
 			// Load & Store Font
 			if (m_fonts.find(fontKey) == m_fonts.end())
@@ -135,7 +136,7 @@ void Level::load(const std::string& fileName)
 			// Create Text
 			if (font != nullptr)
 			{
-				m_texts.emplace_back(text, *font, fontSize, position, sf::Color(red, green, blue, alpha), sf::Color(red2, green2, blue2, alpha2));
+				m_texts.emplace_back(text, *font, (int) fontSize, position, sf::Color(red, green, blue, alpha), sf::Color(red2, green2, blue2, alpha2));
 			}
 		}
 		else

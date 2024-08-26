@@ -123,10 +123,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Fonts\Pixellari.ttf">
-      <Filter>Resource Files\Fonts</Filter>
-    </Font>
-    <Font Include="Fonts\Renogare-Regular.otf">
+    <Font Include="Fonts\PublicPixel.ttf">
       <Filter>Resource Files\Fonts</Filter>
     </Font>
   </ItemGroup>

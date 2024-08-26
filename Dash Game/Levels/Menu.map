@@ -3,4 +3,5 @@
 -1000
 
 # Main Menu
-tb 0 -6 500 Pixellari 60 60 255 255 0 0 0 255 PRESS E
+tb 0 -7 2 PublicPixel 255 255 255 255 0 0 0 255 LOAD
+tb 0 3 2 PublicPixel 255 255 255 255 0 0 0 255 EXIT
