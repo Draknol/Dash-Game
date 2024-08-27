@@ -167,25 +167,25 @@ void Player::tryMove()
 				bool leftCollided = playerTopLeft.x + m_collisionBuffer > blockBottomRight.x;
 
 				// Check Bottom
-				if (m_velocity.y > 0.0F && bottomCollided && !rightCollided && !leftCollided)
+				if (m_velocity.y > 0.0F && bottomCollided)
 				{
 					updatedPosition.y = blockTopLeft.y;
 					m_velocity.y = 0.0F;
 					m_jumpCounter = m_maxJumps;
 				}
 				// Check Top
-				else if (m_velocity.y < 0.0F && TopCollided && !rightCollided && !leftCollided)
+				else if (m_velocity.y < 0.0F && TopCollided)
 				{
 					updatedPosition.y = blockBottomRight.y + m_size.y;
 					m_velocity.y = 0.0F;
 				}
 				// Check Right
-				if (m_velocity.x > 0.0F && rightCollided && !bottomCollided && !TopCollided)
+				if (m_velocity.x > 0.0F && rightCollided)
 				{
 					updatedPosition.x = blockTopLeft.x - m_size.x / 2.0F;
 				}
 				// Check Left
-				else if (m_velocity.x < 0.0F && leftCollided && !bottomCollided && !TopCollided)
+				else if (m_velocity.x < 0.0F && leftCollided)
 				{
 					updatedPosition.x = blockBottomRight.x + m_size.x / 2.0F;
 				}
