@@ -1,7 +1,7 @@
 #include "Text.hpp"
 
 Text::Text(const std::string& text, const sf::Font& font, unsigned int characterSize, const sf::Vector2f& position, const sf::Color& textColor, const sf::Color& backgroundColor)
-	: m_text(text, font, characterSize * 2 * 4.65F), m_background({ 0, 0 }, { 0, 0 }, backgroundColor, "color") {
+	: m_text(text, font, characterSize * 2 * 3.0F), m_background({ 0, 0 }, { 0, 0 }, backgroundColor, "color") {
 
 	// THIS CODE IS FRAGILE, DON'T TOUCH IT, IT WILL BREAK
 
@@ -54,3 +54,10 @@ void Text::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(m_background);
 	target.draw(m_text);
 } 
+
+void Text::setBackgroundColor(sf::Color color) {
+	for (int i = 0; i < 4; i++)
+	{
+		m_background[i].color = color;
+	}
+}

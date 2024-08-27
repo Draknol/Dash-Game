@@ -3,5 +3,21 @@
 -1000
 
 # Main Menu
-tb 0 -7 2 PublicPixel 255 255 255 255 0 0 0 255 LOAD
-tb 0 3 2 PublicPixel 255 255 255 255 0 0 0 255 EXIT
+
+// Background
+db -9.5 -10.5 19 21 Dirt
+
+// Boarder
+db -10 -10.5 1 21 Pole
+db 9 -10.5 1 21 Pole
+d -154 -168 307 16 Beam
+d -154 163 307 16 Beam
+
+// Title
+tb 0 -9 3 PublicPixel 0 0 0 255 0 0 0 0 Main
+tb 0 -6 3 PublicPixel 0 0 0 255 0 0 0 0 Menu
+
+// Buttons (not settings yet)
+Bb 0 2 1 PublicPixel 255 255 255 255 0 0 0 255 100 100 100 255 Level1 New Game
+Bb 0 4 1 PublicPixel 255 255 255 255 0 0 0 255 100 100 100 255 null Settings
+Bb 0 6 1 PublicPixel 255 255 255 255 0 0 0 255 100 100 100 255 close   Exit  

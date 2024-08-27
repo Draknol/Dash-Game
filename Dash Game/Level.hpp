@@ -8,9 +8,9 @@
 #include <fstream>
 #include <vector>
 
+#include "Button.hpp"
 #include "Block.hpp"
 #include "Door.hpp"
-#include "Text.hpp"
 
 class Level
 {
@@ -74,6 +74,8 @@ public:
 	/// <returns></returns>
 	const std::string& getName();
 
+	std::string checkButtons(sf::Vector2f mousePosition, bool press);
+
 private:
 
 	// Level
@@ -84,6 +86,7 @@ private:
 	std::vector<Block> m_decorations;
 	std::vector<Door> m_doors;
 	std::vector<Text> m_texts;
+	std::vector<Button> m_buttons;
 
 	// Player
 	sf::Vector2f m_spawn;

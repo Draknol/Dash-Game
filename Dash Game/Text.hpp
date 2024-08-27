@@ -7,12 +7,18 @@
 
 class Text : public sf::Drawable {
 public:
+
     Text(const std::string& text, const sf::Font& font, unsigned int characterSize, const sf::Vector2f& position, const sf::Color& textColor, const sf::Color& backgroundColor);
 
     sf::Vector2f getTopLeft();
     sf::Vector2f getBottomRight();
 
+protected:
+
+    void setBackgroundColor(sf::Color color);
+
 private:
+
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     Block m_background;

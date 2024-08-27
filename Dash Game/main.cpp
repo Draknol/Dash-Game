@@ -55,6 +55,29 @@ int main()
 			case sf::Event::Resized:
 				camera.resize(window.getSize());
 				break;
+			case sf::Event::MouseButtonReleased:
+				switch (event.key.code)
+				{
+				case sf::Mouse::Left:
+					std::string function = overlay.checkButtons(window.mapPixelToCoords(sf::Mouse::getPosition(window)), false);
+					if (function == "null") break;
+					if (function == "close") window.close();
+					currentMenu = GameMenu;
+					level.load(function);
+					overlay.load("Blank");
+					player.reset();
+					camera.setCenter(level.getSpawn());
+					break;
+				}
+				break;
+			case sf::Event::MouseButtonPressed:
+				switch (event.key.code)
+				{
+				case sf::Mouse::Left:
+					overlay.checkButtons(window.mapPixelToCoords(sf::Mouse::getPosition(window)), true);
+					break;
+				}
+				break;
 			case sf::Event::KeyReleased:
 				switch (event.key.code)
 				{
@@ -68,13 +91,11 @@ int main()
 					player.jumping(false);
 					break;
 				case sf::Keyboard::E:
-					player.interacting(false);
+						player.interacting(false);
 					break;
 				default:
 					break;
 				}
-				break;
-			default:
 				break;
 			case sf::Event::KeyPressed:
 				switch (event.key.code)
@@ -92,22 +113,7 @@ int main()
 					player.jumping(true);
 					break;
 				case sf::Keyboard::E:
-					// Start Game
-					switch (currentMenu)
-					{
-					case GameMenu:
-						player.interacting(true);
-						break;
-					case MainMenu:
-						currentMenu = GameMenu;
-						level.load(settings.getCurrentLevel());
-						overlay.load("Blank");
-						player.reset();
-						camera.setCenter(level.getSpawn());
-						break;
-					default:
-						break;
-					}
+					player.interacting(true);
 					break;
 				case sf::Keyboard::Escape:
 					// Exit to Menu
@@ -147,6 +153,8 @@ int main()
 				default:
 					break;
 				}
+			default:
+				break;
 			}
 		}
 

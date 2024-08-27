@@ -25,6 +25,7 @@ void Level::erase()
 	m_decorations.clear();
 	m_doors.clear();
 	m_texts.clear();
+	m_buttons.clear();
 
 	// Set Values to Default
 	m_spawn = sf::Vector2f(0, 0);
@@ -50,13 +51,15 @@ void Level::load(const std::string& fileName)
 	// Create Variables
 	sf::Vector2f position;
 	sf::Vector2f size;
-	int red, green, blue, alpha;
+	int red1, green1, blue1, alpha1;
 	int red2, green2, blue2, alpha2;
+	int red3, green3, blue3, alpha3;
 	float fontSize = 0;
 	std::string textureKey;
 	std::string fontKey;
 	std::string destination;
 	std::string text;
+	std::string function;
 	sf::Vector2f location;
 	sf::RenderStates renderState;
 	sf::Texture* texture;
@@ -74,13 +77,19 @@ void Level::load(const std::string& fileName)
 			continue;
 		}
 
-		if (type[0] == 't')
+		if (type[0] == 't' || type[0] == 'B')
 		{
 			file >> position.x >> position.y
 				 >> fontSize
 				 >> fontKey
-				 >> red >> green >> blue >> alpha
+				 >> red1 >> green1 >> blue1 >> alpha1
 				 >> red2 >> green2 >> blue2 >> alpha2;
+
+			if (type[0] == 'B') {
+				file >> red3 >> green3 >> blue3 >> alpha3
+					 >> function;
+			}
+
 			std::getline(file, text);
 			text = text.substr(1);
 			if (type[1] == 'b') fontSize *= 16.0F;
@@ -102,14 +111,14 @@ void Level::load(const std::string& fileName)
 
 			if (textureKey == "color")
 			{
-				file >> red >> green >> blue >> alpha;
+				file >> red1 >> green1 >> blue1 >> alpha1;
 			}
 			else
 			{
-				red = 255;
-				green = 255;
-				blue = 255;
-				alpha = 255;
+				red1 = 255;
+				green1 = 255;
+				blue1 = 255;
+				alpha1 = 255;
 			}
 
 			// Load & Store Texture
@@ -136,13 +145,21 @@ void Level::load(const std::string& fileName)
 			// Create Text
 			if (font != nullptr)
 			{
-				m_texts.emplace_back(text, *font, (int) fontSize, position, sf::Color(red, green, blue, alpha), sf::Color(red2, green2, blue2, alpha2));
+				m_texts.emplace_back(text, *font, (int) fontSize, position, sf::Color(red1, green1, blue1, alpha1), sf::Color(red2, green2, blue2, alpha2));
+			}
+		}
+		else if (type[0] == 'B')
+		{
+			// Create Text
+			if (font != nullptr)
+			{
+				m_buttons.emplace_back(text, *font, (int)fontSize, position, sf::Color(red1, green1, blue1, alpha1), sf::Color(red2, green2, blue2, alpha2), sf::Color(red3, green3, blue3, alpha3), function);
 			}
 		}
 		else
 		{
 			// Create Block
-			Block block(position, size, sf::Color(red, green, blue, alpha), textureKey);
+			Block block(position, size, sf::Color(red1, green1, blue1, alpha1), textureKey);
 
 			// Store in Vector
 			switch (type[0])
@@ -230,6 +247,41 @@ void Level::draw(sf::RenderWindow& window)
 			window.draw(text);
 		}
 	}
+
+	// Loop over Buttons
+	for (Button& button : m_buttons)
+	{
+		// Check if Button is on Screen
+		if (button.getBottomRight().x < wBottomRight.x &&
+			button.getTopLeft().x > wTopLeft.x &&
+			button.getBottomRight().y < wBottomRight.y &&
+			button.getTopLeft().y > wTopLeft.y)
+		{
+			// Draw Button if on Screen
+			window.draw(button);
+		}
+	}
+}
+
+std::string Level::checkButtons(sf::Vector2f mousePosition, bool press)
+{
+	for (Button& button : m_buttons)
+	{
+		if (mousePosition.x < button.getBottomRight().x &&
+			mousePosition.x > button.getTopLeft().x &&
+			mousePosition.y < button.getBottomRight().y &&
+			mousePosition.y > button.getTopLeft().y)
+		{
+			if (press == true)
+			{
+				button.colorPressed();
+				return "null";
+			}
+			return button.getFunction();
+		}
+	}
+
+	return "null";
 }
 
 const std::vector<Block>& Level::getPlatforms()
