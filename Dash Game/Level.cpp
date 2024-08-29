@@ -106,10 +106,7 @@ void Level::load(const std::string& fileName)
 				m_fonts[fontKey] = new sf::Font;
 				m_fonts[fontKey]->loadFromFile("Fonts/" + fontKey + ".ttf");
 			}
-			else
-			{
-				font = m_fonts.at(fontKey);
-			}
+			font = m_fonts.at(fontKey);
 
 			// Check what object to create
 			if (type[0] == 't')
