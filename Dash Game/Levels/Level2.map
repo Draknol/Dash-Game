@@ -8,8 +8,8 @@ pb -10 -5 1 5 Planks
 pb 10 -5 1 5 Planks
 pb -10 -6 21 1 Planks
 db -9 -5 19 5 Planks
-db -9 -5 19 5 color 0 0 0 100
+db -9 -5 19 5 color 00000064
 
 # Door to first level
-db 0 -2 1 1 color 60 60 255 255
+db 0 -2 1 1 color 3c3cFFFF
 Db 0 -2 1 2 Door Level1 17 -3

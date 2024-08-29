@@ -35,12 +35,3 @@ const std::string& Block::getTexture()
 {
 	return m_texture;
 }
-
-void Block::setColor(const sf::Color& color)
-{
-	// Update each vertex's color
-	for (int i = 0; i < getVertexCount(); i++)
-	{
-		(*this)[i].color = color;
-	}
-}

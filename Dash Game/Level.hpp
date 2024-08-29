@@ -2,7 +2,6 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Font.hpp>
-#include <SFML/System/Vector2.hpp>
 
 #include <unordered_map>
 #include <fstream>
@@ -12,6 +11,10 @@
 #include "Block.hpp"
 #include "Door.hpp"
 
+
+/// <summary>
+/// Level with blocks, loaded from a .map file
+/// </summary>
 class Level
 {
 public:
@@ -74,9 +77,20 @@ public:
 	/// <returns></returns>
 	const std::string& getName();
 
+	/// <summary>
+	/// Check if any buttons are under the mouse
+	/// </summary>
+	/// <param name="mousePosition">Position of the mouse</param>
+	/// <param name="press">Is the button being pressed or released</param>
+	/// <returns>Function to happen when pressed of button under mouse ("null" if released or no button)</returns>
 	std::string checkButtons(sf::Vector2f mousePosition, bool press);
 
 private:
+
+	/// <summary>
+	/// Gets a sf::Color from hex
+	/// </summary>
+	static sf::Color fromHex(uint32_t hex);
 
 	// Level
 	std::string m_name;

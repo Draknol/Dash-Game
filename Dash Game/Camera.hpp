@@ -2,8 +2,6 @@
 
 #include <SFML/Graphics/View.hpp>
 
-#include <SFML/System/Vector2.hpp>
-
 class Camera : public sf::View
 {
 public:

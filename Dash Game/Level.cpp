@@ -4,16 +4,14 @@
 Level::Level(const std::string& fileName)
 {
 	// Load Map
-	sf::RenderStates r;
-	m_renderStates["color"] = r;
+	m_renderStates["color"] = sf::RenderStates();
 	load(fileName);
 }
 
 Level::Level() 
 {
 	// Set Values to Default
-	sf::RenderStates r;
-	m_renderStates["color"] = r;
+	m_renderStates["color"] = sf::RenderStates();
 	m_spawn = sf::Vector2f(0, 0);
 	m_killHeight = INT_MIN;
 }
@@ -51,10 +49,10 @@ void Level::load(const std::string& fileName)
 	// Create Variables
 	sf::Vector2f position;
 	sf::Vector2f size;
-	int red1, green1, blue1, alpha1;
-	int red2, green2, blue2, alpha2;
-	int red3, green3, blue3, alpha3;
-	float fontSize = 0;
+	uint32_t color = 0U;
+	uint32_t backgroundColor = 0U;
+	uint32_t pressedColor = 0U;
+	float fontSize = 0.0F;
 	std::string textureKey;
 	std::string fontKey;
 	std::string destination;
@@ -62,11 +60,10 @@ void Level::load(const std::string& fileName)
 	std::string function;
 	sf::Vector2f location;
 	sf::RenderStates renderState;
-	sf::Texture* texture;
-	sf::Font* font{};
+	sf::Texture* texture{};
+	sf::Font* font = new sf::Font;
 
-	/* Platforms & Decorations */
-
+	// Read in file
 	std::string type;
 	while (file >> type)
 	{
@@ -77,48 +74,78 @@ void Level::load(const std::string& fileName)
 			continue;
 		}
 
+		// Handle text and buttons
 		if (type[0] == 't' || type[0] == 'B')
 		{
+			// Read in text info
 			file >> position.x >> position.y
-				 >> fontSize
-				 >> fontKey
-				 >> red1 >> green1 >> blue1 >> alpha1
-				 >> red2 >> green2 >> blue2 >> alpha2;
+				 >> fontSize >> fontKey
+				 >> std::hex >> color >> std::dec;
 
+			// Read in button info
 			if (type[0] == 'B') {
-				file >> red3 >> green3 >> blue3 >> alpha3
+				file >> std::hex >> backgroundColor >> pressedColor >> std::dec
 					 >> function;
 			}
 
+			// Read in text (without space infront)
 			std::getline(file, text);
 			text = text.substr(1);
-			if (type[1] == 'b') fontSize *= 16.0F;
 
-			// Load & Store Font
+			// Check if units are px or blocks
+			if (type[1] == 'b')
+			{
+				position *= 16.0F;
+				size *= 16.0F;
+				fontSize *= 16.0F;
+			}
+
+			// Load and or store font
 			if (m_fonts.find(fontKey) == m_fonts.end())
 			{
-				font = new sf::Font;
-				font->loadFromFile("Fonts/" + fontKey + ".ttf");
-				m_fonts[fontKey] = font;
+				m_fonts[fontKey] = new sf::Font;
+				m_fonts[fontKey]->loadFromFile("Fonts/" + fontKey + ".ttf");
+			}
+			else
+			{
+				font = m_fonts.at(fontKey);
+			}
+
+			// Check what object to create
+			if (type[0] == 't')
+			{
+				// Create Text
+				m_texts.emplace_back(text, *font, (int)fontSize, position, fromHex(color));
+			}
+			else
+			{
+				// Create Button
+				m_buttons.emplace_back(text, *font, (int)fontSize, position, fromHex(color), fromHex(backgroundColor), fromHex(pressedColor), function);
 			}
 		}
+		// Handle blocks
 		else
 		{
-			// Get Info
+			// Get block info
 			file >> position.x >> position.y
 				>> size.x >> size.y
 				>> textureKey;
 
+			// Check if units are px or blocks
+			if (type[1] == 'b')
+			{
+				position *= 16.0F;
+				size *= 16.0F;
+			}
+
+			// Handle plain color case
 			if (textureKey == "color")
 			{
-				file >> red1 >> green1 >> blue1 >> alpha1;
+				file >> std::hex >> color >> std::dec;
 			}
 			else
 			{
-				red1 = 255;
-				green1 = 255;
-				blue1 = 255;
-				alpha1 = 255;
+				color = 0xFFFFFFFF;
 			}
 
 			// Load & Store Texture
@@ -131,35 +158,9 @@ void Level::load(const std::string& fileName)
 				renderState.texture = &*m_textures.back();
 				m_renderStates[textureKey] = renderState;
 			}
-		}
 
-		// Check Coordinate Type
-		if (type[1] == 'b')
-		{
-			position *= 16.0F;
-			size *= 16.0F;
-		}
-
-		if (type[0] == 't')
-		{
-			// Create Text
-			if (font != nullptr)
-			{
-				m_texts.emplace_back(text, *font, (int) fontSize, position, sf::Color(red1, green1, blue1, alpha1), sf::Color(red2, green2, blue2, alpha2));
-			}
-		}
-		else if (type[0] == 'B')
-		{
-			// Create Text
-			if (font != nullptr)
-			{
-				m_buttons.emplace_back(text, *font, (int)fontSize, position, sf::Color(red1, green1, blue1, alpha1), sf::Color(red2, green2, blue2, alpha2), sf::Color(red3, green3, blue3, alpha3), function);
-			}
-		}
-		else
-		{
 			// Create Block
-			Block block(position, size, sf::Color(red1, green1, blue1, alpha1), textureKey);
+			Block block(position, size, fromHex(color), textureKey);
 
 			// Store in Vector
 			switch (type[0])
@@ -238,10 +239,10 @@ void Level::draw(sf::RenderWindow& window)
 	for (Text& text : m_texts)
 	{
 		// Check if Text is on Screen
-		if (text.getBottomRight().x < wBottomRight.x &&
-			text.getTopLeft().x > wTopLeft.x &&
-			text.getBottomRight().y < wBottomRight.y &&
-			text.getTopLeft().y > wTopLeft.y)
+		if (text.getTopLeft().x < wBottomRight.x &&
+			text.getBottomRight().x > wTopLeft.x &&
+			text.getTopLeft().y < wBottomRight.y &&
+			text.getBottomRight().y > wTopLeft.y)
 		{
 			// Draw Text if on Screen
 			window.draw(text);
@@ -252,10 +253,10 @@ void Level::draw(sf::RenderWindow& window)
 	for (Button& button : m_buttons)
 	{
 		// Check if Button is on Screen
-		if (button.getBottomRight().x < wBottomRight.x &&
-			button.getTopLeft().x > wTopLeft.x &&
-			button.getBottomRight().y < wBottomRight.y &&
-			button.getTopLeft().y > wTopLeft.y)
+		if (button.getTopLeft().x < wBottomRight.x &&
+			button.getBottomRight().x > wTopLeft.x &&
+			button.getTopLeft().y < wBottomRight.y &&
+			button.getBottomRight().y > wTopLeft.y)
 		{
 			// Draw Button if on Screen
 			window.draw(button);
@@ -267,6 +268,8 @@ std::string Level::checkButtons(sf::Vector2f mousePosition, bool press)
 {
 	for (Button& button : m_buttons)
 	{
+		if (press == false) button.setReleasedColor();
+
 		if (mousePosition.x < button.getBottomRight().x &&
 			mousePosition.x > button.getTopLeft().x &&
 			mousePosition.y < button.getBottomRight().y &&
@@ -274,7 +277,7 @@ std::string Level::checkButtons(sf::Vector2f mousePosition, bool press)
 		{
 			if (press == true)
 			{
-				button.colorPressed();
+				button.setPressedColor();
 				return "null";
 			}
 			return button.getFunction();
@@ -282,6 +285,11 @@ std::string Level::checkButtons(sf::Vector2f mousePosition, bool press)
 	}
 
 	return "null";
+}
+
+sf::Color Level::fromHex(uint32_t hex)
+{
+	return sf::Color((hex >> 24) & 0xFF, (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
 }
 
 const std::vector<Block>& Level::getPlatforms()

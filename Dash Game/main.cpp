@@ -4,8 +4,6 @@
 
 #include "Settings.hpp"
 #include "Player.hpp"
-#include "Camera.hpp"
-#include "Level.hpp"
 #include "Menu.hpp"
 
 int main()
@@ -64,7 +62,7 @@ int main()
 					if (function == "close") window.close();
 					currentMenu = GameMenu;
 					level.load(function);
-					overlay.load("Blank");
+					overlay.load("null");
 					player.reset();
 					camera.setCenter(level.getSpawn());
 					break;
@@ -121,10 +119,12 @@ int main()
 					{
 					case GameMenu:
 						currentMenu = PauseMenu;
+						overlay.load("Menu");
 						paused = true;
 						break;
 					case PauseMenu:
 						currentMenu = GameMenu;
+						overlay.load("Blank");
 						paused = false;
 						break;
 					default:
@@ -175,8 +175,8 @@ int main()
 
 		// Draw Everything
 		level.draw(window);
-		overlay.draw(window);
 		window.draw(player);
+		overlay.draw(window);
 
 		// Display Window
 		window.display();

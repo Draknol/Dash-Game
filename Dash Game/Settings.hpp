@@ -3,8 +3,10 @@
 #include <SFML/System/Vector2.hpp>
 
 #include <fstream>
-#include <string>
 
+/// <summary>
+/// Save file for game settings
+/// </summary>
 class Settings
 {
 public:
@@ -71,7 +73,7 @@ public:
 
 private:
 
-	// Settings
+	// Settings with default values
 	sf::Vector2u m_windowSize = sf::Vector2u(800U, 800U);
 	sf::Vector2i m_windowPosition = sf::Vector2i(0U, 0U);
 	bool m_isFullscreen = false;

@@ -2,11 +2,13 @@
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/System/Vector2.hpp>
 
 #include "Camera.hpp"
 #include "Level.hpp"
 
+/// <summary>
+/// Player class with camera following it
+/// </summary>
 class Player : public sf::Sprite
 {
 public:

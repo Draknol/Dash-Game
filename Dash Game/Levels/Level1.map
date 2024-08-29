@@ -14,10 +14,10 @@ db 12 0 120 129 Dirt
 // Walls
 db 14 -4.5 7 3 Planks
 db 14 -1.5 7 0.5 StoneBrick
-db 14 -1.5 7 0.5 color 0 0 0 100
+db 14 -1.5 7 0.5 color 00000064
 
 // Door
-db 17 -3.5 1 1 color 0 0 0 100
+db 17 -3.5 1 1 color 00000064
 Db 17 -3.5 1 2 Door Level2 0 -2.5
 
 // Stairs

@@ -14,10 +14,10 @@ d -154 -168 307 16 Beam
 d -154 163 307 16 Beam
 
 // Title
-tb 0 -9 3 PublicPixel 0 0 0 255 0 0 0 0 Main
-tb 0 -6 3 PublicPixel 0 0 0 255 0 0 0 0 Menu
+tb 0 -8 4 PublicPixel 000000FF Main
+tb 0 -5 4 PublicPixel 000000FF Menu
 
 // Buttons (not settings yet)
-Bb 0 2 1 PublicPixel 255 255 255 255 0 0 0 255 100 100 100 255 Level1 New Game
-Bb 0 4 1 PublicPixel 255 255 255 255 0 0 0 255 100 100 100 255 null Settings
-Bb 0 6 1 PublicPixel 255 255 255 255 0 0 0 255 100 100 100 255 close   Exit  
+Bb 0 0 2 PublicPixel 000000FF 34FF1AFF 646464FF Level1 New Game
+Bb 0 3 2 PublicPixel 000000FF 34FF1AFF 646464FF null Settings
+Bb 0 6 2 PublicPixel 000000FF 34FF1AFF 646464FF close   Exit  
