@@ -28,6 +28,7 @@ int main()
 	// Create Camera
 	Camera camera(level.getSpawn(), window.getSize());
 	Camera uiCamera({ 0, 0 }, window.getSize());
+	sf::View defaultView = window.getDefaultView();
 
 	// Create Player
 	Player player(level, camera);
@@ -173,6 +174,7 @@ int main()
 					}
 					settings.setFullscreen(!settings.getFullscreen());
 					camera.resize(window.getSize());
+					uiCamera.resize(window.getSize());
 					break;
 				default:
 					break;
@@ -205,7 +207,7 @@ int main()
 		// Draw HUD
 		if (!paused)
 		{
-			window.setView(window.getDefaultView());
+			window.setView(defaultView);
 			window.draw(hud);
 		}
 
