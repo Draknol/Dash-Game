@@ -127,6 +127,9 @@
     <None Include="Levels\Menu.map">
       <Filter>Resource Files\Levels</Filter>
     </None>
+    <None Include="Levels\Pause.map">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Fonts\PublicPixel.ttf">

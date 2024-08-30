@@ -161,6 +161,7 @@
     <None Include="Levels\Level1.map" />
     <None Include="Levels\Level2.map" />
     <None Include="Levels\Menu.map" />
+    <None Include="Levels\Pause.map" />
     <None Include="Saves\Settings.sav" />
   </ItemGroup>
   <ItemGroup>

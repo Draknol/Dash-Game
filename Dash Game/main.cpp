@@ -32,7 +32,7 @@ int main()
 
 	// Create Clock
 	sf::Clock clock;
-	bool paused = false;
+	bool paused = true;
 
 	/* Game Loop */
 	while (window.isOpen())
@@ -60,12 +60,32 @@ int main()
 					std::string function = overlay.checkButtons(window.mapPixelToCoords(sf::Mouse::getPosition(window)), false);
 					if (function == "null") break;
 					if (function == "close") window.close();
-					currentMenu = GameMenu;
-					level.load(function);
-					overlay.load("null");
-					player.reset();
-					camera.setCenter(level.getSpawn());
-					break;
+					if (function == "resume")
+					{
+						currentMenu = GameMenu;
+						overlay.load("null");
+						paused = false;
+						break;
+					}
+					if (function == "escape")
+					{
+						currentMenu = MainMenu;
+						level.load("null");
+						overlay.load("Menu");
+						player.reset();
+						camera.setCenter(level.getSpawn());
+						break;
+					}
+					else
+					{
+						currentMenu = GameMenu;
+						level.load(function);
+						overlay.load("null");
+						player.reset();
+						camera.setCenter(level.getSpawn());
+						paused = false;
+						break;
+					}
 				}
 				break;
 			case sf::Event::MouseButtonPressed:
@@ -119,12 +139,12 @@ int main()
 					{
 					case GameMenu:
 						currentMenu = PauseMenu;
-						overlay.load("Menu");
+						overlay.load("Pause", player.getPosition());
 						paused = true;
 						break;
 					case PauseMenu:
 						currentMenu = GameMenu;
-						overlay.load("Blank");
+						overlay.load("null");
 						paused = false;
 						break;
 					default:

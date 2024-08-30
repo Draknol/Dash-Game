@@ -39,7 +39,8 @@ public:
 	/// Load new Map
 	/// </summary>
 	/// <param name="fileName">Name of .map file</param>
-	void load(const std::string& fileName);
+	/// <param name="origin">Where should 0, 0 be</param>
+	void load(const std::string& fileName, const sf::Vector2f& origin = { 0, 0 });
 
 	/// <summary>
 	/// Draw Blocks to Window
