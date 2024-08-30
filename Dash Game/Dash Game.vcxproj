@@ -139,8 +139,11 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="HUD.cpp" />
+    <ClCompile Include="HUD.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.hpp" />
@@ -149,6 +152,8 @@
     <ClInclude Include="Menu.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="Level.hpp" />
+    <ClInclude Include="ProgressBar.hpp" />
+    <ClInclude Include="ScreenAlignment.hpp" />
     <ClInclude Include="Settings.hpp" />
     <ClInclude Include="Text.hpp" />
   </ItemGroup>

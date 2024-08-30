@@ -240,11 +240,25 @@ void Player::tryMove()
 void Player::respawn(bool force)
 {
 	// Move to Spawn if Player has Fallen or if Forced
-	if (force || getPosition().y > m_level.getKillHeight()) setPosition(m_level.getSpawn());
+	if (force || getPosition().y > m_level.getKillHeight())
+	{
+		m_health = m_maxHealth;
+		setPosition(m_level.getSpawn());
+	}
 }
 
 void Player::reset()
 {
 	respawn(true);
 	m_velocity = sf::Vector2f(0, 0);
+}
+
+const int& Player::getHealth() const
+{
+	return m_health;
+}
+
+const int& Player::getMaxHealth() const
+{
+	return m_maxHealth;
 }

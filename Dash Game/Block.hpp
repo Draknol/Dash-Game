@@ -27,7 +27,7 @@ public:
 	/// Get textures name
 	/// </summary>
 	/// <returns>Textures name</returns>
-	const std::string& getTexture();
+	const std::string& getTexture() const;
 
 private:
 

@@ -43,13 +43,13 @@ public:
 	/// Gets top left corner position
 	/// </summary>
 	/// <returns>Top left corner position</returns>
-	sf::Vector2f getTopLeft();
+	sf::Vector2f getTopLeft() const;
 
 	/// <summary>
 	/// Gets bottom right corner position
 	/// </summary>
 	/// <returns>Bottom right corner position</returns>
-	sf::Vector2f getBottomRight();
+	sf::Vector2f getBottomRight() const;
 
 protected:
 

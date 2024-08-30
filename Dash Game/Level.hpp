@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Font.hpp>
 
 #include <unordered_map>
@@ -15,7 +16,7 @@
 /// <summary>
 /// Level with blocks, loaded from a .map file
 /// </summary>
-class Level
+class Level : public sf::Drawable
 {
 public:
 
@@ -40,7 +41,7 @@ public:
 	/// </summary>
 	/// <param name="fileName">Name of .map file</param>
 	/// <param name="origin">Where should 0, 0 be</param>
-	void load(const std::string& fileName, const sf::Vector2f& origin = { 0, 0 });
+	void load(const std::string& fileName);
 
 	/// <summary>
 	/// Draw Blocks to Window
@@ -85,6 +86,10 @@ public:
 	/// <param name="press">Is the button being pressed or released</param>
 	/// <returns>Function to happen when pressed of button under mouse ("null" if released or no button)</returns>
 	std::string checkButtons(sf::Vector2f mousePosition, bool press);
+
+protected:
+
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
 

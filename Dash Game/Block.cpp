@@ -31,7 +31,7 @@ Block::Block(const sf::Vector2f& position, const sf::Vector2f& size, const sf::C
 	
 }
 
-const std::string& Block::getTexture()
+const std::string& Block::getTexture() const
 {
 	return m_texture;
 }

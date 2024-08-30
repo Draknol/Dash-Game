@@ -5,6 +5,7 @@
 #include "Settings.hpp"
 #include "Player.hpp"
 #include "Menu.hpp"
+#include "HUD.hpp"
 
 int main()
 {
@@ -26,9 +27,13 @@ int main()
 
 	// Create Camera
 	Camera camera(level.getSpawn(), window.getSize());
+	Camera uiCamera({ 0, 0 }, window.getSize());
 
 	// Create Player
 	Player player(level, camera);
+
+	// Create HUD
+	HUD hud(player, window);
 
 	// Create Clock
 	sf::Clock clock;
@@ -52,6 +57,7 @@ int main()
 				break;
 			case sf::Event::Resized:
 				camera.resize(window.getSize());
+				uiCamera.resize(window.getSize());
 				break;
 			case sf::Event::MouseButtonReleased:
 				switch (event.key.code)
@@ -72,8 +78,6 @@ int main()
 						currentMenu = MainMenu;
 						level.load("null");
 						overlay.load("Menu");
-						player.reset();
-						camera.setCenter(level.getSpawn());
 						break;
 					}
 					else
@@ -139,7 +143,7 @@ int main()
 					{
 					case GameMenu:
 						currentMenu = PauseMenu;
-						overlay.load("Pause", player.getPosition());
+						overlay.load("Pause");
 						paused = true;
 						break;
 					case PauseMenu:
@@ -182,21 +186,32 @@ int main()
 		{
 			// Update Player
 			player.update(deltaTime);
+
+			// Update HUD
+			hud.update();
 		}
 
 		// Update Camera
 		camera.moveTowards(player.getPosition(), deltaTime);
 
-		// Update View
-		window.setView(camera);
-
 		// Clear Window with Sky
 		window.clear(sf::Color(60, 60, 255));
 
-		// Draw Everything
-		level.draw(window);
+		// Draw World
+		window.setView(camera);
+		window.draw(level);
 		window.draw(player);
-		overlay.draw(window);
+
+		// Draw HUD
+		if (!paused)
+		{
+			window.setView(window.getDefaultView());
+			window.draw(hud);
+		}
+
+		// Draw Overlay
+		window.setView(uiCamera);
+		window.draw(overlay);
 
 		// Display Window
 		window.display();

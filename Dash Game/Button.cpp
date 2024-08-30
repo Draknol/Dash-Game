@@ -44,10 +44,12 @@ void Button::setBackgroundColor(const sf::Color& color) {
 	}
 }
 
-sf::Vector2f Button::getTopLeft() {
+sf::Vector2f Button::getTopLeft() const
+{
 	return m_background[0].position;
 }
 
-sf::Vector2f Button::getBottomRight() {
+sf::Vector2f Button::getBottomRight() const
+{
 	return m_background[2].position;
 }

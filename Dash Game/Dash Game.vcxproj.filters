@@ -31,20 +31,20 @@
     <Filter Include="Resource Files\Levels">
       <UniqueIdentifier>{3dbf48bb-b600-4dc2-8884-27f1744e9b0a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\UI">
-      <UniqueIdentifier>{aed7e7ea-4388-4d52-b8cd-47fc6c050218}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Game">
       <UniqueIdentifier>{a1b9c203-2c1c-4c20-ae00-8dd950ff0189}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Game">
       <UniqueIdentifier>{12c55e95-3e75-4da5-8dd3-dafc05ec63c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\UI">
-      <UniqueIdentifier>{3be95c34-dc53-4b43-8712-a10a2bb03f11}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\Fonts">
       <UniqueIdentifier>{cb8ad970-b096-42e8-9352-94e3ac6e1931}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{c35479d8-916c-4062-a3e6-4cc6c4aa7e07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{ac90c5a4-c09b-4c28-84c9-64760414ed57}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -72,10 +72,19 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
     <ClCompile Include="Text.cpp">
+      <Filter>Source Files\World</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.hpp">
+      <Filter>Header Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Button.cpp">
+    <ClCompile Include="ProgressBar.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -103,17 +112,23 @@
     <ClInclude Include="Door.hpp">
       <Filter>Header Files\World</Filter>
     </ClInclude>
-    <ClInclude Include="Menu.hpp">
-      <Filter>Header Files\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Settings.hpp">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="Text.hpp">
-      <Filter>Header Files\UI</Filter>
+      <Filter>Header Files\World</Filter>
     </ClInclude>
     <ClInclude Include="Button.hpp">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.hpp">
+      <Filter>Header Files\World</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenAlignment.hpp">
       <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressBar.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

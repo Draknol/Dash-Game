@@ -24,10 +24,12 @@ Text::Text(const std::string& text, const sf::Font& font, unsigned int character
 	move(-getGlobalBounds().width / 2, position.y - (getGlobalBounds().top - snapDistance));
 }
 
-sf::Vector2f Text::getTopLeft() {
+sf::Vector2f Text::getTopLeft() const
+{
 	return { getGlobalBounds().left, getGlobalBounds().top };
 }
 
-sf::Vector2f Text::getBottomRight() {
+sf::Vector2f Text::getBottomRight() const
+{
 	return getTopLeft() + sf::Vector2f(getGlobalBounds().width, getGlobalBounds().height);
 }

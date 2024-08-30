@@ -30,7 +30,7 @@ void Level::erase()
 	m_killHeight = INT_MIN;
 }
 
-void Level::load(const std::string& fileName, const sf::Vector2f& origin)
+void Level::load(const std::string& fileName)
 {
 	// Delete old Map
 	erase();
@@ -38,15 +38,9 @@ void Level::load(const std::string& fileName, const sf::Vector2f& origin)
 	// Save Level Name
 	m_name = fileName;
 
-	printf("trying to open: %s\n", m_name.c_str());
-
 	// Open File
 	std::fstream file;
 	file.open("Levels/" + m_name + ".map");
-	if (file.is_open())
-	{
-		printf("opened: %s\n", m_name.c_str());
-	}
 
 	// Save Spawn & Kill Height
 	file >> m_spawn.x >> m_spawn.y
@@ -117,12 +111,12 @@ void Level::load(const std::string& fileName, const sf::Vector2f& origin)
 			if (type[0] == 't')
 			{
 				// Create Text
-				m_texts.emplace_back(text, *font, (int)fontSize, position + origin, fromHex(color));
+				m_texts.emplace_back(text, *font, (int)fontSize, position, fromHex(color));
 			}
 			else
 			{
 				// Create Button
-				m_buttons.emplace_back(text, *font, (int)fontSize, position + origin, fromHex(color), fromHex(backgroundColor), fromHex(pressedColor), function);
+				m_buttons.emplace_back(text, *font, (int)fontSize, position, fromHex(color), fromHex(backgroundColor), fromHex(pressedColor), function);
 			}
 		}
 		// Handle blocks
@@ -162,7 +156,7 @@ void Level::load(const std::string& fileName, const sf::Vector2f& origin)
 			}
 
 			// Create Block
-			Block block(position + origin, size, fromHex(color), textureKey);
+			Block block(position, size, fromHex(color), textureKey);
 
 			// Store in Vector
 			switch (type[0])
@@ -177,7 +171,7 @@ void Level::load(const std::string& fileName, const sf::Vector2f& origin)
 				file >> destination
 					>> position.x >> position.y;
 				if (type[1] == 'b') position *= 16.0F;
-				m_doors.emplace_back(block, destination, position + origin);
+				m_doors.emplace_back(block, destination, position);
 				break;
 			default:
 				break;
@@ -187,83 +181,6 @@ void Level::load(const std::string& fileName, const sf::Vector2f& origin)
 
 	// Close File
 	file.close();
-}
-
-void Level::draw(sf::RenderWindow& window)
-{
-	// Get Window Bounds
-	sf::Vector2f wTopLeft = window.mapPixelToCoords(sf::Vector2i(0, 0));
-	sf::Vector2f wBottomRight = window.mapPixelToCoords((sf::Vector2i)window.getSize());
-
-	// Loop over Platforms
-	for (Block& platform : m_platforms)
-	{
-		// Check if Block is on Screen
-		if (platform[3].position.x < wBottomRight.x &&
-			platform[1].position.x > wTopLeft.x &&
-			platform[1].position.y < wBottomRight.y &&
-			platform[3].position.y > wTopLeft.y)
-		{
-			// Draw Block if on Screen
-			window.draw(platform, m_renderStates.at(platform.getTexture()));
-		}
-	}
-
-	// Loop over Markers
-	for (Block& decoration : m_decorations)
-	{
-		// Check if Block is on Screen
-		if (decoration[3].position.x < wBottomRight.x &&
-			decoration[1].position.x > wTopLeft.x &&
-			decoration[1].position.y < wBottomRight.y &&
-			decoration[3].position.y > wTopLeft.y)
-		{
-			// Draw Block if on Screen
-			window.draw(decoration, m_renderStates.at(decoration.getTexture()));
-		}
-	}
-
-	// Loop over Doors
-	for (Door& door : m_doors)
-	{
-		// Check if Block is on Screen
-		if (door[3].position.x < wBottomRight.x &&
-			door[1].position.x > wTopLeft.x &&
-			door[1].position.y < wBottomRight.y &&
-			door[3].position.y > wTopLeft.y)
-		{
-			// Draw Block if on Screen
-			window.draw(door, m_renderStates.at(door.getTexture()));
-		}
-	}
-
-	// Loop over Text
-	for (Text& text : m_texts)
-	{
-		// Check if Text is on Screen
-		if (text.getTopLeft().x < wBottomRight.x &&
-			text.getBottomRight().x > wTopLeft.x &&
-			text.getTopLeft().y < wBottomRight.y &&
-			text.getBottomRight().y > wTopLeft.y)
-		{
-			// Draw Text if on Screen
-			window.draw(text);
-		}
-	}
-
-	// Loop over Buttons
-	for (Button& button : m_buttons)
-	{
-		// Check if Button is on Screen
-		if (button.getTopLeft().x < wBottomRight.x &&
-			button.getBottomRight().x > wTopLeft.x &&
-			button.getTopLeft().y < wBottomRight.y &&
-			button.getBottomRight().y > wTopLeft.y)
-		{
-			// Draw Button if on Screen
-			window.draw(button);
-		}
-	}
 }
 
 std::string Level::checkButtons(sf::Vector2f mousePosition, bool press)
@@ -317,4 +234,81 @@ float Level::getKillHeight()
 const std::string& Level::getName()
 {
 	return m_name;
+}
+
+void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	// Get Window Bounds
+	sf::Vector2f wTopLeft = target.mapPixelToCoords(sf::Vector2i(0, 0));
+	sf::Vector2f wBottomRight = target.mapPixelToCoords((sf::Vector2i)target.getSize());
+
+	// Loop over Platforms
+	for (const Block& platform : m_platforms)
+	{
+		// Check if Block is on Screen
+		if (platform[3].position.x < wBottomRight.x &&
+			platform[1].position.x > wTopLeft.x &&
+			platform[1].position.y < wBottomRight.y &&
+			platform[3].position.y > wTopLeft.y)
+		{
+			// Draw Block if on Screen
+			target.draw(platform, m_renderStates.at(platform.getTexture()));
+		}
+	}
+
+	// Loop over Markers
+	for (const Block& decoration : m_decorations)
+	{
+		// Check if Block is on Screen
+		if (decoration[3].position.x < wBottomRight.x &&
+			decoration[1].position.x > wTopLeft.x &&
+			decoration[1].position.y < wBottomRight.y &&
+			decoration[3].position.y > wTopLeft.y)
+		{
+			// Draw Block if on Screen
+			target.draw(decoration, m_renderStates.at(decoration.getTexture()));
+		}
+	}
+
+	// Loop over Doors
+	for (const Door& door : m_doors)
+	{
+		// Check if Block is on Screen
+		if (door[3].position.x < wBottomRight.x &&
+			door[1].position.x > wTopLeft.x &&
+			door[1].position.y < wBottomRight.y &&
+			door[3].position.y > wTopLeft.y)
+		{
+			// Draw Block if on Screen
+			target.draw(door, m_renderStates.at(door.getTexture()));
+		}
+	}
+
+	// Loop over Text
+	for (const Text& text : m_texts)
+	{
+		// Check if Text is on Screen
+		if (text.getTopLeft().x < wBottomRight.x &&
+			text.getBottomRight().x > wTopLeft.x &&
+			text.getTopLeft().y < wBottomRight.y &&
+			text.getBottomRight().y > wTopLeft.y)
+		{
+			// Draw Text if on Screen
+			target.draw(text, states);
+		}
+	}
+
+	// Loop over Buttons
+	for (const Button& button : m_buttons)
+	{
+		// Check if Button is on Screen
+		if (button.getTopLeft().x < wBottomRight.x &&
+			button.getBottomRight().x > wTopLeft.x &&
+			button.getTopLeft().y < wBottomRight.y &&
+			button.getBottomRight().y > wTopLeft.y)
+		{
+			// Draw Button if on Screen
+			target.draw(button, states);
+		}
+	}
 }

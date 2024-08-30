@@ -66,6 +66,18 @@ public:
 	/// </summary>
 	void reset();
 
+	/// <summary>
+	/// Gets Player Current Health
+	/// </summary>
+	/// <returns>Player Current Health</returns>
+	const int& getHealth() const;
+
+	/// <summary>
+	/// Gets Player Max Health
+	/// </summary>
+	/// <returns><Player Max Health/returns>
+	const int& getMaxHealth() const;
+
 private:
 
 	/// <summary>
@@ -134,5 +146,9 @@ private:
 	// Collision
 	const float m_collisionBuffer = 1.0F;
 	Level& m_level;
+
+	// Health
+	int m_health;
+	int m_maxHealth = 100;
 
 };
