@@ -87,6 +87,11 @@ public:
 	/// <returns>Function to happen when pressed of button under mouse ("null" if released or no button)</returns>
 	std::string checkButtons(sf::Vector2f mousePosition, bool press);
 
+	/// <summary>
+	/// Tells animated textures that time has passed
+	/// </summary>
+	void updateAnimations(float deltaTime);
+
 protected:
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

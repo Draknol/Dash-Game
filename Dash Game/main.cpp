@@ -191,6 +191,9 @@ int main()
 
 			// Update HUD
 			hud.update();
+
+			// Update Animations
+			level.updateAnimations(deltaTime);
 		}
 
 		// Update Camera

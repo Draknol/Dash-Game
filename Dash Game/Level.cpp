@@ -4,14 +4,14 @@
 Level::Level(const std::string& fileName)
 {
 	// Load Map
-	m_renderStates["color"] = sf::RenderStates();
+	m_renderStates["color0"] = sf::RenderStates();
 	load(fileName);
 }
 
 Level::Level() 
 {
 	// Set Values to Default
-	m_renderStates["color"] = sf::RenderStates();
+	m_renderStates["color0"] = sf::RenderStates();
 	m_spawn = sf::Vector2f(0, 0);
 	m_killHeight = INT_MIN;
 }
@@ -53,6 +53,8 @@ void Level::load(const std::string& fileName)
 	uint32_t backgroundColor = 0U;
 	uint32_t pressedColor = 0U;
 	float fontSize = 0.0F;
+	int frameCount = 0;
+	int frameRate = 0;
 	std::string textureKey;
 	std::string fontKey;
 	std::string destination;
@@ -125,7 +127,10 @@ void Level::load(const std::string& fileName)
 			// Get block info
 			file >> position.x >> position.y
 				>> size.x >> size.y
-				>> textureKey;
+				>> frameCount >> textureKey;
+
+			// Get frame rate if animated
+			if (frameCount > 1) file >> frameRate;
 
 			// Check if units are px or blocks
 			if (type[1] == 'b')
@@ -145,18 +150,35 @@ void Level::load(const std::string& fileName)
 			}
 
 			// Load & Store Texture
-			if (m_renderStates.find(textureKey) == m_renderStates.end())
-			{
-				texture = new sf::Texture;
-				texture->loadFromFile("Textures/" + textureKey + ".png");
-				texture->setRepeated(true);
-				m_textures.push_back(texture);
-				renderState.texture = &*m_textures.back();
-				m_renderStates[textureKey] = renderState;
+			if (m_renderStates.find(textureKey + "0") == m_renderStates.end()) {
+				// Load sprite sheet
+				sf::Texture* spriteSheet = new sf::Texture;
+				spriteSheet->loadFromFile("Textures/" + textureKey + ".png");
+
+				int frameWidth = spriteSheet->getSize().x / frameCount;
+				int frameHeight = spriteSheet->getSize().y;
+
+				for (int i = 0; i < frameCount; i++) {
+
+					// Create frame
+					sf::Texture* frame = new sf::Texture;
+					frame->loadFromImage(spriteSheet->copyToImage(), sf::IntRect(i * frameWidth, 0, frameWidth, frameHeight));
+					frame->setRepeated(true);
+
+					// Store the texture
+					m_textures.push_back(frame);
+
+					// Set the render state for this frame
+					renderState.texture = frame;
+					m_renderStates[textureKey + std::to_string(i)] = renderState;
+				}
+
+				// Clean up the original full texture
+				delete spriteSheet;
 			}
 
 			// Create Block
-			Block block(position, size, fromHex(color), textureKey);
+			Block block(position, size, fromHex(color), textureKey, frameCount, frameRate);
 
 			// Store in Vector
 			switch (type[0])
@@ -206,6 +228,26 @@ std::string Level::checkButtons(sf::Vector2f mousePosition, bool press)
 	return "null";
 }
 
+void Level::updateAnimations(float deltaTime)
+{
+	for (Block& platform : m_platforms)
+	{
+		platform.updateFrame(deltaTime);
+	}
+
+	// Loop over Markers
+	for (Block& decoration : m_decorations)
+	{
+		decoration.updateFrame(deltaTime);
+	}
+
+	// Loop over Doors
+	for (Door& door : m_doors)
+	{
+		door.updateFrame(deltaTime);
+	}
+}
+
 sf::Color Level::fromHex(uint32_t hex)
 {
 	return sf::Color((hex >> 24) & 0xFF, (hex >> 16) & 0xFF, (hex >> 8) & 0xFF, hex & 0xFF);
@@ -252,7 +294,7 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			platform[3].position.y > wTopLeft.y)
 		{
 			// Draw Block if on Screen
-			target.draw(platform, m_renderStates.at(platform.getTexture()));
+			target.draw(platform, m_renderStates.at(platform.getTexture() + std::to_string(platform.getCurrentFrame())));
 		}
 	}
 
@@ -266,7 +308,7 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			decoration[3].position.y > wTopLeft.y)
 		{
 			// Draw Block if on Screen
-			target.draw(decoration, m_renderStates.at(decoration.getTexture()));
+			target.draw(decoration, m_renderStates.at(decoration.getTexture() + std::to_string(decoration.getCurrentFrame())));
 		}
 	}
 
@@ -280,7 +322,7 @@ void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
 			door[3].position.y > wTopLeft.y)
 		{
 			// Draw Block if on Screen
-			target.draw(door, m_renderStates.at(door.getTexture()));
+			target.draw(door, m_renderStates.at(door.getTexture() + std::to_string(door.getCurrentFrame())));
 		}
 	}
 

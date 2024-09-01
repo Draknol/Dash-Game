@@ -5,13 +5,13 @@
 # Main Menu
 
 // Background
-db -9.5 -10.5 19 21 Dirt
+db -9.5 -10.5 19 21 1 Dirt
 
 // Boarder
-db -10 -10.5 1 21 Pole
-db 9 -10.5 1 21 Pole
-d -154 -168 307 16 Beam
-d -154 163 307 16 Beam
+db -10 -10.5 1 21 1 Pole
+db 9 -10.5 1 21 1 Pole
+d -154 -168 307 16 1 Beam
+d -154 163 307 16 1 Beam
 
 // Title
 tb 0 -8 4 PublicPixel 000000FF Main
