@@ -194,10 +194,12 @@ int main()
 
 			// Update Animations
 			level.updateAnimations(deltaTime);
+
+			// Update Camera
+			camera.moveTowards(player.getPosition(), deltaTime);
 		}
 
-		// Update Camera
-		camera.moveTowards(player.getPosition(), deltaTime);
+		
 
 		// Clear Window with Sky
 		window.clear(sf::Color(60, 60, 255));
