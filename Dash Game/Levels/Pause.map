@@ -5,7 +5,7 @@
 # Main Menu
 
 // Background
-db -100 -100 200 200 color 00000064
+db -100 -100 200 200 1 color 00000064
 
 // Title
 tb 0 -8 4 PublicPixel 000000FF Paused
