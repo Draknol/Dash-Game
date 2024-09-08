@@ -118,11 +118,12 @@ private:
 	std::vector<sf::Texture*> m_frames;
 	std::string m_currentAnimation = "Idle";
 	float m_currentFrame = 0;
-	float m_frameRate = 1;
+	float m_frameRate = 15;
+	bool m_facingRight = true;
 
 	// Attributes
 	float m_deltaTime = 0.0F;
-	sf::Vector2u m_size = {16, 32};
+	sf::Vector2u m_size = {31, 34};
 	sf::Texture m_texture;
 	sf::Vector2f m_velocity = sf::Vector2f(0.0F, 0.0F);
 

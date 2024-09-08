@@ -276,11 +276,21 @@ void Player::tryMove()
 
 void Player::animate()
 {
+
 	// Update current frame
 	m_currentFrame += m_deltaTime * (float)m_frameRate;
 	m_currentFrame = fmodf(m_currentFrame, (float)m_frameCount.at(m_currentAnimation));
 
 	setTexture(m_animations.at(m_currentAnimation)[(unsigned int)m_currentFrame]);
+
+	if (m_movingLeft)
+	{
+		setScale(-1, 1);
+	}
+	else if (m_movingRight)
+	{
+		setScale(1, 1);
+	}
 }
 
 void Player::respawn(bool force)
