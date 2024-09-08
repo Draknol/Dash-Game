@@ -3,6 +3,8 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 
+#include <unordered_map>
+
 #include "Camera.hpp"
 #include "Level.hpp"
 
@@ -105,12 +107,22 @@ private:
 	/// </summary>
 	void tryMove();
 
+	void animate();
+
 	// Components
 	Camera& m_camera;
 
+	// Animation
+	std::unordered_map<std::string, std::vector<sf::Texture>> m_animations;
+	std::unordered_map<std::string, int> m_frameCount;
+	std::vector<sf::Texture*> m_frames;
+	std::string m_currentAnimation = "Idle";
+	float m_currentFrame = 0;
+	float m_frameRate = 1;
+
 	// Attributes
 	float m_deltaTime = 0.0F;
-	sf::Vector2f m_size;
+	sf::Vector2u m_size = {16, 32};
 	sf::Texture m_texture;
 	sf::Vector2f m_velocity = sf::Vector2f(0.0F, 0.0F);
 

@@ -5,14 +5,48 @@ Player::Player(Level& level, Camera& camera)
 	: m_level(level), m_camera(camera)
 {
 	// Load Texture
-	m_texture.loadFromFile("Textures/Player.png");
+	sf::Texture spriteSheet;
+	spriteSheet.loadFromFile("Textures/PlayerIdle.png");
 
-	// Store Size
-	m_size = (sf::Vector2f)m_texture.getSize();
+	int frameCount = (int)(spriteSheet.getSize().x / m_size.x);
+
+	// Initialise maps
+	m_animations.emplace("Idle", std::vector<sf::Texture>());
+	m_frameCount.emplace("Idle", frameCount);
+
+	for (int i = 0; i < frameCount; i++) {
+
+		// Create frame
+		sf::Texture frame;
+		frame.loadFromImage(spriteSheet.copyToImage(), sf::IntRect(i * m_size.x, 0, m_size.x, m_size.y));
+		frame.setRepeated(true);
+
+		// Store the texture
+		m_animations.at("Idle").push_back(frame);
+	}
+
+	spriteSheet.loadFromFile("Textures/PlayerWalk.png");
+
+	frameCount = (int)(spriteSheet.getSize().x / m_size.x);
+
+	// Initialise maps
+	m_animations.emplace("Walk", std::vector<sf::Texture>());
+	m_frameCount.emplace("Walk", frameCount);
+
+	for (int i = 0; i < frameCount; i++) {
+
+		// Create frame
+		sf::Texture frame;
+		frame.loadFromImage(spriteSheet.copyToImage(), sf::IntRect(i * m_size.x, 0, m_size.x, m_size.y));
+		frame.setRepeated(true);
+
+		// Store the texture
+		m_animations.at("Walk").push_back(frame);
+	}
 
 	// Update Sprite
-	setTexture(m_texture);
-	setOrigin((float)m_texture.getSize().x / 2.0F, (float)m_texture.getSize().y);
+	setTexture(m_animations.at("Idle")[0]);
+	setOrigin((float)m_size.x / 2.0F, (float)m_size.y);
 	respawn(true);
 }
 
@@ -31,6 +65,8 @@ void Player::update(float deltaTime)
 	halfGravity();
 
 	tryMove();
+
+	animate();
 
 	respawn(false);
 }
@@ -119,6 +155,7 @@ void Player::walk()
 {
 	// Sets m_velocity in Correct Direction
 	m_velocity.x = m_speed * (m_movingRight - m_movingLeft);
+	m_currentAnimation = (m_velocity.x == 0) ? "Idle" : "Walk";
 }
 
 void Player::tryMove()
@@ -143,7 +180,7 @@ void Player::tryMove()
 		sf::Vector2f updatedPosition = getPosition() + m_velocity * timeStep;
 
 		// Get Player Bounds
-		sf::Vector2f playerTopLeft = updatedPosition - sf::Vector2f(m_size.x / 2.0F, m_size.y);
+		sf::Vector2f playerTopLeft = updatedPosition - sf::Vector2f(m_size.x / 2.0F, (float)m_size.y);
 		sf::Vector2f playerBottomRight = updatedPosition + sf::Vector2f(m_size.x / 2.0F, 0.0F);
 
 		// Loop over Blocks
@@ -235,6 +272,15 @@ void Player::tryMove()
 			}
 		}
 	}
+}
+
+void Player::animate()
+{
+	// Update current frame
+	m_currentFrame += m_deltaTime * (float)m_frameRate;
+	m_currentFrame = fmodf(m_currentFrame, (float)m_frameCount.at(m_currentAnimation));
+
+	setTexture(m_animations.at(m_currentAnimation)[(unsigned int)m_currentFrame]);
 }
 
 void Player::respawn(bool force)
