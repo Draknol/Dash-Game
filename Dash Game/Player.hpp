@@ -1,167 +1,82 @@
 #pragma once
 
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-
-#include <unordered_map>
-
-#include "Camera.hpp"
 #include "Level.hpp"
+#include "PhysicsObject.hpp"
 
 /// <summary>
-/// Player class with camera following it
+/// Extends PhysicsObject
+/// can walk, dash and jump
+/// has health and can take damage
+/// texture files should have prefix used in constructor
+/// and follow the format PrefixType.png
+/// where Type is replaced with the animation type
+/// Idle or Walk (all are needed)
 /// </summary>
-class Player : public sf::Sprite
+class Player : public PhysicsObject
 {
 public:
 
-	/// <summary>
-	/// Constructor for Player
-	/// </summary>
-	/// <param name="level"></param>
-	Player(Level& level, Camera& camera);
+	Player();
+
+	/// <param name="fileName">prefix of .png files to use</param>
+	Player(const sf::Vector2f& position, const sf::Vector2f& size, const std::string& fileName);
+
+	void updatePhysics(const BlockManager<Block>& blocks, float deltaTime) override;
+
+	void setWalkingLeft(bool walking);
+	void setWalkingRight(bool walking);
+	void stopWalking();
+	void setJumping(bool jumping);
+	void setDashing(bool dashing);
+
+	const unsigned int& getHealth() const;
+	const unsigned int& getMaxHealth() const;
+	const unsigned int& getDashCount() const;
+
+	void damage(int damage);
 
 	/// <summary>
-	/// Updates the Player
+	/// Checks levels doors for collision
+	/// if found the doors level is loaded
 	/// </summary>
-	/// <param name="deltaTime">deltaTime</param>
-	void update(float deltaTime);
-
-	/// <summary>
-	/// Set if the Player is Moving Left
-	/// </summary>
-	/// <param name="moving">is the player moving left</param>
-	void movingLeft(bool moving);
-
-	/// <summary>
-	/// Set if the Player is Moving Right
-	/// </summary>
-	/// <param name="moving">is the player moving right</param>
-	void movingRight(bool moving);
-
-	/// <summary>
-	/// Set if the Player is Dashing
-	/// </summary>
-	/// <param name="dashing">is the player dashing</param>
-	void dashing(bool dashing);
-
-	/// <summary>
-	/// Set if the Player is Jumping
-	/// </summary>
-	/// <param name="jumping">is the player jumping</param>
-	void jumping(bool jumping);
-
-	/// <summary>
-	/// Set if the Player is Interacting
-	/// </summary>
-	/// <param name="interacting">is the player interacting</param>
-	void interacting(bool interacting);
-
-	/// <summary>
-	/// Moves Player Back to Spawn if Fallen or Force
-	/// </summary>
-	/// <param name="force">Forces respawn</param>
-	void respawn(bool force = false);
-
-	/// <summary>
-	/// Resets Player Position and Velocity
-	/// </summary>
-	void reset();
-
-	/// <summary>
-	/// Gets Player Current Health
-	/// </summary>
-	/// <returns>Player Current Health</returns>
-	const int& getHealth() const;
-
-	/// <summary>
-	/// Gets Player Max Health
-	/// </summary>
-	/// <returns><Player Max Health/returns>
-	const int& getMaxHealth() const;
+	/// <returns>amount player moved by (intended for updating Camera)</returns>
+	sf::Vector2f interact(Level& level);
 
 private:
 
-	/// <summary>
-	/// Move on x axis
-	/// </summary>
-	void walk();
+	void tryWalk();
 
-	/// <summary>
-	/// Dash on x axis
-	/// </summary>
-	void dash();
+	void tryJump();
 
-	/// <summary>
-	/// Fall on y axis
-	/// </summary>
-	void halfGravity();
+	void tryDash(float deltaTime);
 
-	/// <summary>
-	/// Jump on y axis
-	/// </summary>
-	void jump();
-
-	/// <summary>
-	/// Moves Player to a Valid Location
-	/// </summary>
-	void tryMove();
-
-	void animate();
-
-	// Components
-	Camera& m_camera;
-
-	// Animation
-	std::unordered_map<std::string, std::vector<sf::Texture>> m_animations;
-	std::unordered_map<std::string, int> m_frameCount;
-	std::vector<sf::Texture*> m_frames;
-	std::string m_currentAnimation = "Idle";
-	float m_currentFrame = 0;
-	float m_frameRate = 15;
-	bool m_facingRight = true;
-
-	// Attributes
-	float m_deltaTime = 0.0F;
-	sf::Vector2u m_size = {31, 34};
-	sf::Texture m_texture;
-	sf::Vector2f m_velocity = sf::Vector2f(0.0F, 0.0F);
+	void onGroundImpact() override;
 
 	// Walking
-	const float m_speed = 270.0F;
-	bool m_movingRight = false;
-	bool m_movingLeft = false;
-
-	// Dashing
-	const float m_dashDuration = 0.1F;
-	const float m_dashCooldown = 0.7F;
-	const float m_dashSpeed = 2000.0F;
-	float m_dashDurationTimer = m_dashDuration;
-	float m_dashCooldownTimer = 0.0F;
-	bool m_dashing = false;
-
-	// Interact
-	bool m_interacting = false;
-
-	// Gravity
-	const float m_gravityAcceleration = 2000.0F;
-	const float m_gravityTimeStep = 0.001F;
-	const float m_drag = 0.0005F;
-	float m_gravityTimer = 0.0f;
+	float speed = 270.0F;
+	int walkDirection = 0;
+	bool facingRight = true;
+	bool walkingLeft = false;
+	bool walkingRight = false;
 
 	// Jumping
-	const int m_maxJumps = 2;
-	const float m_jumpStrength = 500.0F;
-	int m_jumpCounter = m_maxJumps;
-	bool m_jumpHolding = false;
-	bool m_jumping = false;
+	int maxJumps = 2;
+	float jumpStrength = 500.0F;
+	int jumpCounter = maxJumps;
+	bool jumpHolding = false;
+	bool isJumping = false;
 
-	// Collision
-	const float m_collisionBuffer = 1.0F;
-	Level& m_level;
+	// Dashing
+	unsigned int dashCounter = 1U;
+	float dashDuration = 0.1F;
+	float dashCooldown = 0.7F;
+	float dashSpeed = 2000.0F;
+	float dashDurationTimer = dashDuration;
+	float dashCooldownTimer = 0.0F;
+	bool isDashing = false;
 
 	// Health
-	int m_health;
-	int m_maxHealth = 100;
+	unsigned int maxHealth = 10;
+	unsigned int health = maxHealth;
 
 };

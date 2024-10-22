@@ -1,229 +1,155 @@
 
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Window/Event.hpp>
-
-#include "Settings.hpp"
+#include "StatusBar.hpp"
+#include "UICamera.hpp"
 #include "Player.hpp"
-#include "Menu.hpp"
-#include "HUD.hpp"
+#include "Window.hpp"
+
+void handleEvents(Window& window, Level& level, Player& player, Camera& camera, UICamera& hudCamera, StatusBar& healthBar, StatusBar& dashBar, bool& paused);
 
 int main()
 {
+	Settings& settings = Settings::getInstance();
+	settings.load("Settings");
 
-	// Load Settings
-	Settings settings("Settings");
+	sf::VideoMode videomode = (
+			settings.getFullscreen()?
+			videomode = sf::VideoMode::getFullscreenModes()[0]:
+			sf::VideoMode(settings.getWindowSize().x, settings.getWindowSize().y)
+		);
 
-	// Create Window
-	sf::VideoMode videomode(settings.getFullscreen() ? sf::VideoMode::getFullscreenModes()[0] : sf::VideoMode(settings.getWindowSize().x, settings.getWindowSize().y));
-	sf::RenderWindow window(videomode, "Dash Game", settings.getFullscreen() ? sf::Style::Fullscreen : sf::Style::Default);
+	int style = (
+			settings.getFullscreen()?
+			sf::Style::Fullscreen:
+			sf::Style::Default
+		);
 
-	// Disable KeyRepeat
-	window.setKeyRepeatEnabled(false);
+	Window window(videomode, "Dash Game", style);
 
-	// Create Level
-	Level level;
-	Level overlay("Menu");
-	Menu currentMenu = MainMenu;
+	Level level("Level1");
 
-	// Create Camera
-	Camera camera(level.getSpawn(), window.getSize());
-	Camera uiCamera({ 0, 0 }, window.getSize());
-	sf::View defaultView = window.getDefaultView();
+	sf::Color skyBlue = sf::Color(60, 60, 255);
 
-	// Create Player
-	Player player(level, camera);
+	Player player(level.getSpawn(), { 31, 34 }, "Player");
 
-	// Create HUD
-	HUD hud(player, window);
+	Camera camera(player.getPosition(), window.getSize());
 
-	// Create Clock
 	sf::Clock clock;
-	bool paused = true;
+	bool paused = false;
+	
+	UICamera hudCamera(window.getSize());
+	StatusBar healthBar(hudCamera.getWidth(), "Heart", "EmptyHeart", 4, player.getHealth(), player.getMaxHealth(), true);
+	StatusBar dashBar(hudCamera.getWidth(), "DashBoot", "EmptyDashBoot", 16, player.getDashCount(), 1, false);
 
-	/* Game Loop */
+	/* GAME LOOP */
+
 	while (window.isOpen())
 	{
-
-		// Update deltaTime
 		float deltaTime = clock.restart().asSeconds();
 
-		// Handle Events
-		sf::Event event;
-		while (window.pollEvent(event))
+		handleEvents(window, level, player, camera, hudCamera, healthBar, dashBar, paused);
+
+		/* UPDATE */
+
+		if (!paused)
 		{
-			switch (event.type)
-			{
-			case sf::Event::Closed:
-				window.close();
-				break;
-			case sf::Event::Resized:
-				camera.resize(window.getSize());
-				uiCamera.resize(window.getSize());
-				break;
-			case sf::Event::MouseButtonReleased:
-				switch (event.key.code)
-				{
-				case sf::Mouse::Left:
-					std::string function = overlay.checkButtons(window.mapPixelToCoords(sf::Mouse::getPosition(window)), false);
-					if (function == "null") break;
-					if (function == "close") window.close();
-					if (function == "resume")
-					{
-						currentMenu = GameMenu;
-						overlay.load("null");
-						paused = false;
-						break;
-					}
-					if (function == "escape")
-					{
-						currentMenu = MainMenu;
-						level.load("null");
-						overlay.load("Menu");
-						break;
-					}
-					else
-					{
-						currentMenu = GameMenu;
-						level.load(function);
-						overlay.load("null");
-						player.reset();
-						camera.setCenter(level.getSpawn());
-						paused = false;
-						break;
-					}
-				}
-				break;
-			case sf::Event::MouseButtonPressed:
-				switch (event.key.code)
-				{
-				case sf::Mouse::Left:
-					overlay.checkButtons(window.mapPixelToCoords(sf::Mouse::getPosition(window)), true);
-					break;
-				}
-				break;
-			case sf::Event::KeyReleased:
-				switch (event.key.code)
-				{
-				case sf::Keyboard::A:
-					player.movingLeft(false);
-					break;
-				case sf::Keyboard::D:
-					player.movingRight(false);
-					break;
-				case sf::Keyboard::Space:
-					player.jumping(false);
-					break;
-				case sf::Keyboard::E:
-						player.interacting(false);
-					break;
-				default:
-					break;
-				}
-				break;
-			case sf::Event::KeyPressed:
-				switch (event.key.code)
-				{
-				case sf::Keyboard::A:
-					player.movingLeft(true);
-					break;
-				case sf::Keyboard::D:
-					player.movingRight(true);
-					break;
-				case sf::Keyboard::LShift:
-					player.dashing(true);
-					break;
-				case sf::Keyboard::Space:
-					player.jumping(true);
-					break;
-				case sf::Keyboard::E:
-					player.interacting(true);
-					break;
-				case sf::Keyboard::Escape:
-					// Exit to Menu
-					switch (currentMenu)
-					{
-					case GameMenu:
-						currentMenu = PauseMenu;
-						overlay.load("Pause");
-						paused = true;
-						break;
-					case PauseMenu:
-						currentMenu = GameMenu;
-						overlay.load("null");
-						paused = false;
-						break;
-					default:
-						break;
-					}
-					break;
-				case sf::Keyboard::F5:
-					level.load(level.getName());
-					break;
-				case sf::Keyboard::F11:
-					// Toggle Fullscreen
-					if (settings.getFullscreen())
-					{
-						window.create(sf::VideoMode(settings.getWindowSize().x, settings.getWindowSize().y), "Dash Game");
-						window.setPosition(settings.getWindowPosition());
-					}
-					else
-					{
-						settings.setWindowSize(window.getSize());
-						settings.setWindowPosition(window.getPosition());
-						window.create(sf::VideoMode::getFullscreenModes()[0], "Dash Game", sf::Style::Fullscreen);
-					}
-					settings.setFullscreen(!settings.getFullscreen());
-					camera.resize(window.getSize());
-					uiCamera.resize(window.getSize());
-					break;
-				default:
-					break;
-				}
-			default:
-				break;
-			}
-		}
-
-		if (!paused) 
-		{
-			// Update Player
-			player.update(deltaTime);
-
-			// Update HUD
-			hud.update();
-
-			// Update Animations
 			level.updateAnimations(deltaTime);
-
-			// Update Camera
-			camera.moveTowards(player.getPosition(), deltaTime);
+			player.updateAnimations(deltaTime);
+			player.updatePhysics(level.getPlatforms(), deltaTime);
 		}
 
-		
+		camera.moveTowards(player.getPosition(), deltaTime);
 
-		// Clear Window with Sky
-		window.clear(sf::Color(60, 60, 255));
+		/* DRAW */
 
-		// Draw World
+		window.clear(skyBlue);
+
 		window.setView(camera);
 		window.draw(level);
 		window.draw(player);
 
-		// Draw HUD
-		if (!paused)
-		{
-			window.setView(defaultView);
-			window.draw(hud);
-		}
+		window.setView(hudCamera);
+		window.draw(healthBar);
+		window.draw(dashBar);
 
-		// Draw Overlay
-		window.setView(uiCamera);
-		window.draw(overlay);
-
-		// Display Window
 		window.display();
-
 	}
 
 	return 0;
+}
+
+void handleEvents(Window& window, Level& level, Player& player, Camera& camera, UICamera& hudCamera, StatusBar& healthBar, StatusBar& dashBar, bool& paused)
+{
+	sf::Event event;
+	while (window.pollEvent(event))
+	{
+		switch (event.type)
+		{
+		case sf::Event::Closed:
+			window.close();
+			break;
+		case sf::Event::Resized:
+			camera.resize(window.getSize());
+			hudCamera.resize(window.getSize());
+			healthBar.resize(hudCamera.getWidth());
+			dashBar.resize(hudCamera.getWidth());
+			break;
+		case sf::Event::KeyPressed:
+			switch (event.key.code)
+			{
+			case sf::Keyboard::A:
+				if (!paused) player.setWalkingLeft(true);
+				break;
+			case sf::Keyboard::D:
+				if (!paused) player.setWalkingRight(true);
+				break;
+			case sf::Keyboard::Space:
+				player.setJumping(true);
+				break;
+			case sf::Keyboard::LShift:
+				player.setDashing(true);
+				break;
+			case sf::Keyboard::E:
+				camera.move(player.interact(level));
+				break;
+			case sf::Keyboard::F11:
+				window.toggleFullscreen();
+				camera.resize(window.getSize());
+				hudCamera.resize(window.getSize());
+				healthBar.resize(hudCamera.getWidth());
+				dashBar.resize(hudCamera.getWidth());
+				break;
+			case sf::Keyboard::L: // TODO for testing only
+				player.damage(-1);
+				break;
+			case sf::Keyboard::K: // TODO for testing only
+				player.damage(1);
+				break;
+			case sf::Keyboard::Escape:
+				paused = !paused;
+				break;
+			default:
+				break;
+			}
+			break;
+		case sf::Event::KeyReleased:
+			switch (event.key.code)
+			{
+			case sf::Keyboard::A:
+				if (paused) player.stopWalking();
+				else player.setWalkingLeft(false);
+				break;
+			case sf::Keyboard::D:
+				if (paused) player.stopWalking();
+				else player.setWalkingRight(false);
+				break;
+			case sf::Keyboard::Space:
+				player.setJumping(false);
+			default:
+				break;
+			}
+			break;
+		default:
+			break;
+		}
+	}
 }

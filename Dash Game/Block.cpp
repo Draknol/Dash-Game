@@ -1,51 +1,118 @@
 
 #include "Block.hpp"
 
-Block::Block() {}
-
-Block::Block(const sf::Vector2f& position, const sf::Vector2f& size, const sf::Color& color, const std::string& texture, int frameCount, int frameRate)
-	: m_texture(texture), m_frameCount(frameCount), m_frameRate(frameRate)
+Block::Block()
 {
+}
 
-	// Make into Quad
-	setPrimitiveType(sf::Quads);
+Block::Block(const sf::Vector2f& position, const sf::Vector2f& size, const sf::Color& color, const std::string& textureKey, int frameCount, int frameRate)
+	: textureKey(textureKey), frameCount(frameCount), frameRate(frameRate)
+{
+	textureManager->loadKey(textureKey, frameCount);
 
-	// Set Corner Positions and Colors
+	vertices.setPrimitiveType(sf::TrianglesStrip);
+
 	sf::Vertex vertex;
 	vertex.color = color;
+
+	// Top-left corner
 	vertex.position = position;
-	append(vertex);
-	vertex.position = position + sf::Vector2f(size.x, 0.0F);
-	append(vertex);
-	vertex.position = position + size;
-	append(vertex);
-	vertex.position = position + sf::Vector2f(0.0F, size.y);
-	append(vertex);
+	vertex.texCoords = { 0, 0 };
+	vertices.append(vertex);
 
-	// Set Texture Corners
-	(*this)[0].texCoords = sf::Vector2f(0, 0);
-	(*this)[1].texCoords = sf::Vector2f(size.x, 0);
-	(*this)[2].texCoords = size;
-	(*this)[3].texCoords = sf::Vector2f(0, size.y);
+	// Bottom-left corner
+	vertex.position = { position.x, position.y + size.y };
+	vertex.texCoords = { 0, size.y };
+	vertices.append(vertex);
+
+	// Top-right corner
+	vertex.position = { position.x + size.x, position.y };
+	vertex.texCoords = { size.x, 0 };
+	vertices.append(vertex);
+
+	// Bottom-right corner
+	vertex.position = { position.x + size.x, position.y + size.y };
+	vertex.texCoords = { size.x, size.y };
+	vertices.append(vertex);
 }
 
-void Block::updateFrame(float deltaTime)
+std::istream& operator>>(std::istream& is, Block& block)
 {
-	m_currentFrame += deltaTime * (float)m_frameRate;
-	m_currentFrame = fmodf(m_currentFrame, (float)m_frameCount);
+	sf::Vector2f position, size;
+	int frameCount, frameRate;
+	std::string textureKey;
+	is >> position.x >> position.y
+		>> size.x >> size.y
+		>> frameCount >> frameRate
+		>> textureKey;
+
+	sf::Color color = sf::Color::White;
+
+	// Handle special case
+	if (textureKey == "color")
+	{
+		int hex;
+		is >> std::hex >> hex >> std::dec;
+		color = (sf::Color)hex;
+	}
+
+	block = Block(position * 16.0F, size * 16.0F, color, textureKey, frameCount, frameRate);
+
+	return is;
 }
 
-const std::string& Block::getTexture() const
+void Block::updateAnimations(float deltaTime)
 {
-	return m_texture;
+	if (frameCount > 1)
+	{
+		currentFrame += deltaTime * (float)frameRate;
+		currentFrame = fmodf(currentFrame, (float)textureManager->getFrameCount(textureKey));
+	}
 }
 
-int Block::getFrameCount() const
+float Block::getLeft() const
 {
-	return m_frameCount;
+	return vertices[0].position.x;
 }
 
-int Block::getCurrentFrame() const
+float Block::getRight() const
 {
-	return (int)m_currentFrame;
+	return vertices[3].position.x;
+}
+
+float Block::getTop() const
+{
+	return vertices[0].position.y;
+}
+
+float Block::getBottom() const
+{
+	return vertices[3].position.y;
+}
+
+void Block::flipHorizontally()
+{
+	std::swap(vertices[0].texCoords.x, vertices[2].texCoords.x);
+	std::swap(vertices[1].texCoords.x, vertices[3].texCoords.x);
+}
+
+sf::Vertex& Block::getVertex(size_t index)
+{
+	return vertices[index];
+}
+
+void Block::setTextureKey(const std::string& textureKey)
+{
+	this->textureKey = textureKey;
+	frameCount = textureManager->getFrameCount(textureKey);
+}
+
+void Block::setFrameRate(int frameRate)
+{
+	this->frameRate = frameRate;
+}
+
+void Block::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	target.draw(vertices, textureManager->getRenderStates(textureKey, (int)currentFrame % frameCount));
 }

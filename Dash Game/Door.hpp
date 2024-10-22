@@ -3,35 +3,26 @@
 #include "Block.hpp"
 
 /// <summary>
-/// Interactable block that loads a new level
+/// Extends Block
+/// stores Level name and location of the other side of the Door
 /// </summary>
 class Door : public Block
 {
 public:
+	
+	Door();
 
-	/// <summary>
-	/// Constructor for Door
-	/// </summary>
-	/// <param name="block">Base block to draw</param>
-	/// <param name="destination">Map to load on interact</param>
-	/// <param name="location">Location of the other side of the door in the map</param>
-	Door(const Block& block, const std::string& destination, const sf::Vector2f& location);
+	Door(const Block& block, const std::string& levelName, const sf::Vector2f& levelSpawn);
 
-	/// <summary>
-	/// Gets the map to go to
-	/// </summary>
-	/// <returns>The map to go to</returns>
-	const std::string& getDestination();
+	friend std::istream& operator>>(std::istream& is, Door& door);
 
-	/// <summary>
-	/// Gets the location of the other side of the door
-	/// </summary>
-	/// <returns>The location of the other side of the door</returns>
-	const sf::Vector2f& getLocation();
+	const std::string& getLevelName() const;
+
+	const sf::Vector2f& getLevelSpawn() const;
 
 private:
 
-	const std::string m_destination;
-	const sf::Vector2f m_location;
+	std::string levelName;
+	sf::Vector2f levelSpawn;
 
 };

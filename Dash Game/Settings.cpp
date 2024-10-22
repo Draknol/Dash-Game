@@ -1,80 +1,100 @@
+
 #include "Settings.hpp"
 
-Settings::Settings(const std::string& fileName)
+Settings Settings::instance;
+
+Settings& Settings::getInstance()
 {
-	load(fileName);
+    return instance;
+}
+
+Settings::Settings()
+{
 }
 
 void Settings::load(const std::string& fileName)
 {
-	// Open File
-	std::fstream file;
-	file.open("Saves/" + fileName + ".sav");
+    // Open File
+    std::fstream file;
+    file.open("Saves/" + fileName + ".sav");
 
-	char name;
+    char name;
 
-	// Read in Settings
-	while (file >> name)
-	{
-		switch (name)
-		{
-		// window Height
-		case 'h':
-			file >> m_windowSize.y;
-			break;
-		// window Width
-		case 'w':
-			file >> m_windowSize.x;
-			break;
-		// Fullscreen
-		case 'f':
-			file >> m_isFullscreen;
-			break;
-		case 'l':
-			file >> m_currentLevel;
-		default:
-			break;
-		}
-	}
+    // Read in Settings
+    while (file >> name) {
+        switch (name) {
+        case 'h': // window Height
+            file >> windowSize.y;
+            break;
+        case 'w': // window Width
+            file >> windowSize.x;
+            break;
+        case 'f': // Fullscreen
+            file >> isFullscreen;
+            break;
+        case 'l': // Current Level
+            file >> currentLevel;
+            break; // Ensure there's a break
+        default:
+            break;
+        }
+    }
 
-	// Close File
-	file.close();
+    // Close File
+    file.close();
+}
+
+void Settings::save(const std::string& fileName)
+{
+    // Open File
+    std::fstream file;
+    file.open("Saves/" + fileName + ".sav");
+
+    file << "h" << windowSize.x
+        << "w" << windowSize.y
+        << "f" << isFullscreen
+        << "l" << currentLevel;
+
+    // Close File
+    file.close();
 }
 
 void Settings::setWindowSize(const sf::Vector2u& windowSize)
 {
-	m_windowSize = windowSize;
+    this->windowSize = windowSize;
 }
 
-const sf::Vector2u& Settings::getWindowSize()
+const sf::Vector2u& Settings::getWindowSize() const
 {
-	return m_windowSize;
+    return windowSize;
 }
 
 void Settings::setWindowPosition(const sf::Vector2i& windowPosition)
 {
-	m_windowPosition = windowPosition;
+    this->windowPosition = windowPosition;
 }
 
-const sf::Vector2i& Settings::getWindowPosition()
+const sf::Vector2i& Settings::getWindowPosition() const
 {
-	return m_windowPosition;
+    return windowPosition;
 }
 
-void Settings::setFullscreen(bool fullscreen)
+void Settings::setFullscreen(bool isFullscreen)
 {
-	m_isFullscreen = fullscreen;
+    this->isFullscreen = isFullscreen;
 }
 
-bool Settings::getFullscreen()
+bool Settings::getFullscreen() const
 {
-	return m_isFullscreen;
+    return isFullscreen;
 }
 
-void Settings::setCurrentLevel(const std::string& currentLevel) {
-	m_currentLevel = currentLevel;
+void Settings::setCurrentLevel(const std::string& currentLevel)
+{
+    this->currentLevel = currentLevel;
 }
 
-const std::string& Settings::getCurrentLevel() {
-	return m_currentLevel;
+const std::string& Settings::getCurrentLevel() const
+{
+    return currentLevel;
 }

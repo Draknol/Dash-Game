@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SFML/System/Vector2.hpp>
-
 #include <fstream>
 
 /// <summary>
@@ -11,72 +10,48 @@ class Settings
 {
 public:
 
-	/// <summary>
-	/// Constructor for Settings
-	/// </summary>
-	/// <param name="fileName">Name of .sav file</param>
-	Settings(const std::string& fileName);
+    /// <summary>
+    /// Gets singleton instance of settings
+    /// </summary>
+    /// <returns>singleton instance</returns>
+    static Settings& getInstance();
 
-	/// <summary>
-	/// Load new Settings
-	/// </summary>
-	/// <param name="fileName">Name of .sav file</param>
-	void load(const std::string& fileName);
+    // enforce singleton
+    Settings(const Settings&) = delete;
+    Settings& operator=(const Settings&) = delete;
 
-	/// <summary>
-	/// Set Window Size (doesn't change file)
-	/// </summary>
-	/// <param name="windowSize">Size of RenderWindow</param>
-	void setWindowSize(const sf::Vector2u& windowSize);
+    /// <summary>
+    /// Load settings from file
+    /// </summary>
+    /// <param name="fileName">name of .sav file (without .sav)</param>
+    void load(const std::string& fileName);
 
-	/// <summary>
-	/// Get Window Size
-	/// </summary>
-	/// <returns>Size of RenderWindow</returns>
-	const sf::Vector2u& getWindowSize();
+    void save(const std::string& fileName);
 
-	/// <summary>
-	/// Set Window Position (doesn't change file)
-	/// </summary>
-	/// <param name="windowPosition">Position of RenderWindow</param>
-	void setWindowPosition(const sf::Vector2i& windowPosition);
+    void setWindowSize(const sf::Vector2u& windowSize);
 
-	/// <summary>
-	/// Get Window Position
-	/// </summary>
-	/// <returns>Position of Window</returns>
-	const sf::Vector2i& getWindowPosition();
+    const sf::Vector2u& getWindowSize() const;
 
-	/// <summary>
-	/// Set is Fullscreen (doesn't change file)
-	/// </summary>
-	/// <param name="fullscreen">is Window Fullscreen</param>
-	void setFullscreen(bool fullscreen);
+    void setWindowPosition(const sf::Vector2i& windowPosition);
 
-	/// <summary>
-	/// Get is Fullscreen
-	/// </summary>
-	/// /// <returns>is Window Fullscreen</returns>
-	bool getFullscreen();
+    const sf::Vector2i& getWindowPosition() const;
 
-	/// <summary>
-	/// Set the Current Level Save
-	/// </summary>
-	/// <param name="currentLevel">Current Level Name</param>
-	void setCurrentLevel(const std::string& currentLevel);
+    void setFullscreen(bool fullscreen);
 
-	/// <summary>
-	/// Get Current Level Name
-	/// </summary>
-	/// /// <returns>Name of Current Level</returns>
-	const std::string& getCurrentLevel();
+    bool getFullscreen() const;
+
+    void setCurrentLevel(const std::string& currentLevel);
+
+    const std::string& getCurrentLevel() const;
 
 private:
 
-	// Settings with default values
-	sf::Vector2u m_windowSize = sf::Vector2u(800U, 800U);
-	sf::Vector2i m_windowPosition = sf::Vector2i(0U, 0U);
-	bool m_isFullscreen = false;
-	std::string m_currentLevel = "Level1";
+    Settings();
 
+    static Settings instance;
+
+    sf::Vector2u windowSize = { 800U, 800U };
+    sf::Vector2i windowPosition = { 0U, 0U };
+    bool isFullscreen = false;
+    std::string currentLevel = "Level1";
 };

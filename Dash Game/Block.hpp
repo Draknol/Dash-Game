@@ -1,54 +1,74 @@
 #pragma once
 
+#include "TextureManager.hpp"
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
-#include <SFML/Graphics/Texture.hpp>
+#include <iostream>
 
 /// <summary>
 /// Basic block with a position, size, color and texture
+/// texture is stored in TextureManager
 /// </summary>
-class Block : public sf::VertexArray
+class Block : public sf::Drawable
 {
 public:
-	/// <summary>
-	/// Constructor for Block
-	/// </summary>
+
 	Block();
 
 	/// <summary>
 	/// Constructor for Block
 	/// </summary>
-	/// <param name="position">Top Left of Block</param>
-	/// <param name="size">Width and Height of Block</param>
-	/// <param name="color">Color of Block</param>
-	/// <param name="texture">Name of Texture File ("null" for no texture)</param>
-	/// <param name="frameCount">Number of frames in texture</param>
-	Block(const sf::Vector2f& position, const sf::Vector2f& size, const sf::Color& color, const std::string& texture, int frameCount = 1, int frameRate = 1);
+	/// <param name="position">top left of Block</param>
+	/// <param name="textureKey">name of texture file ("color" for plain color)</param>
+	/// <param name="frameCount">number of frames in animation</param>
+	/// <param name="frameRate">rate to update animation</param>
+	Block(const sf::Vector2f& position, const sf::Vector2f& size, const sf::Color& color, const std::string& textureKey, int frameCount = 1, int frameRate = 1);
 
-	void updateFrame(float deltaTime);
-
-	/// <summary>
-	/// Get textures name
-	/// </summary>
-	/// <returns>Textures name</returns>
-	const std::string& getTexture() const;
+	friend std::istream& operator>>(std::istream& is, Block& block);
 
 	/// <summary>
-	/// Get number of frames
+	/// Update animation based on time passed
 	/// </summary>
-	/// <returns>Number of frames</returns>
-	int getFrameCount() const;
+	void updateAnimations(float deltaTime);
+
+	float getLeft() const;
+
+	float getRight() const;
+
+	float getTop() const;
+
+	float getBottom() const;
+
+protected:
+	
+	/// <summary>
+	/// Flip texture coodinates
+	/// </summary>
+	void flipHorizontally();
+
+
+	sf::Vertex& getVertex(size_t index);
 
 	/// <summary>
-	/// Get current frame (only updates if called)
+	/// Sets textureKey
+	/// also updates frameCount automatically
 	/// </summary>
-	/// <returns>Current frame index</returns>
-	int getCurrentFrame() const;
+	/// <param name="textureKey">name of .png file (without .png)</param>
+	void setTextureKey(const std::string& textureKey);
+
+	void setFrameRate(int frameRate);
+
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
 
-	// Texture name
-	std::string m_texture;
-	int m_frameCount = 1;
-	int m_frameRate = 1;
-	float m_currentFrame = 0;
+	sf::VertexArray vertices;
+	
+	TextureManager* textureManager = &TextureManager::getInstance();
+	std::string textureKey = "color";
+	int frameCount = 1; // Should only be updated through setTextureKey
+	int frameRate = 1;
+	float currentFrame = 0;
+
 };
