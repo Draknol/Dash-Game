@@ -14,5 +14,5 @@ void Camera::moveTowards(const sf::Vector2f& position, float deltaTime)
 
 void Camera::resize(const sf::Vector2u& windowSize)
 {
-	setSize(getSize().y * (float)windowSize.x / (float)windowSize.y, getSize().y);
+	setSize({ getSize().y * (float)windowSize.x / (float)windowSize.y, getSize().y });
 }

@@ -1,7 +1,7 @@
 #include "Window.hpp"
 
-Window::Window(sf::VideoMode mode, const std::string& title, int style, const sf::ContextSettings& settings)
-	: sf::RenderWindow(mode, title, style, settings)
+Window::Window(sf::VideoMode mode, const std::string& title, sf::State state, const sf::ContextSettings& settings)
+	: sf::RenderWindow(mode, title, state, settings)
 {
 	// Disable KeyRepeat for smoother controls
 	setKeyRepeatEnabled(false);
@@ -16,14 +16,14 @@ void Window::toggleFullscreen()
 	}
 
 	sf::VideoMode videoMode = settings.getFullscreen()
-		? sf::VideoMode(settings.getWindowSize().x, settings.getWindowSize().y)
+		? sf::VideoMode({ settings.getWindowSize().x, settings.getWindowSize().y })
 		: sf::VideoMode::getFullscreenModes()[0];
 
-	sf::Uint32 windowStyle = settings.getFullscreen()
-		? sf::Style::Default
-		: sf::Style::Fullscreen;
+	sf::State windowState = settings.getFullscreen()
+		? sf::State::Fullscreen
+		: sf::State::Windowed;
 
-	create(videoMode, "Dash Game", windowStyle);
+	create(videoMode, "Dash Game", windowState);
 
 	setPosition(settings.getWindowPosition());
 	settings.setFullscreen(!settings.getFullscreen());

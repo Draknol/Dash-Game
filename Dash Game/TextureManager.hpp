@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Image.hpp>
 #include <unordered_map>
 
 class TextureManager

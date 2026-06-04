@@ -25,17 +25,23 @@ void TextureManager::loadKey(const std::string& textureKey, unsigned int frameCo
     {
         // Load sprite sheet
         sf::Texture spriteSheet;
-        spriteSheet.loadFromFile("Textures/" + textureKey + ".png");
+        if (!spriteSheet.loadFromFile("Textures/" + textureKey + ".png")) {
+            exit(1);
+        }
 
         // Get size of each frame
         int frameWidth = spriteSheet.getSize().x / std::max(frameCount, 1U);
         int frameHeight = spriteSheet.getSize().y;
 
+        const sf::Image spriteImage = spriteSheet.copyToImage();
+
         renderStates[textureKey] = {};
         for (int i = 0; i < (int)frameCount; i++) {
 
             sf::Texture* frame = new sf::Texture();
-            frame->loadFromImage(spriteSheet.copyToImage(), { i * frameWidth, 0, frameWidth, frameHeight });
+            if (!frame->loadFromImage(spriteImage, false, { {i * frameWidth, 0}, {frameWidth, frameHeight} })) {
+                exit(1);
+            }
             frame->setRepeated(true);
 
             // Store the unique_ptr in the vector

@@ -10,7 +10,7 @@
 class Window : public sf::RenderWindow
 {
 public:
-	Window(sf::VideoMode mode, const std::string& title, int style = sf::Style::Default, const sf::ContextSettings& settings = sf::ContextSettings());
+	Window(sf::VideoMode mode, const std::string& title, sf::State state = sf::State::Windowed, const sf::ContextSettings& settings = sf::ContextSettings());
 
 	void toggleFullscreen();
 

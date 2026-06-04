@@ -10,7 +10,7 @@ Block::Block(const sf::Vector2f& position, const sf::Vector2f& size, const sf::C
 {
 	textureManager->loadKey(textureKey, frameCount);
 
-	vertices.setPrimitiveType(sf::TrianglesStrip);
+	vertices.setPrimitiveType(sf::PrimitiveType::TriangleStrip);
 
 	sf::Vertex vertex;
 	vertex.color = color;

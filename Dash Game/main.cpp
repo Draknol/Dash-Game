@@ -14,16 +14,16 @@ int main()
 	sf::VideoMode videomode = (
 			settings.getFullscreen()?
 			videomode = sf::VideoMode::getFullscreenModes()[0]:
-			sf::VideoMode(settings.getWindowSize().x, settings.getWindowSize().y)
+			sf::VideoMode({ settings.getWindowSize().x, settings.getWindowSize().y })
 		);
 
-	int style = (
+	sf::State state = (
 			settings.getFullscreen()?
-			sf::Style::Fullscreen:
-			sf::Style::Default
+			sf::State::Fullscreen:
+			sf::State::Windowed
 		);
 
-	Window window(videomode, "Dash Game", style);
+	Window window(videomode, "Dash Game", state);
 
 	Level level("Level1");
 
@@ -79,77 +79,71 @@ int main()
 
 void handleEvents(Window& window, Level& level, Player& player, Camera& camera, UICamera& hudCamera, StatusBar& healthBar, StatusBar& dashBar, bool& paused)
 {
-	sf::Event event;
-	while (window.pollEvent(event))
+	while (const std::optional event = window.pollEvent())
 	{
-		switch (event.type)
-		{
-		case sf::Event::Closed:
+		if (event->is<sf::Event::Closed>()) {
 			window.close();
-			break;
-		case sf::Event::Resized:
+		}
+		else if (event->is<sf::Event::Resized>()) {
 			camera.resize(window.getSize());
 			hudCamera.resize(window.getSize());
 			healthBar.resize(hudCamera.getWidth());
 			dashBar.resize(hudCamera.getWidth());
-			break;
-		case sf::Event::KeyPressed:
-			switch (event.key.code)
+		}
+		else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+			switch (keyPressed->scancode)
 			{
-			case sf::Keyboard::A:
+				case sf::Keyboard::Scancode::A:
 				if (!paused) player.setWalkingLeft(true);
 				break;
-			case sf::Keyboard::D:
+			case sf::Keyboard::Scancode::D:
 				if (!paused) player.setWalkingRight(true);
 				break;
-			case sf::Keyboard::Space:
+			case sf::Keyboard::Scancode::Space:
 				player.setJumping(true);
 				break;
-			case sf::Keyboard::LShift:
+			case sf::Keyboard::Scancode::LShift:
 				player.setDashing(true);
 				break;
-			case sf::Keyboard::E:
+			case sf::Keyboard::Scancode::E:
 				camera.move(player.interact(level));
 				break;
-			case sf::Keyboard::F11:
+			case sf::Keyboard::Scancode::F11:
 				window.toggleFullscreen();
 				camera.resize(window.getSize());
 				hudCamera.resize(window.getSize());
 				healthBar.resize(hudCamera.getWidth());
 				dashBar.resize(hudCamera.getWidth());
 				break;
-			case sf::Keyboard::L: // TODO for testing only
+			case sf::Keyboard::Scancode::L: // TODO for testing only
 				player.damage(-1);
 				break;
-			case sf::Keyboard::K: // TODO for testing only
+			case sf::Keyboard::Scancode::K: // TODO for testing only
 				player.damage(1);
 				break;
-			case sf::Keyboard::Escape:
+			case sf::Keyboard::Scancode::Escape:
 				paused = !paused;
 				break;
 			default:
 				break;
 			}
-			break;
-		case sf::Event::KeyReleased:
-			switch (event.key.code)
+		}
+		else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
+			switch (keyReleased->scancode)
 			{
-			case sf::Keyboard::A:
+			case sf::Keyboard::Scancode::A:
 				if (paused) player.stopWalking();
 				else player.setWalkingLeft(false);
 				break;
-			case sf::Keyboard::D:
+			case sf::Keyboard::Scancode::D:
 				if (paused) player.stopWalking();
 				else player.setWalkingRight(false);
 				break;
-			case sf::Keyboard::Space:
+			case sf::Keyboard::Scancode::Space:
 				player.setJumping(false);
 			default:
 				break;
 			}
-			break;
-		default:
-			break;
 		}
 	}
 }
