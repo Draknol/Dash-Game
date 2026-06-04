@@ -10,9 +10,10 @@ asdf
 ## Setup
 1. Install vcpkg
 2. Install sfml: `vgpkg install sfml`
-3. Clone the repository: `git clone https://github.com/Draknol/Dash-Game`
-4. Open the project: `RPG-Game.sln`
-5. Build and Run through Visual Studio
+3. Install imgui: `vgpkg install imgui`
+4. Clone the repository: `git clone https://github.com/Draknol/Dash-Game`
+5. Open the project: `RPG-Game.sln`
+6. Build and Run through Visual Studio
 
 ## Features
 * Editable .map files

@@ -60,6 +60,9 @@
     <ClInclude Include="UICamera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Menu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Settings.cpp">
@@ -107,6 +110,12 @@
       <Filter>Resource Files\Levels</Filter>
     </None>
     <None Include="Levels\Level2.map">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\Menu.map">
+      <Filter>Resource Files\Levels</Filter>
+    </None>
+    <None Include="Levels\Pause.map">
       <Filter>Resource Files\Levels</Filter>
     </None>
   </ItemGroup>

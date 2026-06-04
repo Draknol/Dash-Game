@@ -34,6 +34,7 @@ void Level::load(std::string fileName)
 	{
 		switch (type[0])
 		{
+		case '/':
 		case '#':
 			std::getline(file, type);
 			break;

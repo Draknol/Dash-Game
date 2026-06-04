@@ -139,6 +139,7 @@
     <ClInclude Include="Camera.hpp" />
     <ClInclude Include="Door.hpp" />
     <ClInclude Include="Level.hpp" />
+    <ClInclude Include="Menu.hpp" />
     <ClInclude Include="PhysicsObject.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="Settings.hpp" />
@@ -164,6 +165,8 @@
   <ItemGroup>
     <None Include="Levels\Level1.map" />
     <None Include="Levels\Level2.map" />
+    <None Include="Levels\Menu.map" />
+    <None Include="Levels\Pause.map" />
     <None Include="Saves\Settings.sav" />
   </ItemGroup>
   <ItemGroup>

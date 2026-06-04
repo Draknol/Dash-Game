@@ -3,8 +3,9 @@
 #include "UICamera.hpp"
 #include "Player.hpp"
 #include "Window.hpp"
+#include "Menu.hpp"
 
-void handleEvents(Window& window, Level& level, Player& player, Camera& camera, UICamera& hudCamera, StatusBar& healthBar, StatusBar& dashBar, bool& paused);
+void handleEvents(Window& window, Level& level, Level& overlay, Player& player, Camera& camera, UICamera& hudCamera, StatusBar& healthBar, StatusBar& dashBar, bool& paused, Menu& lastMenu);
 
 int main()
 {
@@ -25,7 +26,9 @@ int main()
 
 	Window window(videomode, "Dash Game", state);
 
-	Level level("Level1");
+	Level level;
+	Level overlay("Menu");
+	Menu currentMenu = Menu::MainMenu;
 
 	sf::Color skyBlue = sf::Color(60, 60, 255);
 
@@ -34,11 +37,11 @@ int main()
 	Camera camera(player.getPosition(), window.getSize());
 
 	sf::Clock clock;
-	bool paused = false;
+	bool paused = true;
 	
 	UICamera hudCamera(window.getSize());
 	StatusBar healthBar(hudCamera.getWidth(), "Heart", "EmptyHeart", 4, player.getHealth(), player.getMaxHealth(), true);
-	StatusBar dashBar(hudCamera.getWidth(), "DashBoot", "EmptyDashBoot", 16, player.getDashCount(), 1, false);
+	StatusBar dashBar(hudCamera.getWidth(), "DashBoot", "EmptyDashBoot", 16, player.getDashCount(), 3, false);
 
 	/* GAME LOOP */
 
@@ -46,7 +49,7 @@ int main()
 	{
 		float deltaTime = clock.restart().asSeconds();
 
-		handleEvents(window, level, player, camera, hudCamera, healthBar, dashBar, paused);
+		handleEvents(window, level, overlay, player, camera, hudCamera, healthBar, dashBar, paused, currentMenu);
 
 		/* UPDATE */
 
@@ -65,11 +68,19 @@ int main()
 
 		window.setView(camera);
 		window.draw(level);
+
 		window.draw(player);
 
-		window.setView(hudCamera);
-		window.draw(healthBar);
-		window.draw(dashBar);
+		if (!paused)
+		{
+			window.setView(hudCamera);
+			window.draw(healthBar);
+			window.draw(dashBar);
+		}
+		else
+		{
+			window.draw(overlay);
+		}
 
 		window.display();
 	}
@@ -77,7 +88,7 @@ int main()
 	return 0;
 }
 
-void handleEvents(Window& window, Level& level, Player& player, Camera& camera, UICamera& hudCamera, StatusBar& healthBar, StatusBar& dashBar, bool& paused)
+void handleEvents(Window& window, Level& level, Level& overlay, Player& player, Camera& camera, UICamera& hudCamera, StatusBar& healthBar, StatusBar& dashBar, bool& paused, Menu& currentMenu)
 {
 	while (const std::optional event = window.pollEvent())
 	{
@@ -122,7 +133,29 @@ void handleEvents(Window& window, Level& level, Player& player, Camera& camera, 
 				player.damage(1);
 				break;
 			case sf::Keyboard::Scancode::Escape:
-				paused = !paused;
+				switch (currentMenu) {
+				case Menu::GameMenu:
+					currentMenu = Menu::PauseMenu;
+					paused = !paused;
+					break;
+				case Menu::MainMenu:
+					level.load("Level1");
+					player.setPosition(level.getSpawn());
+					overlay.load("Pause");
+					currentMenu = Menu::GameMenu;
+					paused = !paused;
+					break;
+				case Menu::PauseMenu:
+					currentMenu = Menu::GameMenu;
+					paused = !paused;
+					break;
+				case Menu::SettingsMenu:
+					currentMenu = Menu::PauseMenu;
+					overlay.load("Pause");
+					break;
+				default:
+					break;
+				}
 				break;
 			default:
 				break;
@@ -132,11 +165,11 @@ void handleEvents(Window& window, Level& level, Player& player, Camera& camera, 
 			switch (keyReleased->scancode)
 			{
 			case sf::Keyboard::Scancode::A:
-				if (paused) player.stopWalking();
+				if (currentMenu != Menu::GameMenu) player.stopWalking();
 				else player.setWalkingLeft(false);
 				break;
 			case sf::Keyboard::Scancode::D:
-				if (paused) player.stopWalking();
+				if (currentMenu != Menu::GameMenu) player.stopWalking();
 				else player.setWalkingRight(false);
 				break;
 			case sf::Keyboard::Scancode::Space:
