@@ -9,22 +9,27 @@ Window::Window(sf::VideoMode mode, const std::string& title, sf::State state, co
 
 void Window::toggleFullscreen()
 {
-	if (!settings.getFullscreen())
+	if (settings.getFullscreen())
+	{
+		create(
+			sf::VideoMode(settings.getWindowSize()),
+			"Dash Game",
+			sf::State::Windowed
+		);
+		setPosition(settings.getWindowPosition());
+	}
+	else
 	{
 		settings.setWindowSize(getSize());
 		settings.setWindowPosition(getPosition());
+
+		create(
+			sf::VideoMode::getFullscreenModes()[0],
+			"Dash Game",
+			sf::State::Fullscreen
+		);
+		setPosition(sf::Vector2i(0, 0));
 	}
 
-	sf::VideoMode videoMode = settings.getFullscreen()
-		? sf::VideoMode({ settings.getWindowSize().x, settings.getWindowSize().y })
-		: sf::VideoMode::getFullscreenModes()[0];
-
-	sf::State windowState = settings.getFullscreen()
-		? sf::State::Fullscreen
-		: sf::State::Windowed;
-
-	create(videoMode, "Dash Game", windowState);
-
-	setPosition(settings.getWindowPosition());
 	settings.setFullscreen(!settings.getFullscreen());
 }

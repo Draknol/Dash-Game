@@ -53,8 +53,4 @@ private:
 	float gravityTimeStep = 0.001F;
 	float drag = 0.0005F;
 	float gravityTimer = 0.0f;
-
-	// Collision
-	float collisionBuffer = 1.0F;
-
 };

@@ -141,6 +141,7 @@ void handleEvents(Window& window, Level& level, Player& player, Camera& camera, 
 				break;
 			case sf::Keyboard::Scancode::Space:
 				player.setJumping(false);
+				break;
 			default:
 				break;
 			}

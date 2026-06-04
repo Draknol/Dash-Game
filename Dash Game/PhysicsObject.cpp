@@ -47,31 +47,32 @@ void PhysicsObject::checkedMove(const BlockManager<Block>& fulls, const sf::Vect
 		if (isColliding(block))
 		{
 			// Find collision direction(s)
-			bool bottomCollided = getBottom() - collisionBuffer < block.getTop();
-			bool TopCollided = getTop() + collisionBuffer > block.getBottom();
-			bool rightCollided = getRight() - collisionBuffer < block.getLeft();
-			bool leftCollided = getLeft() + collisionBuffer > block.getRight();
+			float bottomCollided = block.getTop() - getBottom();
+			float TopCollided = getTop() - block.getBottom();
+			float rightCollided = block.getLeft() - getRight();
+			float leftCollided = getLeft() - block.getRight();
+			float maxCollided = std::max(std::max(bottomCollided, TopCollided), std::max(rightCollided, leftCollided));
 
 			// Check bottom
-			if (velocity.y > 0.0F && bottomCollided)
+			if (velocity.y > 0.0F && bottomCollided == maxCollided)
 			{
 				savePosition.y = block.getTop();
 				velocity.y = 0.0F;
 				onGroundImpact();
 			}
 			// Check top
-			else if (velocity.y < 0.0F && TopCollided)
+			else if (velocity.y < 0.0F && TopCollided == maxCollided)
 			{
 				savePosition.y = block.getBottom() + size.y;
 				velocity.y = 0.0F;
 			}
 			// Check right
-			if (velocity.x > 0.0F && rightCollided)
+			else if (velocity.x > 0.0F && rightCollided == maxCollided)
 			{
 				savePosition.x = block.getLeft() - (size.x / 2.0F);
 			}
 			// Check left
-			else if (velocity.x < 0.0F && leftCollided)
+			else if (velocity.x < 0.0F && leftCollided == maxCollided)
 			{
 				savePosition.x = block.getRight() + (size.x / 2.0F);
 			}
