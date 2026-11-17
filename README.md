@@ -8,11 +8,11 @@ asdf
 asdf
 
 ## Setup
-1. Install vcpkg
-2. Install sfml: `vgpkg install sfml`
-3. Clone the repository: `git clone https://github.com/Draknol/Dash-Game`
-4. Open the project: `RPG-Game.sln`
-5. Build and Run through Visual Studio
+1. Install cmake
+2. Clone the repository: `git clone https://github.com/Draknol/Dash-Game`
+3. Configure CMake `cmake -B build`
+3. Build `cmake --build build`
+3. Run `.\build\DashGame.exe`
 
 ## Features
 * Editable .map files
