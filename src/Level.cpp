@@ -25,7 +25,7 @@ void Level::load(std::string fileName)
 	name = fileName;
 
 	std::fstream file;
-	file.open("Levels/" + name + ".map");
+	file.open("res/Levels/" + name + ".map");
 
 	file >> spawn.x >> spawn.y;
 

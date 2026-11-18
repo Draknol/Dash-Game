@@ -16,7 +16,7 @@ void Settings::load(const std::string& fileName)
 {
     // Open File
     std::fstream file;
-    file.open("Saves/" + fileName + ".sav");
+    file.open("res/Saves/" + fileName + ".sav");
 
     char name;
 
@@ -48,7 +48,7 @@ void Settings::save(const std::string& fileName)
 {
     // Open File
     std::fstream file;
-    file.open("Saves/" + fileName + ".sav");
+    file.open("res/Saves/" + fileName + ".sav");
 
     file << "h" << windowSize.x
         << "w" << windowSize.y

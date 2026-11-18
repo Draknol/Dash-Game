@@ -25,7 +25,7 @@ void TextureManager::loadKey(const std::string& textureKey, unsigned int frameCo
     {
         // Load sprite sheet
         sf::Texture spriteSheet;
-        if (!spriteSheet.loadFromFile("Textures/" + textureKey + ".png")) {
+        if (!spriteSheet.loadFromFile("res/Textures/" + textureKey + ".png")) {
             exit(1);
         }
 
