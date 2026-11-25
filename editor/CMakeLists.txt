@@ -4,8 +4,11 @@ add_executable(DashEditor ${EDITOR_SOURCES})
 
 target_include_directories(DashEditor PRIVATE include)
 
-target_link_libraries(DashEditor
-    PRIVATE engine SFML::Graphics SFML::Window SFML::System ImGui-SFML::ImGui-SFML
+target_link_libraries(DashEditor PRIVATE
+    common
+    engine
+    SFML::Graphics SFML::Window SFML::System
+    ImGui-SFML::ImGui-SFML
 )
 
 add_custom_command(TARGET DashEditor POST_BUILD

@@ -1,10 +1,6 @@
 {
   "folders": [
-    { "path": "game" },
-    { "path": "editor" },
-    { "path": "engine" },
-    { "path": "common" }
-    { "path": "res" },
+    { "path": "." }
   ],
   "settings": {
     "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json"
