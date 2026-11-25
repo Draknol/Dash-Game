@@ -1,4 +1,3 @@
-
 #include "StatusBar.hpp"
 #include "UICamera.hpp"
 #include "Player.hpp"

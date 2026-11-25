@@ -10,9 +10,9 @@ asdf
 ## Setup
 1. Install cmake
 2. Clone the repository: `git clone https://github.com/Draknol/Dash-Game`
-3. Configure CMake `cmake -B build`
-3. Build `cmake --build build`
-3. Run `.\build\DashGame.exe`
+3. Configure CMake `cmake -B build -G MinGw Makefiles`
+4. Build `cmake --build build`
+5. Run `.\build\DashGame.exe`
 
 ## Features
 * Editable .map files
