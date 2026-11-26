@@ -3,6 +3,9 @@
 #include "Level.hpp"
 #include "PhysicsObject.hpp"
 
+namespace engine
+{
+
 /// <summary>
 /// Extends PhysicsObject
 /// can walk, dash and jump
@@ -14,24 +17,24 @@
 /// </summary>
 class Player : public PhysicsObject
 {
-public:
+  public:
 
 	Player();
 
 	/// <param name="fileName">prefix of .png files to use</param>
-	Player(const sf::Vector2f& position, const sf::Vector2f& size, const std::string& fileName);
+	Player(const sf::Vector2f &position, const sf::Vector2f &size, const std::string &fileName);
 
-	void updatePhysics(const BlockManager<Block>& blocks, float deltaTime) override;
+	void updatePhysics(const BlockManager<Block> &blocks, float deltaTime) override;
 
 	void setWalkingLeft(bool walking);
 	void setWalkingRight(bool walking);
 	void stopWalking();
 	void setJumping(bool jumping);
-	void setDashing(bool dashing);
+	void setDashing(bool setDashing) { m_isDashing = setDashing; }
 
-	const unsigned int& getHealth() const;
-	const unsigned int& getMaxHealth() const;
-	const unsigned int& getDashCount() const;
+	const unsigned int &getHealth() const { return m_health; }
+	const unsigned int &getMaxHealth() const { return m_maxHealth; }
+	const unsigned int &getDashCount() const { return m_dashCounter; }
 
 	void damage(int damage);
 
@@ -40,9 +43,9 @@ public:
 	/// if found the doors level is loaded
 	/// </summary>
 	/// <returns>amount player moved by (intended for updating Camera)</returns>
-	sf::Vector2f interact(Level& level);
+	sf::Vector2f interact(Level &level);
 
-private:
+  private:
 
 	void tryWalk();
 
@@ -53,30 +56,31 @@ private:
 	void onGroundImpact() override;
 
 	// Walking
-	float speed = 270.0F;
-	int walkDirection = 0;
-	bool facingRight = true;
-	bool walkingLeft = false;
-	bool walkingRight = false;
+	float m_speed = 270.0F;
+	int m_walkDirection = 0;
+	bool m_facingRight = true;
+	bool m_walkingLeft = false;
+	bool m_walkingRight = false;
 
 	// Jumping
-	int maxJumps = 2;
-	float jumpStrength = 500.0F;
-	int jumpCounter = maxJumps;
-	bool jumpHolding = false;
-	bool isJumping = false;
+	unsigned int m_maxJumps = 2;
+	float m_jumpStrength = 500.0F;
+	unsigned int m_jumpCounter = m_maxJumps;
+	bool m_jumpHolding = false;
+	bool m_isJumping = false;
 
 	// Dashing
-	unsigned int dashCounter = 1U;
-	float dashDuration = 0.1F;
-	float dashCooldown = 0.7F;
-	float dashSpeed = 2000.0F;
-	float dashDurationTimer = dashDuration;
-	float dashCooldownTimer = 0.0F;
-	bool isDashing = false;
+	unsigned int m_dashCounter = 1U;
+	float m_dashDuration = 0.1F;
+	float m_dashCooldown = 0.7F;
+	float m_dashSpeed = 2000.0F;
+	float m_dashDurationTimer = m_dashDuration;
+	float m_dashCooldownTimer = 0.0F;
+	bool m_isDashing = false;
 
 	// Health
-	unsigned int maxHealth = 10;
-	unsigned int health = maxHealth;
-
+	unsigned int m_maxHealth = 10U;
+	unsigned int m_health = m_maxHealth;
 };
+
+} // namespace engine

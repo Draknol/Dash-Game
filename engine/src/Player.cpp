@@ -1,67 +1,69 @@
 #include "Player.hpp"
 
-Player::Player()
+namespace engine
 {
+
+Player::Player() {}
+
+Player::Player(const sf::Vector2f &position, const sf::Vector2f &size, const std::string &fileName)
+	: PhysicsObject(Block(position, size, sf::Color::White, fileName + "Idle", 5U, 10U))
+{
+	TextureManager &textureManager = TextureManager::getInstance();
+	textureManager.loadKey("PlayerWalk", 8U);
 }
 
-Player::Player(const sf::Vector2f& position, const sf::Vector2f& size, const std::string& fileName)
-	: PhysicsObject(Block(position, size, sf::Color::White, fileName + "Idle", 5, 10))
-{
-	TextureManager& textureManager = TextureManager::getInstance();
-	textureManager.loadKey("PlayerWalk", 8);
-}
-
-void Player::onGroundImpact()
-{
-	jumpCounter = maxJumps;
-}
+void Player::onGroundImpact() { m_jumpCounter = m_maxJumps; }
 
 void Player::setWalkingLeft(bool walking)
 {
-	walkingLeft = walking;
+	m_walkingLeft = walking;
 	if (walking == true)
 	{
-		if (facingRight) flipHorizontally();
-		facingRight = false;
-		walkDirection = -1;
-	}
-	else if (walkDirection == -1)
-	{
-		walkDirection = (int)walkingRight;
-		if (walkingRight) {
+		if (m_facingRight)
 			flipHorizontally();
-			facingRight = true;
+		m_facingRight = false;
+		m_walkDirection = -1;
+	}
+	else if (m_walkDirection == -1)
+	{
+		m_walkDirection = (int)m_walkingRight;
+		if (m_walkingRight)
+		{
+			flipHorizontally();
+			m_facingRight = true;
 		}
 	}
 }
 
 void Player::setWalkingRight(bool walking)
 {
-	walkingRight = walking;
+	m_walkingRight = walking;
 	if (walking == true)
 	{
-		if (!facingRight) flipHorizontally();
-		facingRight = true;
-		walkDirection = 1;
-	}
-	else if (walkDirection == 1)
-	{
-		walkDirection = -(int)walkingLeft;
-		if (walkingLeft) {
+		if (!m_facingRight)
 			flipHorizontally();
-			facingRight = false;
+		m_facingRight = true;
+		m_walkDirection = 1;
+	}
+	else if (m_walkDirection == 1)
+	{
+		m_walkDirection = -(int)m_walkingLeft;
+		if (m_walkingLeft)
+		{
+			flipHorizontally();
+			m_facingRight = false;
 		}
 	}
 }
 
 void Player::stopWalking()
 {
-	walkDirection = 0;
-	walkingLeft = false;
-	walkingRight = false;
+	m_walkDirection = 0;
+	m_walkingLeft = false;
+	m_walkingRight = false;
 }
 
-void Player::updatePhysics(const BlockManager<Block>& fulls, float deltaTime)
+void Player::updatePhysics(const BlockManager<Block> &fulls, float deltaTime)
 {
 	halfGravity(deltaTime);
 
@@ -74,62 +76,46 @@ void Player::updatePhysics(const BlockManager<Block>& fulls, float deltaTime)
 	halfGravity(deltaTime);
 
 	// 1.5F is sqrt(2) rounded up to be safe
-	int loopCount = (int)(1.5F * std::max(velocity.x, velocity.y) * deltaTime) + 1;
+	int loopCount = (unsigned int)(1.5F * std::max(m_velocity.x, m_velocity.y) * deltaTime) + 1U;
 	float timeStep = deltaTime / (float)loopCount;
-	
-	for (int i = 0; i < loopCount; i++)
+
+	for (size_t i = 0U; i < loopCount; i++)
 	{
-		checkedMove(fulls, velocity * timeStep);
+		checkedMove(fulls, m_velocity * timeStep);
 	}
 }
 
 void Player::setJumping(bool jumping)
 {
-	isJumping = jumping;
-	jumpHolding = jumping;
-}
-
-void Player::setDashing(bool setDashing)
-{
-	isDashing = setDashing;
-}
-
-const unsigned int& Player::getHealth() const
-{
-	return health;
-}
-
-const unsigned int& Player::getMaxHealth() const
-{
-	return maxHealth;
-}
-
-const unsigned int& Player::getDashCount() const
-{
-	return dashCounter;
+	m_isJumping = jumping;
+	m_jumpHolding = jumping;
 }
 
 void Player::damage(int damage)
 {
-	if (damage > (int)health) {
-		health = 0;
+	if (damage > (int)m_health)
+	{
+		m_health = 0U;
 	}
-	else {
-		health -= damage;
-		health = std::min(health, maxHealth);
+	else
+	{
+		m_health -= damage;
+		m_health = std::min(m_health, m_maxHealth);
 	}
 }
 
-sf::Vector2f Player::interact(Level& level)
+sf::Vector2f Player::interact(Level &level)
 {
-	for (const Door& door : level.getDoors())
+	for (const Door &door : level.getDoors())
 	{
 		if (isColliding(door))
 		{
-			sf::Vector2f oldPosition = position;
-			setPosition(door.getLevelSpawn() + (position - sf::Vector2f(door.getLeft(), door.getBottom() - 24.0F))); // TODO why 24?
+			sf::Vector2f oldPosition = m_position;
+			setPosition(
+				door.getLevelSpawn() + (m_position - sf::Vector2f(door.getLeft(), door.getBottom() - 24.0F))
+			); // TODO why 24?
 			level.load(door.getLevelName());
-			return position - oldPosition;
+			return m_position - oldPosition;
 		}
 	}
 
@@ -138,56 +124,60 @@ sf::Vector2f Player::interact(Level& level)
 
 void Player::tryWalk()
 {
-	if (walkDirection == 0)
+	if (m_walkDirection == 0)
 	{
-		if (velocity.x != 0) setTextureKey("PlayerIdle");
-		setFrameRate(10);
+		if (m_velocity.x != 0.0F)
+			setTextureKey("PlayerIdle");
+		setFrameRate(10U);
 	}
 	else
 	{
-		if (velocity.x == 0) setTextureKey("PlayerWalk");
-		setFrameRate(15);
+		if (m_velocity.x == 0.0F)
+			setTextureKey("PlayerWalk");
+		setFrameRate(15U);
 	}
-	velocity.x = speed * walkDirection;
+	m_velocity.x = m_speed * m_walkDirection;
 }
 
 void Player::tryJump()
 {
 	// Check if Can Jump
-	if (isJumping && jumpCounter > 0 || jumpHolding && jumpCounter == maxJumps)
+	if (m_isJumping && m_jumpCounter > 0U || m_jumpHolding && m_jumpCounter == m_maxJumps)
 	{
 		// Jump
-		move(sf::Vector2f(0, -10));
-		velocity.y = -jumpStrength;
+		move(sf::Vector2f(0.0F, -10.0F));
+		m_velocity.y = -m_jumpStrength;
 
 		// Update Counter
-		jumpCounter--;
-		isJumping = false;
+		m_jumpCounter--;
+		m_isJumping = false;
 	}
 }
 
 void Player::tryDash(float deltaTime)
 {
-	dashCounter = dashCooldownTimer <= 0.0F;
+	m_dashCounter = m_dashCooldownTimer <= 0.0F;
 
 	// Check if Dash is on Cooldown
-	if (dashCooldownTimer > 0.0F || walkDirection == 0)
+	if (m_dashCooldownTimer > 0.0F || m_walkDirection == 0)
 	{
-		dashCooldownTimer -= deltaTime;
-		isDashing = false;
+		m_dashCooldownTimer -= deltaTime;
+		m_isDashing = false;
 	}
 	// If not, Dash
-	else if (isDashing && dashDurationTimer > 0.0F)
+	else if (m_isDashing && m_dashDurationTimer > 0.0F)
 	{
 		// Dash in Correct Direction
-		velocity.x = dashSpeed * walkDirection;
-		dashDurationTimer -= deltaTime;
+		m_velocity.x = m_dashSpeed * m_walkDirection;
+		m_dashDurationTimer -= deltaTime;
 
 		// Reset Timers
-		if (dashDurationTimer <= 0.0F)
+		if (m_dashDurationTimer <= 0.0F)
 		{
-			dashDurationTimer = dashDuration;
-			dashCooldownTimer = dashCooldown;
+			m_dashDurationTimer = m_dashDuration;
+			m_dashCooldownTimer = m_dashCooldown;
 		}
 	}
 }
+
+} // namespace engine

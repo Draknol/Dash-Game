@@ -1,43 +1,48 @@
+#include "Player.hpp"
 #include "StatusBar.hpp"
 #include "UICamera.hpp"
-#include "Player.hpp"
 #include "Window.hpp"
 
-void handleEvents(Window& window, Level& level, Player& player, Camera& camera, UICamera& hudCamera, StatusBar& healthBar, StatusBar& dashBar, bool& paused);
+void handleEvents(
+	engine::Window &window,
+	engine::Level &level,
+	engine::Player &player,
+	engine::Camera &camera,
+	engine::UICamera &hudCamera,
+	engine::StatusBar &healthBar,
+	engine::StatusBar &dashBar,
+	bool &paused
+);
 
 int main()
 {
-	Settings& settings = Settings::getInstance();
+	common::Settings &settings = common::Settings::getInstance();
 	settings.load("Settings");
 
-	sf::VideoMode videomode = (
-			settings.getFullscreen()?
-			videomode = sf::VideoMode::getFullscreenModes()[0]:
-			sf::VideoMode({ settings.getWindowSize().x, settings.getWindowSize().y })
-		);
+	sf::VideoMode videomode =
+		(settings.getFullscreen() ? videomode = sf::VideoMode::getFullscreenModes()[0]
+								  : sf::VideoMode({ settings.getWindowSize().x, settings.getWindowSize().y }));
 
-	sf::State state = (
-			settings.getFullscreen()?
-			sf::State::Fullscreen:
-			sf::State::Windowed
-		);
+	sf::State state = (settings.getFullscreen() ? sf::State::Fullscreen : sf::State::Windowed);
 
-	Window window(videomode, "Dash Game", state);
+	engine::Window window(videomode, "Dash Game", state);
 
-	Level level("Level1");
+	engine::Level level("Level1");
 
-	sf::Color skyBlue = sf::Color(60, 60, 255);
+	sf::Color skyBlue = sf::Color(60U, 60U, 255U);
 
-	Player player(level.getSpawn(), { 31, 34 }, "Player");
+	engine::Player player(level.getSpawn(), { 31.0F, 34.0F }, "Player");
 
-	Camera camera(player.getPosition(), window.getSize());
+	engine::Camera camera(player.getPosition(), window.getSize());
 
 	sf::Clock clock;
 	bool paused = false;
-	
-	UICamera hudCamera(window.getSize());
-	StatusBar healthBar(hudCamera.getWidth(), "Heart", "EmptyHeart", 4, player.getHealth(), player.getMaxHealth(), true);
-	StatusBar dashBar(hudCamera.getWidth(), "DashBoot", "EmptyDashBoot", 16, player.getDashCount(), 1, false);
+
+	engine::UICamera hudCamera(window.getSize());
+	engine::StatusBar healthBar(
+		hudCamera.getWidth(), "Heart", "EmptyHeart", 4, player.getHealth(), player.getMaxHealth(), true
+	);
+	engine::StatusBar dashBar(hudCamera.getWidth(), "DashBoot", "EmptyDashBoot", 16, player.getDashCount(), 1U, false);
 
 	/* GAME LOOP */
 
@@ -76,27 +81,41 @@ int main()
 	return 0;
 }
 
-void handleEvents(Window& window, Level& level, Player& player, Camera& camera, UICamera& hudCamera, StatusBar& healthBar, StatusBar& dashBar, bool& paused)
+void handleEvents(
+	engine::Window &window,
+	engine::Level &level,
+	engine::Player &player,
+	engine::Camera &camera,
+	engine::UICamera &hudCamera,
+	engine::StatusBar &healthBar,
+	engine::StatusBar &dashBar,
+	bool &paused
+)
 {
 	while (const std::optional event = window.pollEvent())
 	{
-		if (event->is<sf::Event::Closed>()) {
+		if (event->is<sf::Event::Closed>())
+		{
 			window.close();
 		}
-		else if (event->is<sf::Event::Resized>()) {
+		else if (event->is<sf::Event::Resized>())
+		{
 			camera.resize(window.getSize());
 			hudCamera.resize(window.getSize());
 			healthBar.resize(hudCamera.getWidth());
 			dashBar.resize(hudCamera.getWidth());
 		}
-		else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+		else if (const auto *keyPressed = event->getIf<sf::Event::KeyPressed>())
+		{
 			switch (keyPressed->scancode)
 			{
-				case sf::Keyboard::Scancode::A:
-				if (!paused) player.setWalkingLeft(true);
+			case sf::Keyboard::Scancode::A:
+				if (!paused)
+					player.setWalkingLeft(true);
 				break;
 			case sf::Keyboard::Scancode::D:
-				if (!paused) player.setWalkingRight(true);
+				if (!paused)
+					player.setWalkingRight(true);
 				break;
 			case sf::Keyboard::Scancode::Space:
 				player.setJumping(true);
@@ -127,16 +146,21 @@ void handleEvents(Window& window, Level& level, Player& player, Camera& camera, 
 				break;
 			}
 		}
-		else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>()) {
+		else if (const auto *keyReleased = event->getIf<sf::Event::KeyReleased>())
+		{
 			switch (keyReleased->scancode)
 			{
 			case sf::Keyboard::Scancode::A:
-				if (paused) player.stopWalking();
-				else player.setWalkingLeft(false);
+				if (paused)
+					player.stopWalking();
+				else
+					player.setWalkingLeft(false);
 				break;
 			case sf::Keyboard::Scancode::D:
-				if (paused) player.stopWalking();
-				else player.setWalkingRight(false);
+				if (paused)
+					player.stopWalking();
+				else
+					player.setWalkingRight(false);
 				break;
 			case sf::Keyboard::Scancode::Space:
 				player.setJumping(false);

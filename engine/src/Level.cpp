@@ -1,33 +1,30 @@
-
 #include "Level.hpp"
 
-Level::Level()
+namespace engine
 {
-}
 
-Level::Level(const std::string& fileName)
-{
-	load(fileName);
-}
+Level::Level() {}
+
+Level::Level(const std::string &fileName) { load(fileName); }
 
 void Level::clear()
 {
-	name = "";
-	platforms.clear();
-	decorations.clear();
-	doors.clear();
-	spawn = { 0.0F, 0.0F };
+	m_name = "";
+	m_platforms.clear();
+	m_decorations.clear();
+	m_doors.clear();
+	m_spawn = { 0.0F, 0.0F };
 }
 
 void Level::load(std::string fileName)
 {
 	clear();
-	name = fileName;
+	m_name = fileName;
 
 	std::fstream file;
-	file.open("res/Levels/" + name + ".map");
+	file.open("res/Levels/" + m_name + ".map");
 
-	file >> spawn.x >> spawn.y;
+	file >> m_spawn.x >> m_spawn.y;
 
 	std::string type;
 	while (file >> type)
@@ -38,16 +35,16 @@ void Level::load(std::string fileName)
 			std::getline(file, type);
 			break;
 		case 'p':
-			platforms.push_back(Block());
-			file >> platforms.back();
+			m_platforms.push_back(Block());
+			file >> m_platforms.back();
 			break;
 		case 'd':
-			decorations.push_back(Block());
-			file >> decorations.back();
+			m_decorations.push_back(Block());
+			file >> m_decorations.back();
 			break;
 		case 'D':
-			doors.push_back(Door());
-			file >> doors.back();
+			m_doors.push_back(Door());
+			file >> m_doors.back();
 			break;
 		default:
 			break;
@@ -57,34 +54,16 @@ void Level::load(std::string fileName)
 
 void Level::updateAnimations(float deltaTime)
 {
-	platforms.updateAnimations(deltaTime);
-	decorations.updateAnimations(deltaTime);
-	doors.updateAnimations(deltaTime);
+	m_platforms.updateAnimations(deltaTime);
+	m_decorations.updateAnimations(deltaTime);
+	m_doors.updateAnimations(deltaTime);
 }
 
-const BlockManager<Block>& Level::getPlatforms() const
+void Level::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	return platforms;
+	target.draw(m_platforms, states);
+	target.draw(m_decorations, states);
+	target.draw(m_doors, states);
 }
 
-const BlockManager<Block>& Level::getDecorations() const
-{
-	return decorations;
-}
-
-const BlockManager<Door>& Level::getDoors() const
-{
-	return doors;
-}
-
-const sf::Vector2f& Level::getSpawn() const
-{
-	return spawn;
-}
-
-void Level::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-	target.draw(platforms, states);
-	target.draw(decorations, states);
-	target.draw(doors, states);
-}
+} // namespace engine

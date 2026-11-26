@@ -2,14 +2,18 @@
 
 #include "Camera.hpp"
 
+namespace engine
+{
+
 class UICamera : public Camera
 {
-public:
+  public:
 
-	UICamera(const sf::Vector2u& windowSize);
+	UICamera(const sf::Vector2u &windowSize);
 
-	void resize(const sf::Vector2u& windowSize);
+	void resize(const sf::Vector2u &windowSize);
 
-	float getWidth() const;
-
+	float getWidth() const { return getSize().x; }
 };
+
+} // namespace engine

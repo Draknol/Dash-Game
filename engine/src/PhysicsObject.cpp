@@ -1,47 +1,35 @@
-
 #include "PhysicsObject.hpp"
 
-PhysicsObject::PhysicsObject()
+namespace engine
 {
+
+PhysicsObject::PhysicsObject() {}
+
+PhysicsObject::PhysicsObject(const Block &block)
+	: Block(block), m_position((getLeft() + getRight()) / 2.0F, getBottom())
+{
+	m_size.x = getRight() - getLeft();
+	m_size.y = getBottom() - getTop();
 }
 
-PhysicsObject::PhysicsObject(const Block& block)
-	: Block(block), position((getLeft() + getRight()) / 2.0F, getBottom())
-{
-	size.x = getRight() - getLeft();
-	size.y = getBottom() - getTop();
-}
+void PhysicsObject::updatePhysics(const BlockManager<Block> & /*blocks*/, float /*deltaTime*/) {}
 
-void PhysicsObject::updatePhysics(const BlockManager<Block>& fulls, float deltaTime)
+void PhysicsObject::move(const sf::Vector2f &offset)
 {
-}
+	m_position = m_position + offset;
 
-void PhysicsObject::move(const sf::Vector2f& offset)
-{
-	position = position + offset;
-
-	for (int i = 0; i < 4; i++)
+	for (size_t i = 0U; i < 4U; i++)
 	{
 		getVertex(i).position += offset;
 	}
 }
 
-const sf::Vector2f& PhysicsObject::getPosition() const
-{
-	return position;
-}
-
-void PhysicsObject::setPosition(const sf::Vector2f& destination)
-{
-	move(destination - position);
-}
-
-void PhysicsObject::checkedMove(const BlockManager<Block>& fulls, const sf::Vector2f& destination)
+void PhysicsObject::checkedMove(const BlockManager<Block> &fulls, const sf::Vector2f &destination)
 {
 	move(destination);
-	sf::Vector2f savePosition = position;
+	sf::Vector2f savePosition = m_position;
 
-	for (const auto& block : fulls)
+	for (const auto &block : fulls)
 	{
 		// Check for collision
 		if (isColliding(block))
@@ -54,27 +42,27 @@ void PhysicsObject::checkedMove(const BlockManager<Block>& fulls, const sf::Vect
 			float maxCollided = std::max(std::max(bottomCollided, TopCollided), std::max(rightCollided, leftCollided));
 
 			// Check bottom
-			if (velocity.y > 0.0F && bottomCollided == maxCollided)
+			if (m_velocity.y > 0.0F && bottomCollided == maxCollided)
 			{
 				savePosition.y = block.getTop();
-				velocity.y = 0.0F;
+				m_velocity.y = 0.0F;
 				onGroundImpact();
 			}
 			// Check top
-			else if (velocity.y < 0.0F && TopCollided == maxCollided)
+			else if (m_velocity.y < 0.0F && TopCollided == maxCollided)
 			{
-				savePosition.y = block.getBottom() + size.y;
-				velocity.y = 0.0F;
+				savePosition.y = block.getBottom() + m_size.y;
+				m_velocity.y = 0.0F;
 			}
 			// Check right
-			else if (velocity.x > 0.0F && rightCollided == maxCollided)
+			else if (m_velocity.x > 0.0F && rightCollided == maxCollided)
 			{
-				savePosition.x = block.getLeft() - (size.x / 2.0F);
+				savePosition.x = block.getLeft() - (m_size.x / 2.0F);
 			}
 			// Check left
-			else if (velocity.x < 0.0F && leftCollided == maxCollided)
+			else if (m_velocity.x < 0.0F && leftCollided == maxCollided)
 			{
-				savePosition.x = block.getRight() + (size.x / 2.0F);
+				savePosition.x = block.getRight() + (m_size.x / 2.0F);
 			}
 		}
 	}
@@ -82,32 +70,30 @@ void PhysicsObject::checkedMove(const BlockManager<Block>& fulls, const sf::Vect
 	setPosition(savePosition);
 }
 
-bool PhysicsObject::isColliding(const Block& block)
+bool PhysicsObject::isColliding(const Block &block)
 {
-	return block.getLeft() < getRight() &&
-		   block.getRight() > getLeft() &&
-		   block.getTop() < getBottom() &&
+	return block.getLeft() < getRight() && block.getRight() > getLeft() && block.getTop() < getBottom() &&
 		   block.getBottom() > getTop();
 }
 
-void PhysicsObject::onGroundImpact()
-{
-}
+void PhysicsObject::onGroundImpact() {}
 
 void PhysicsObject::halfGravity(float deltaTime)
 {
 	// Update timer with half deltaTime
-	gravityTimer += deltaTime / 2.0F;
+	m_gravityTimer += deltaTime / 2.0F;
 
 	float i = 0;
 
 	// Loop for accuracy
-	while (gravityTimer >= gravityTimeStep)
+	while (m_gravityTimer >= m_gravityTimeStep)
 	{
 		// Apply gravity with drag
-		velocity.y += (gravityAcceleration - drag * velocity.y * velocity.y) * gravityTimeStep;
+		m_velocity.y += (m_gravityAcceleration - m_drag * m_velocity.y * m_velocity.y) * m_gravityTimeStep;
 
 		// Update timer with timeStep
-		gravityTimer -= gravityTimeStep;
+		m_gravityTimer -= m_gravityTimeStep;
 	}
 }
+
+} // namespace engine

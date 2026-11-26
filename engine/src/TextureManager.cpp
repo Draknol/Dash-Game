@@ -1,79 +1,86 @@
 #include "TextureManager.hpp"
 
-TextureManager TextureManager::instance;
+namespace engine
+{
+
+TextureManager TextureManager::m_instance;
 
 TextureManager::TextureManager()
 {
-    // First (and only) frame for solid color texture
-    renderStates["color"] = { sf::RenderStates() };
+	// First (and only) frame for solid color texture
+	m_renderStates["color"] = { sf::RenderStates() };
 }
 
 TextureManager::~TextureManager()
 {
-    for (sf::Texture* texture : textures) delete texture;
+	for (sf::Texture *texture : m_textures)
+		delete texture;
 }
 
-TextureManager& TextureManager::getInstance()
+void TextureManager::loadKey(const std::string &textureKey, unsigned int frameCount)
 {
-    return instance;
+	// Check texture isn't already loaded
+	if (m_renderStates.count(textureKey) == 0U)
+	{
+		// Load sprite sheet
+		sf::Texture spriteSheet;
+		if (!spriteSheet.loadFromFile("res/Textures/" + textureKey + ".png"))
+		{
+			exit(1);
+		}
+
+		// Get size of each frame
+		unsigned int frameWidth = spriteSheet.getSize().x / std::max(frameCount, 1U);
+		unsigned int frameHeight = spriteSheet.getSize().y;
+
+		const sf::Image spriteImage = spriteSheet.copyToImage();
+
+		m_renderStates[textureKey] = {};
+		for (size_t i = 0U; i < frameCount; i++)
+		{
+
+			sf::Texture *frame = new sf::Texture();
+			if (!frame->loadFromImage(
+					spriteImage, false, { { (int)(i * frameWidth), 0 }, { (int)frameWidth, (int)frameHeight } }
+				))
+			{
+				exit(1);
+			}
+			frame->setRepeated(true);
+
+			// Store the unique_ptr in the vector
+			m_textures.emplace_back(frame);
+
+			// Add render state for frame
+			m_renderStates[textureKey].emplace_back(frame);
+		}
+	}
 }
 
-void TextureManager::loadKey(const std::string& textureKey, unsigned int frameCount)
+const sf::RenderStates &TextureManager::getRenderStates(const std::string &textureKey, unsigned int frame)
 {
-    // Check texture isn't already loaded
-    if (renderStates.count(textureKey) == 0) 
-    {
-        // Load sprite sheet
-        sf::Texture spriteSheet;
-        if (!spriteSheet.loadFromFile("res/Textures/" + textureKey + ".png")) {
-            exit(1);
-        }
+	if (textureKey == "color")
+		return m_renderStates.at("color")[0];
 
-        // Get size of each frame
-        int frameWidth = spriteSheet.getSize().x / std::max(frameCount, 1U);
-        int frameHeight = spriteSheet.getSize().y;
+	if (m_renderStates.count(textureKey) == 0)
+	{
+		printf("Warning: Failed to access renderStates[%s] in TextureManager\n", textureKey.c_str());
+		m_renderStates[textureKey] = { sf::RenderStates() };
+	}
+	else if (m_renderStates.at(textureKey).size() <= frame)
+	{
+		printf("Warning: Failed to access \"%s\", frame %d in TextureManager\n", textureKey.c_str(), (int)frame);
+		m_renderStates.at(textureKey).resize(frame);
+	}
 
-        const sf::Image spriteImage = spriteSheet.copyToImage();
-
-        renderStates[textureKey] = {};
-        for (int i = 0; i < (int)frameCount; i++) {
-
-            sf::Texture* frame = new sf::Texture();
-            if (!frame->loadFromImage(spriteImage, false, { {i * frameWidth, 0}, {frameWidth, frameHeight} })) {
-                exit(1);
-            }
-            frame->setRepeated(true);
-
-            // Store the unique_ptr in the vector
-            textures.emplace_back(frame);
-
-            // Add render state for frame
-            renderStates[textureKey].emplace_back(frame);
-        }
-    }
+	return m_renderStates.at(textureKey)[frame];
 }
 
-const sf::RenderStates& TextureManager::getRenderStates(const std::string& textureKey, unsigned int frame)
+unsigned int TextureManager::getFrameCount(const std::string &textureKey)
 {
-    if (textureKey == "color") return renderStates.at("color")[0];
-
-    if (renderStates.count(textureKey) == 0)
-    {
-        printf("Warning: Failed to access renderStates[%s] in TextureManager\n", textureKey.c_str());
-        renderStates[textureKey] = { sf::RenderStates() };
-    }
-    else if (renderStates.at(textureKey).size() <= frame)
-    {
-        printf("Warning: Failed to access \"%s\", frame %d in TextureManager\n", textureKey.c_str(), (int)frame);
-        renderStates.at(textureKey).resize(frame);
-        //renderStates.at(textureKey)[frame] = { sf::RenderStates() };
-    }
-
-    return renderStates.at(textureKey)[frame];
+	if (m_renderStates.count(textureKey) == 0U)
+		return 0U;
+	return (unsigned int)m_renderStates.at(textureKey).size();
 }
 
-int TextureManager::getFrameCount(const std::string& textureKey)
-{
-    if (renderStates.count(textureKey) == 0) return 0;
-    return (int)renderStates.at(textureKey).size();
-}
+} // namespace engine
